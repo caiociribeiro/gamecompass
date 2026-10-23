@@ -33,13 +33,27 @@ docker compose ps
 A API ficará em http://localhost:8000. A documentação interativa ficará em http://localhost:8000/docs.
 O Neo4j Browser ficará em http://localhost:7474. Para entrar, use as credenciais definidas em `.env`.
 
-## 3. Rotas iniciais
+## 3. Interface de demonstração
+
+O frontend em `frontend/` é um protótipo sem API. Conta, perfil e recomendações ficam no navegador.
+
+É preciso Node.js 20 ou superior.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+A interface abre em http://localhost:5173. A conta de demonstração é `demo@gamecompass.dev`, senha `demo123`.
+
+## 4. Rotas iniciais
 
 - `GET /` — identificação da API
 - `GET /health` — verifica se a API está ativa
 - `GET /health/neo4j` — testa a conexão com o Neo4j
 
-## 4. Comandos úteis
+## 5. Comandos úteis
 
 ```bash
 docker compose logs -f api
@@ -53,6 +67,7 @@ docker compose down
 
 ```text
 gamecompass/
+├── frontend/
 ├── backend/
 │   ├── app/
 │   │   ├── __init__.py
