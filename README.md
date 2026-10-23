@@ -181,3 +181,17 @@ docker compose down
 ```
 
 `docker compose down` encerra os serviços preservando os volumes nomeados.
+
+## Interface de demonstração
+
+O frontend em `frontend/` é um protótipo sem API. Conta, perfil e recomendações ficam no navegador.
+
+É preciso Node.js 20 ou superior.
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+A interface abre em http://localhost:5173. A conta de demonstração é `demo@gamecompass.dev`, senha `demo123`.

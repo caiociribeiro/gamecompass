@@ -9,6 +9,10 @@ venv/
 # Secrets / environment
 .env
 
+# Node / frontend
+node_modules/
+dist/
+
 # Editors / OS
 .vscode/
 .idea/
