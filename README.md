@@ -134,6 +134,16 @@ serão definidos na próxima etapa.
 
 ## Próximas etapas da engenharia de dados
 
+O contrato do catálogo e suas regras de validação estão em
+[data/README.md](data/README.md). Para inspecioná-lo sem conectar ao banco:
+
+```bash
+docker compose run --rm --no-deps data python scripts/hardware_catalog.py --describe
+```
+
+Este script usa apenas a biblioteca padrão do Python e fica disponível
+pelo volume de `scripts/`; não é necessário reconstruir a imagem.
+
 1. Definir o formato da tabela de benchmarks e registrar fonte, métrica,
    variante do modelo e data da coleta.
 2. Coletar uma amostra real de CPUs e GPUs em `data/raw/` e normalizá-la
