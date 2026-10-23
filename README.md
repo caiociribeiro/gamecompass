@@ -1,8 +1,9 @@
 # GameCompass — ambiente de desenvolvimento
 
 API FastAPI, Neo4j Community 5.23.0 e um ambiente Python separado para
-construir a pipeline de dados. Esta etapa configura o ambiente e verifica a
-conexão; a coleta de benchmarks e requisitos será implementada em seguida.
+construir a pipeline de dados. Os scripts normalizam catálogos CSV de
+benchmarks e carregam CPUs e GPUs no grafo. A coleta automática e a
+extração de requisitos da Steam serão implementadas nas próximas etapas.
 
 ## Pré-requisitos
 
@@ -132,7 +133,7 @@ em `data/raw/` e `data/processed/` continuam ignorados conforme a regra
 atual do projeto. Os formatos e a política de versionamento dos dados
 serão definidos na próxima etapa.
 
-## Próximas etapas da engenharia de dados
+## Pipeline de hardware e próximas etapas
 
 O contrato do catálogo e suas regras de validação estão em
 [data/README.md](data/README.md). Para inspecioná-lo sem conectar ao banco:
@@ -144,13 +145,23 @@ docker compose run --rm --no-deps data python scripts/hardware_catalog.py --desc
 Este script usa apenas a biblioteca padrão do Python e fica disponível
 pelo volume de `scripts/`; não é necessário reconstruir a imagem.
 
-1. Definir o formato da tabela de benchmarks e registrar fonte, métrica,
-   variante do modelo e data da coleta.
-2. Coletar uma amostra real de CPUs e GPUs em `data/raw/` e normalizá-la
-   em `data/processed/`.
-3. Extrair requisitos da Steam, normalizar a RAM e associar os modelos
+Depois de processar um CSV, simule a carga antes de conectar ao banco:
+
+```bash
+docker compose run --rm --no-deps data python scripts/load_hardware.py --input data/processed/hardware_sample_20261023.csv --dry-run
+```
+
+Remova `--dry-run` e `--no-deps` para executar a carga dos nós CPU e GPU.
+O carregador usa `MERGE` pelo nome e atualiza o score sem duplicar peças.
+Os detalhes e a consulta de conferência estão em [data/README.md](data/README.md).
+
+Próximas etapas:
+
+1. Definir o acesso à fonte para ampliar o catálogo, preservando a origem
+   e a data de cada coleta.
+2. Extrair requisitos da Steam, normalizar a RAM e associar os modelos
    aos benchmarks, encaminhando correspondências ambíguas para revisão.
-4. Carregar os registros validados no contrato de grafo da API.
+3. Carregar os jogos validados no contrato de grafo da API.
 
 Para CPUs, o campo `passmark_score` representará CPU Mark; para GPUs,
 G3D Mark. As métricas têm escalas diferentes e serão comparadas dentro

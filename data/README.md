@@ -1,8 +1,8 @@
 # Catálogo de equivalência de hardware — contrato inicial
 
 O catálogo associa o modelo exato de uma peça à sua pontuação de benchmark.
-Esta etapa define e valida o formato; não contém um catálogo artificial,
-um coletor de páginas ou uma carga para o Neo4j.
+Os scripts validam o CSV e carregam seus registros no Neo4j. A coleta
+automática da fonte e a associação com requisitos da Steam são etapas futuras.
 
 ## Formato do CSV
 
@@ -81,6 +81,62 @@ A entrada padrão é `data/raw/hardware_benchmarks.csv`; a saída é
 escolher outros caminhos. Um catálogo vazio é rejeitado. Se um registro
 for inválido, a saída anterior é preservada. O script não altera a entrada
 nem o banco e não acessa a internet.
+
+## Carga do catálogo no Neo4j
+
+`scripts/load_hardware.py` reutiliza a validação de `hardware_catalog.py`.
+Antes de conectar ao banco, valida o arquivo inteiro e o limite inteiro de
+64 bits do Neo4j. A simulação também funciona com o banco desligado:
+
+```bash
+docker compose run --rm --no-deps data python scripts/load_hardware.py --input data/processed/hardware_sample_20261023.csv --dry-run
+```
+
+Com o CSV validado, carregue o catálogo:
+
+```bash
+docker compose run --rm data python scripts/load_hardware.py --input data/processed/hardware_sample_20261023.csv
+```
+
+Para outro conjunto, informe seu caminho em `--input`. O padrão é
+`data/processed/hardware_benchmarks.csv`. Os arquivos são fornecidos pela
+pipeline; os modelos e as pontuações não estão fixos no código.
+
+A carga cria constraints de unicidade para `CPU.name` e `GPU.name` com
+`IF NOT EXISTS`. Depois, uma única transação grava CPUs e GPUs usando
+`UNWIND`, parâmetros e `MERGE` pelo nome exato. Se a gravação de um dos
+tipos falhar, o lote de dados é revertido; as constraints são criadas em
+uma transação anterior e podem permanecer.
+
+O contrato de saída é `(:CPU {name, passmark_score})` e
+`(:GPU {name, passmark_score})`, com score inteiro. Fonte, métrica e data
+permanecem no CSV para auditoria. Uma peça existente tem seu score
+atualizado para o valor do arquivo. A carga não apaga peças ausentes do
+CSV nem altera jogos ou relacionamentos.
+
+Os contadores `CPU` e `GPU` representam os registros do arquivo. O campo
+`nodes_created` conta os nós criados pela carga. Em um banco vazio, a amostra
+com duas CPUs e duas GPUs retorna `4`. Repetir a mesma carga retorna `0`,
+mantendo quatro peças; outros nós já existentes no banco são preservados.
+
+No Neo4j Browser (`http://localhost:7474`), confira nomes e scores:
+
+```cypher
+MATCH (h)
+WHERE h:CPU OR h:GPU
+RETURN labels(h) AS tipo, h.name AS nome, h.passmark_score AS score
+ORDER BY tipo, nome;
+```
+
+O script usa as mesmas variáveis `NEO4J_URI`, `NEO4J_USER`,
+`NEO4J_PASSWORD` e `NEO4J_DATABASE` da checagem de conexão. O Compose já
+as fornece; executar Python diretamente exige configurá-las no ambiente.
+Não é necessário reconstruir a imagem, pois não há dependências novas.
+
+Referências do carregamento:
+
+- https://neo4j.com/docs/python-manual/current/transactions/
+- https://neo4j.com/docs/cypher-manual/current/clauses/merge/
 
 ## Fonte e reprodução do experimento
 
