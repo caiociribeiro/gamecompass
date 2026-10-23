@@ -122,7 +122,7 @@ def match_alternatives(
     catalog: dict,
     aliases: dict,
 ) -> dict:
-    """Consulta cada alternativa e sinaliza identificações pendentes."""
+    """Resolve alternativas com OU e calcula seu limite escalar por benchmark."""
     kind = component_type.strip().upper()
 
     results = [
@@ -135,10 +135,18 @@ def match_alternatives(
         for result in results
     )
 
+    required_score = None
+    if resolved:
+        required_score = min(
+            result["passmark_score"]
+            for result in results
+        )
+
     return {
         "status": "resolved" if resolved else "needs_review",
         "component_type": kind,
         "query": text,
+        "required_score": required_score,
         "alternatives": results,
     }
 
