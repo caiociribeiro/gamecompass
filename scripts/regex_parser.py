@@ -20,6 +20,18 @@ RAM_FIELD = re.compile(
     re.IGNORECASE,
 )
 
+HARDWARE_FIELDS = {
+    "CPU": re.compile(
+        r"(?:processador|processor|cpu)\s*:\s*(.*)",
+        re.IGNORECASE,
+    ),
+    "GPU": re.compile(
+        r"(?:placa\s+de\s+v[ií]deo|placa\s+gr[aá]fica|gr[aá]ficos|"
+        r"graphics(?:\s+card)?|video\s+card|gpu)\s*:\s*(.*)",
+        re.IGNORECASE,
+    ),
+}
+
 
 class _RequirementHTMLParser(HTMLParser):
     def __init__(self):
@@ -99,6 +111,37 @@ def extract_ram_gb(html: str) -> int | None:
     return normalize_ram_gb(fields[0])
 
 
+def extract_hardware_text(html: str, component_type: str) -> str | None:
+    """Extrai um campo de CPU/GPU, preservando alternativas e variantes."""
+    component_type = component_type.strip().upper()
+    if component_type not in HARDWARE_FIELDS:
+        raise ValueError("component_type deve ser CPU ou GPU.")
+
+    pattern = HARDWARE_FIELDS[component_type]
+    fields = []
+
+    for line in clean_html(html).splitlines():
+        match = pattern.fullmatch(line)
+        if match:
+            fields.append(match.group(1).strip())
+
+    if not fields:
+        return None
+
+    if len(fields) > 1:
+        raise ValueError(
+            f"Há vários campos de {component_type}: "
+            "forneça mínimos e recomendados separadamente."
+        )
+
+    if not fields[0]:
+        raise ValueError(
+            f"O campo de {component_type} foi encontrado, mas está vazio."
+        )
+
+    return fields[0]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -112,6 +155,8 @@ def main(argv: list[str] | None = None) -> int:
         result = {
             "text": clean_html(args.text),
             "ram_gb": extract_ram_gb(args.text),
+            "cpu_text": extract_hardware_text(args.text, "CPU"),
+            "gpu_text": extract_hardware_text(args.text, "GPU"),
         }
     except ValueError as exc:
         print(f"Erro nos requisitos: {exc}", file=sys.stderr)
