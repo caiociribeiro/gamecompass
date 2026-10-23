@@ -1,7 +1,7 @@
-"""Associa um modelo ao catálogo por nome exato ou alias explícito.
+"""Associa modelos ao catálogo por nome exato ou alias explícito.
 
-Cada consulta recebe um único modelo. Campos com alternativas serão
-tratados em uma próxima etapa. Ausência de match retorna score nulo.
+Use --alternatives para separar modelos ligados por 'ou' ou 'or'.
+Cada alternativa mantém sua identificação e sua pontuação.
 """
 
 import argparse
@@ -9,6 +9,7 @@ import csv
 import json
 from pathlib import Path
 import sys
+import re
 
 from hardware_catalog import BENCHMARKS, ROOT, read_catalog
 
@@ -100,6 +101,47 @@ def match_hardware(
         "method": method,
     }
 
+def split_alternatives(text: str) -> list[str]:
+    """Separa alternativas explícitas, preservando o texto de cada modelo."""
+    parts = re.split(
+        r"\b(?:ou|or)\b",
+        text,
+        flags=re.IGNORECASE,
+    )
+    parts = [part.strip() for part in parts]
+
+    if any(not part for part in parts):
+        raise ValueError("Há uma alternativa vazia no requisito.")
+
+    return parts
+
+
+def match_alternatives(
+    text: str,
+    component_type: str,
+    catalog: dict,
+    aliases: dict,
+) -> dict:
+    """Consulta cada alternativa e sinaliza identificações pendentes."""
+    kind = component_type.strip().upper()
+
+    results = [
+        match_hardware(name, kind, catalog, aliases)
+        for name in split_alternatives(text)
+    ]
+
+    resolved = all(
+        result["status"] == "matched"
+        for result in results
+    )
+
+    return {
+        "status": "resolved" if resolved else "needs_review",
+        "component_type": kind,
+        "query": text,
+        "alternatives": results,
+    }
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -121,6 +163,11 @@ def main(argv: list[str] | None = None) -> int:
         required=True,
     )
     parser.add_argument("--name", required=True)
+    parser.add_argument(
+        "--alternatives",
+        action="store_true",
+        help="Consulta alternativas separadas por 'ou' ou 'or'.",
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -132,12 +179,20 @@ def main(argv: list[str] | None = None) -> int:
         }
 
         aliases = read_aliases(args.aliases, catalog)
-        result = match_hardware(
-            args.name,
-            args.component_type,
-            catalog,
-            aliases,
-        )
+        if args.alternatives:
+            result = match_alternatives(
+                args.name,
+                args.component_type,
+                catalog,
+                aliases,
+            )
+        else:
+            result = match_hardware(
+                args.name,
+                args.component_type,
+                catalog,
+                aliases,
+            )
     except (OSError, ValueError, UnicodeError, csv.Error) as exc:
         print(f"Erro no matching: {exc}", file=sys.stderr)
         return 1
