@@ -2,6 +2,10 @@
 
 Simulação: python scripts/load_hardware.py --input CAMINHO --dry-run
 Carga:     python scripts/load_hardware.py --input CAMINHO
+
+Use --format manual para gravar performance_score e score_version.
+No lote manual, notas vazias removem notas anteriores e ficam pendentes.
+Somente os modelos presentes no CSV são migrados.
 """
 
 from __future__ import annotations
@@ -16,7 +20,7 @@ import sys
 from neo4j import GraphDatabase, ManagedTransaction
 from neo4j.exceptions import DriverError, Neo4jError
 
-from hardware_catalog import ROOT, read_catalog
+from hardware_catalog import MANUAL_SCORE_VERSION, ROOT, read_catalog
 
 
 NEO4J_MAX_INTEGER = 2**63 - 1
@@ -38,18 +42,57 @@ LOAD_QUERIES = {
         SET g.passmark_score = row.passmark_score
     """,
 }
+MANUAL_LOAD_QUERIES = {
+    "CPU": """
+        UNWIND $rows AS row
+        MERGE (c:CPU {name: row.name})
+        SET c.performance_score = row.performance_score,
+            c.score_version = row.score_version
+        REMOVE c.passmark_score
+    """,
+    "GPU": """
+        UNWIND $rows AS row
+        MERGE (g:GPU {name: row.name})
+        SET g.performance_score = row.performance_score,
+            g.score_version = row.score_version
+        REMOVE g.passmark_score
+    """,
+}
+LEGACY_GUARD_QUERIES = {
+    "CPU": """
+        UNWIND $rows AS row
+        MATCH (c:CPU {name: row.name})
+        WHERE c.score_version IS NOT NULL OR c.performance_score IS NOT NULL
+        RETURN c.name AS name LIMIT 1
+    """,
+    "GPU": """
+        UNWIND $rows AS row
+        MATCH (g:GPU {name: row.name})
+        WHERE g.score_version IS NOT NULL OR g.performance_score IS NOT NULL
+        RETURN g.name AS name LIMIT 1
+    """,
+}
 
 
-def prepare_payload(input_path: Path) -> dict[str, list[dict[str, str | int]]]:
+class CatalogMigrationError(ValueError):
+    """Impede que uma carga antiga reintroduza pontuações após a migração."""
+
+
+def prepare_payload(
+    input_path: Path, *, catalog_format: str = "passmark",
+) -> dict[str, list[dict[str, str | int | None]]]:
     """Valida todo o CSV e separa apenas as propriedades do contrato do grafo."""
-    records = read_catalog(input_path)
-    payload: dict[str, list[dict[str, str | int]]] = {"CPU": [], "GPU": []}
+    records = read_catalog(input_path, catalog_format=catalog_format)
+    payload: dict[str, list[dict[str, str | int | None]]] = {"CPU": [], "GPU": []}
+    score_key = "performance_score" if catalog_format == "manual" else "passmark_score"
     for record in records:
-        if record["passmark_score"] > NEO4J_MAX_INTEGER:
+        score = record[score_key]
+        if score is not None and score > NEO4J_MAX_INTEGER:
             raise ValueError(f"Pontuação fora do limite inteiro do Neo4j: {record['name']}.")
-        payload[record["component_type"]].append({
-            "name": record["name"], "passmark_score": record["passmark_score"],
-        })
+        row = {"name": record["name"], score_key: score}
+        if catalog_format == "manual":
+            row["score_version"] = record["score_version"]
+        payload[record["component_type"]].append(row)
     return payload
 
 
@@ -60,14 +103,25 @@ def create_constraints(tx: ManagedTransaction) -> None:
 
 
 def write_hardware(
-    tx: ManagedTransaction, payload: dict[str, list[dict[str, str | int]]],
+    tx: ManagedTransaction, payload: dict[str, list[dict[str, str | int | None]]],
+    *, catalog_format: str = "passmark",
 ) -> int:
     """CPUs e GPUs pertencem ao mesmo lote: falhar propaga o rollback."""
+    if catalog_format not in ("passmark", "manual"):
+        raise ValueError("catalog_format deve ser passmark ou manual.")
+    queries = MANUAL_LOAD_QUERIES if catalog_format == "manual" else LOAD_QUERIES
     nodes_created = 0
     for component_type in ("CPU", "GPU"):
         rows = payload[component_type]
         if rows:
-            summary = tx.run(LOAD_QUERIES[component_type], rows=rows).consume()
+            if catalog_format == "passmark":
+                migrated = tx.run(LEGACY_GUARD_QUERIES[component_type], rows=rows).single()
+                if migrated is not None:
+                    raise CatalogMigrationError(
+                        "A carga PassMark não pode sobrescrever um modelo já migrado "
+                        "para o índice manual."
+                    )
+            summary = tx.run(queries[component_type], rows=rows).consume()
             nodes_created += summary.counters.nodes_created
     return nodes_created
 
@@ -75,7 +129,11 @@ def write_hardware(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--input", type=Path, default=ROOT / "data/processed/hardware_benchmarks.csv",
+        "--format", dest="catalog_format", choices=("passmark", "manual"),
+        default="passmark", help="Formato do catálogo; manual usa o novo índice.",
+    )
+    parser.add_argument(
+        "--input", type=Path,
         help="CSV completo, no contrato de hardware_catalog.py.",
     )
     parser.add_argument(
@@ -86,7 +144,12 @@ def main(argv: list[str] | None = None) -> int:
 
     # A validação completa ocorre antes da conexão, inclusive na carga real.
     try:
-        payload = prepare_payload(args.input)
+        filename = (
+            "hardware_manual_v1.csv" if args.catalog_format == "manual"
+            else "hardware_benchmarks.csv"
+        )
+        input_path = args.input if args.input is not None else ROOT / "data/processed" / filename
+        payload = prepare_payload(input_path, catalog_format=args.catalog_format)
     except (OSError, ValueError, UnicodeError, csv.Error) as exc:
         print(f"Erro no catálogo: {exc}", file=sys.stderr)
         return 1
@@ -94,8 +157,15 @@ def main(argv: list[str] | None = None) -> int:
     report = {
         "status": "ok", "dry_run": args.dry_run,
         "CPU": len(payload["CPU"]), "GPU": len(payload["GPU"]),
-        "input": str(args.input),
+        "input": str(input_path),
     }
+    if args.catalog_format == "manual":
+        rows = payload["CPU"] + payload["GPU"]
+        report.update(
+            format="manual", score_version=MANUAL_SCORE_VERSION,
+            classified=sum(row["performance_score"] is not None for row in rows),
+            pending=sum(row["performance_score"] is None for row in rows),
+        )
     if args.dry_run:
         print(json.dumps(report, ensure_ascii=False))
         return 0
@@ -116,7 +186,12 @@ def main(argv: list[str] | None = None) -> int:
             driver.verify_connectivity()
             with driver.session(database=database) as session:
                 session.execute_write(create_constraints)
-                nodes_created = session.execute_write(write_hardware, payload)
+                nodes_created = session.execute_write(
+                    write_hardware, payload, catalog_format=args.catalog_format,
+                )
+    except CatalogMigrationError as exc:
+        print(f"Falha na migração: {exc}", file=sys.stderr)
+        return 1
     except (DriverError, Neo4jError, OSError, ValueError) as exc:
         print(
             f"Falha na carga ({type(exc).__name__}). Confira o serviço neo4j, "
