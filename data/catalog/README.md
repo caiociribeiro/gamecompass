@@ -21,8 +21,8 @@ ambiente. Edite o CSV desta pasta e gere novamente a saída processada.
 
 ## Conteúdo do catálogo
 
-São 23 CPUs Intel/AMD e 22 GPUs NVIDIA/AMD/Intel, todas de desktop.
-Os modelos foram selecionados a partir dos requisitos Windows de
+São 41 CPUs Intel/AMD e 40 GPUs NVIDIA/AMD/Intel, todas de desktop.
+O conjunto inicial foi selecionado a partir dos requisitos Windows de
 Cyberpunk 2077, Elden Ring, Baldur's Gate 3, Red Dead Redemption 2 e
 Hogwarts Legacy, além de páginas oficiais dos fabricantes e comparações
 de hardware com identificação dos modelos.
@@ -34,7 +34,7 @@ Notebooks, GPUs integradas, Apple Silicon e outras CPUs ARM exigirão
 cadastros e critérios próprios. Os requisitos coletados dessas plataformas
 continuam preservados nos snapshots da Steam.
 
-Há 5 CPUs e 6 GPUs classificadas:
+Há 23 CPUs e 25 GPUs classificadas. Os grupos iniciais foram preservados:
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
@@ -43,7 +43,12 @@ Há 5 CPUs e 6 GPUs classificadas:
 | GPU | 100 | GTX 1060 6GB e RX 580 8GB |
 | GPU | 200 | GTX 1070 8GB e RX Vega 56 8GB |
 
-As outras 34 peças têm `performance_score` vazio e continuam pendentes.
+O lote de outubro de 2026 acrescenta as classes CPU 400, 500 e 600 e
+GPU 500, 550, 600, 700, 800, 900 e 1000. Consulte a
+[seleção de 20 CPUs e 20 GPUs](RESEARCH_2026_10.md) para a lista completa,
+as fontes, os ajustes da proposta e as três avaliações que continuam abertas.
+
+As outras 33 peças têm `performance_score` vazio e continuam pendentes.
 Consulte [Critério do índice manual](SCORING.md) para a justificativa,
 o recorte da avaliação e os limites da aproximação.
 
@@ -120,7 +125,7 @@ versionada com `--input`, pois o padrão antigo do script ainda usa `data/raw`.
 docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
 ```
 
-O resultado informa `CPU: 23`, `GPU: 22`, formato manual e versão
+O resultado informa `CPU: 41`, `GPU: 40`, formato manual e versão
 `manual_v1`. O processamento é local e preserva o arquivo de entrada.
 
 ```text
@@ -153,7 +158,7 @@ Primeiro valide e conte o lote sem conectar ao banco:
 docker compose run --rm --no-deps data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv --dry-run
 ```
 
-O catálogo atual terá `classified: 11` e `pending: 34`. Para cadastrar as peças:
+O catálogo atual terá `classified: 48` e `pending: 33`. Para cadastrar as peças:
 
 ```text
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv

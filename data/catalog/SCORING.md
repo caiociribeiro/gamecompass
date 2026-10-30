@@ -6,8 +6,9 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 5 CPUs e 6 GPUs estão classificadas. As 34 peças pendentes
-são 18 CPUs e 16 GPUs. O cadastro tem 45 peças.
+Nesta etapa, 23 CPUs e 25 GPUs estão classificadas. As 33 peças pendentes
+são 18 CPUs e 15 GPUs. O cadastro tem 81 peças. A tabela abaixo preserva
+os grupos iniciais; o novo lote está detalhado mais adiante.
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
@@ -36,8 +37,9 @@ documentado; não comprova desempenho igual em cada jogo.
 1. Confirmar o modelo e a variante de memória.
 2. Usar testes que comparem as placas na mesma configuração e amostra de jogos.
 3. Registrar resolução, qualidade por jogo, renderização e data do estudo.
-4. Nesta etapa, priorizar comparações em 1080p com rasterização, sem usar
-   geração de quadros ou mistura de modos de upscaling como equivalência.
+4. Registrar o recorte de cada grupo: os primeiros estudos priorizam 1080p;
+   o lote de outubro de 2026 usa 1440p Ultra com rasterização nativa.
+   Não usar geração de quadros ou mistura de upscaling como equivalência.
 5. Admitir a mesma classe quando a diferença média publicada no recorte
    comparável for de até 10% e as ressalvas do estudo forem registradas.
 6. Exigir uma comparação compatível com os integrantes do grupo ao ampliá-lo.
@@ -208,12 +210,19 @@ identificam outros modelos e não herdam a nota automaticamente.
 
 ## Outros grupos e limites
 
-As demais CPUs e GPUs aguardam avaliações próprias. A RTX 5070 e a RX 9070
-não herdam uma classe apenas por terem sido sugeridas como um par.
-Estudos consultados desse par usam amostras e configurações diferentes:
-[Tom's Hardware, 29/05/2025](https://www.tomshardware.com/pc-components/gpus/nvidia-rtx-5070-vs-amd-rx-9070-face-off)
-e [TechSpot, 21/10/2025](https://www.techspot.com/review/3044-nvidia-rtx-5070-vs-amd-radeon-9070-dlss-fsr/).
-A avaliação deve fixar um recorte comparável antes de atribuir as notas.
+As avaliações sem cobertura comparável continuam pendentes. A seleção
+[de outubro de 2026](RESEARCH_2026_10.md) registra 20 CPUs e 20 GPUs,
+com 37 classificações confirmadas e três propostas ainda sem nota.
+A RTX 5070 12GB e a RX 9070 16GB compartilham agora a classe GPU 550,
+com base no recorte documentado de rasterização nativa a 1440p.
+
+`manual_v1` continua em elaboração. Esta ampliação explicita o recorte
+dos novos grupos e mantém as notas e condições históricas anteriores.
+Não existe uma medição uniforme de toda a escala: classes de diferentes
+épocas ainda precisam de calibração conjunta no TCC2. Os hashes do
+catálogo e o commit identificam a revisão exata usada no processamento.
+Quando o critério for publicado e revisado, deverá receber nova versão
+com suporte correspondente no validador.
 
 A classe não cobre automaticamente versão de SO, capacidade mínima de
 VRAM, DirectX, instruções de CPU, ray tracing, SSD ou estabilidade de FPS.
@@ -227,7 +236,7 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 11` e `pending: 34`.
+Após esta etapa, a carga informa `classified: 48` e `pending: 33`.
 Requisitos que citam alternativas ainda sem nota continuam com
 `required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
 segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência
