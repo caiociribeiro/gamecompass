@@ -21,7 +21,7 @@ ambiente. Edite o CSV desta pasta e gere novamente a saída processada.
 
 ## Conteúdo do catálogo
 
-São 21 CPUs Intel/AMD e 22 GPUs NVIDIA/AMD/Intel, todas de desktop.
+São 23 CPUs Intel/AMD e 22 GPUs NVIDIA/AMD/Intel, todas de desktop.
 Os modelos foram selecionados a partir dos requisitos Windows de
 Cyberpunk 2077, Elden Ring, Baldur's Gate 3, Red Dead Redemption 2 e
 Hogwarts Legacy, além de páginas oficiais dos fabricantes e comparações
@@ -34,11 +34,11 @@ Notebooks, GPUs integradas, Apple Silicon e outras CPUs ARM exigirão
 cadastros e critérios próprios. Os requisitos coletados dessas plataformas
 continuam preservados nos snapshots da Steam.
 
-Há 3 CPUs e 6 GPUs classificadas:
+Há 5 CPUs e 6 GPUs classificadas:
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
-| CPU | 100 | Ryzen 5 3600, Ryzen 5 3600X e Core i5-9600K |
+| CPU | 100 | Ryzen 5 3600, Ryzen 5 3600X, Ryzen 7 3700X, Core i5-9600K e Core i7-9700K |
 | GPU | 50 | GTX 1060 3GB e RX 570 4GB |
 | GPU | 100 | GTX 1060 6GB e RX 580 8GB |
 | GPU | 200 | GTX 1070 8GB e RX Vega 56 8GB |
@@ -120,7 +120,7 @@ versionada com `--input`, pois o padrão antigo do script ainda usa `data/raw`.
 docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
 ```
 
-O resultado informa `CPU: 21`, `GPU: 22`, formato manual e versão
+O resultado informa `CPU: 23`, `GPU: 22`, formato manual e versão
 `manual_v1`. O processamento é local e preserva o arquivo de entrada.
 
 ```text
@@ -153,7 +153,7 @@ Primeiro valide e conte o lote sem conectar ao banco:
 docker compose run --rm --no-deps data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv --dry-run
 ```
 
-O catálogo atual terá `classified: 9` e `pending: 34`. Para cadastrar as peças:
+O catálogo atual terá `classified: 11` e `pending: 34`. Para cadastrar as peças:
 
 ```text
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv

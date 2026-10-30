@@ -6,12 +6,12 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 3 CPUs e 6 GPUs estão classificadas. As 34 peças pendentes
-são 18 CPUs e 16 GPUs. O cadastro tem 43 peças.
+Nesta etapa, 5 CPUs e 6 GPUs estão classificadas. As 34 peças pendentes
+são 18 CPUs e 16 GPUs. O cadastro tem 45 peças.
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
-| CPU | 100 | Ryzen 5 3600, Ryzen 5 3600X e Core i5-9600K |
+| CPU | 100 | Ryzen 5 3600, Ryzen 5 3600X, Ryzen 7 3700X, Core i5-9600K e Core i7-9700K |
 | GPU | 50 | GTX 1060 3GB e RX 570 4GB |
 | GPU | 100 | GTX 1060 6GB e RX 580 8GB |
 | GPU | 200 | GTX 1070 8GB e RX Vega 56 8GB |
@@ -168,13 +168,21 @@ continuam sendo características que exigem avaliação própria.
 | --- | ---: | --- |
 | AMD Ryzen 5 3600 | 100 | manual_v1 |
 | AMD Ryzen 5 3600X | 100 | manual_v1 |
+| AMD Ryzen 7 3700X | 100 | manual_v1 |
 | Intel Core i5-9600K | 100 | manual_v1 |
+| Intel Core i7-9700K | 100 | manual_v1 |
 
 Referência: [avaliação do Tweakers](https://tweakers.net/reviews/7222/ryzen-5-3600-en-3600x-nieuwe-ryzens-op-budget.html),
-de Willem de Moor, em 19/07/2019. Os três modelos participam da mesma
-avaliação. O autor relata diferença inferior a 1% no agregado de jogos
-entre o i5-9600K e os dois Ryzen. Esse recorte sustenta a classe preliminar
-compartilhada, dentro do limite experimental de 10%.
+de Willem de Moor, em 19/07/2019. Os cinco modelos participam da mesma
+avaliação. No agregado de jogos publicado, os extremos deste grupo são
+129 e 137 pontos. O GameCompass calcula a amplitude relativa como
+`((137 / 129) - 1) * 100`, aproximadamente 6,2%, dentro do limite
+experimental de 10%.
+
+Esse cálculo é uma inferência de curadoria sobre o índice arredondado
+da fonte. Não equivale a uma vantagem de FPS em cada jogo. A comparação
+conjunta dos cinco modelos sustenta o grupo sem depender de transitividade
+entre pares avaliados em estudos diferentes.
 
 A amostra tem seis jogos em 1080p, nos presets Medium e Ultra. O agregado
 de jogos da fonte dá o mesmo peso aos testes. O GameCompass conserva essa
@@ -191,10 +199,11 @@ outros jogos e configurações.
 A nota considera a comparação principal em configuração de fábrica.
 As experiências de overclock e de troca de plataforma relatadas em
 outras seções não são misturadas a esse grupo. São medições históricas;
-`collected_at` registra a consulta, sem indicar novo teste de hardware.
+`collected_at` registra a consulta ou o registro de curadoria, sem indicar
+novo teste de hardware.
 
-O Core i5-9600K foi acrescentado com cinco aliases da mesma peça. O
-Ryzen 5 3600 e o 3600X mantêm registros distintos. Sufixos como KF e XT
+Os cinco modelos mantêm registros distintos. Os aliases identificam
+nomes alternativos da mesma peça. Sufixos como KF e XT
 identificam outros modelos e não herdam a nota automaticamente.
 
 ## Outros grupos e limites
@@ -218,7 +227,7 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 9` e `pending: 34`.
+Após esta etapa, a carga informa `classified: 11` e `pending: 34`.
 Requisitos que citam alternativas ainda sem nota continuam com
 `required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
 segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência
