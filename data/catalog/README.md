@@ -21,10 +21,11 @@ ambiente. Edite o CSV desta pasta e gere novamente a saída processada.
 
 ## Conteúdo do catálogo
 
-São 20 CPUs Intel/AMD e 21 GPUs NVIDIA/AMD/Intel, todas de desktop.
+São 20 CPUs Intel/AMD e 22 GPUs NVIDIA/AMD/Intel, todas de desktop.
 Os modelos foram selecionados a partir dos requisitos Windows de
 Cyberpunk 2077, Elden Ring, Baldur's Gate 3, Red Dead Redemption 2 e
-Hogwarts Legacy, além de páginas oficiais dos fabricantes.
+Hogwarts Legacy, além de páginas oficiais dos fabricantes e comparações
+de hardware com identificação dos modelos.
 
 O cadastro inclui modelos antigos e recentes, como Core i5-2500K,
 Ryzen 7 9700X, GTX 1060 3GB/6GB, Arc A770 8GB/16GB, RTX 5070 e RX 9070.
@@ -33,13 +34,14 @@ Notebooks, GPUs integradas, Apple Silicon e outras CPUs ARM exigirão
 cadastros e critérios próprios. Os requisitos coletados dessas plataformas
 continuam preservados nos snapshots da Steam.
 
-Há 2 GPUs classificadas: GTX 1060 6GB e RX 580 8GB, ambas na classe 100.
-As outras 39 peças têm `performance_score` vazio e continuam pendentes.
+Há 4 GPUs classificadas: GTX 1060 6GB e RX 580 8GB na classe 100;
+GTX 1060 3GB e RX 570 4GB na classe 50. As outras 38 peças têm
+`performance_score` vazio e continuam pendentes.
 Consulte [Critério do índice manual](SCORING.md) para a justificativa,
 o recorte da avaliação e os limites da aproximação.
 
 Para peças pendentes, `source_url` comprova a identidade ou a menção nos
-requisitos. Nas duas peças classificadas, aponta para a comparação que
+requisitos. Nas peças classificadas, aponta para a comparação que
 fundamenta a classe. Nenhum score PassMark foi copiado ou convertido
 em índice próprio.
 
@@ -83,7 +85,7 @@ abreviações e nomes efetivamente encontrados nos requisitos consultados.
 AMD e Intel/NVIDIA será representada pela classificação de desempenho,
 preservando registros distintos.
 
-Consultas genéricas como `GTX 1060`, `RX 480`, `RX 580` e `Arc A770` não
+Consultas genéricas como `GTX 1060`, `RX 480`, `RX 570`, `RX 580` e `Arc A770` não
 escolhem automaticamente uma capacidade de memória. Elas seguem para revisão.
 Os aliases desta pasta são usados com o catálogo manual. O arquivo anterior
 `data/hardware_aliases.json` continua associado ao catálogo legado.
@@ -111,7 +113,7 @@ versionada com `--input`, pois o padrão antigo do script ainda usa `data/raw`.
 docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
 ```
 
-O resultado inicial informa `CPU: 20`, `GPU: 21`, formato manual e versão
+O resultado informa `CPU: 20`, `GPU: 22`, formato manual e versão
 `manual_v1`. O processamento é local e preserva o arquivo de entrada.
 
 ```text
@@ -119,7 +121,7 @@ docker compose run --rm --no-deps data python scripts/hardware_matcher.py --form
 ```
 
 A identidade é encontrada, com `status: matched`, `score_status: classified`
-e `performance_score: 100`. Modelos como a GTX 1060 3GB continuam sendo
+e `performance_score: 100`. Modelos como a RX 580 4GB continuam sendo
 reconhecidos com `score_status: pending` e `performance_score: null`.
 
 Para processar um bloco de requisitos, use `process_requirements.py` com
@@ -135,7 +137,7 @@ Primeiro valide e conte o lote sem conectar ao banco:
 docker compose run --rm --no-deps data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv --dry-run
 ```
 
-O catálogo atual terá `classified: 2` e `pending: 39`. Para cadastrar as peças:
+O catálogo atual terá `classified: 4` e `pending: 38`. Para cadastrar as peças:
 
 ```text
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv

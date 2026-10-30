@@ -6,9 +6,9 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 2 GPUs estão classificadas e 39 peças continuam pendentes:
-20 CPUs e 19 GPUs. O primeiro grupo usa a GTX 1060 6GB e a RX 580 8GB
-como referência. As notas das outras variantes permanecem vazias.
+Nesta etapa, 4 GPUs estão classificadas e 38 peças continuam pendentes:
+20 CPUs e 18 GPUs. Há dois grupos: classe 100, com GTX 1060 6GB e RX 580 8GB;
+classe 50, com GTX 1060 3GB e RX 570 4GB. O cadastro tem 42 peças.
 
 ## Significado da pontuação
 
@@ -67,8 +67,37 @@ cada jogo no estudo; não foi assumido um preset único para os 32 títulos.
 
 O levantamento é histórico: a data de consulta em `collected_at` não
 representa uma nova execução do benchmark. Diferenças por jogo, drivers
-e configurações continuam relevantes. A avaliação não foi estendida à
-GTX 1060 3GB nem à RX 580 4GB.
+e configurações continuam relevantes. A classe 100 não foi atribuída à
+GTX 1060 3GB nem à RX 580 4GB. A variante de 3GB recebeu uma avaliação
+própria no segundo grupo; a RX 580 4GB permanece pendente.
+
+## Segundo grupo: classe GPU 50
+
+| Modelo canônico | performance_score | score_version |
+| --- | ---: | --- |
+| NVIDIA GeForce GTX 1060 3GB | 50 | manual_v1 |
+| AMD Radeon RX 570 4GB | 50 | manual_v1 |
+
+Referência: [comparação de 36 jogos do TechSpot](https://www.techspot.com/review/1780-geforce-1060-vs-radeon-580-vs-radeon-570/),
+de Steven Walton, em 18/01/2019. A GTX 1060 3GB ficou cerca de 4% à frente
+da RX 570 4GB no resumo publicado. A proximidade atende ao critério
+experimental de até 10% para compartilhar uma classe.
+
+O mesmo estudo inclui GTX 1060 6GB e RX 580 8GB e coloca esse grupo acima
+das duas placas da classe 50. A ordem entre 50 e 100 fica apoiada nessa
+comparação conjunta, sem normalizar números de estudos diferentes.
+O valor 50 foi escolhido como rótulo inferior a 100 e não representa
+metade do desempenho, 50 FPS ou uma diferença percentual de 50%.
+
+O artigo apresenta testes em 1080p e 1440p e explicita uma média aritmética
+dos FPS para resumir as cinco GPUs avaliadas. A curadoria utiliza o resumo
+publicado; não o combina com o agregado do estudo de 2020. Qualidade e
+resolução seguem as configurações declaradas para cada teste da fonte.
+São medições históricas, sem atualização própria dos drivers ou jogos.
+
+A RX 570 4GB foi adicionada ao catálogo com cinco aliases que preservam a
+capacidade de memória. Uma consulta genérica por RX 570 não escolhe a
+variante de 4GB, pois outras capacidades exigem avaliação independente.
 
 ## Outros grupos e limites
 
@@ -91,7 +120,7 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 2` e `pending: 39`.
+Após esta etapa, a carga informa `classified: 4` e `pending: 38`.
 Requisitos que citam alternativas ainda sem nota continuam com
 `required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
 segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência

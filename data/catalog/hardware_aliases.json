@@ -221,6 +221,11 @@
   },
   {
     "component_type": "GPU",
+    "alias": "AMD Radeon RX 570 4 GB",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
     "alias": "AMD Radeon RX 580 4 GB",
     "canonical_name": "AMD Radeon RX 580 4GB"
   },
@@ -656,6 +661,16 @@
   },
   {
     "component_type": "GPU",
+    "alias": "Radeon RX 570 4 GB",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 570 4GB",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
     "alias": "Radeon RX 5700 XT",
     "canonical_name": "AMD Radeon RX 5700 XT"
   },
@@ -748,6 +763,16 @@
     "component_type": "GPU",
     "alias": "RX 480 4GB",
     "canonical_name": "AMD Radeon RX 480 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 570 4 GB",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 570 4GB",
+    "canonical_name": "AMD Radeon RX 570 4GB"
   },
   {
     "component_type": "GPU",
