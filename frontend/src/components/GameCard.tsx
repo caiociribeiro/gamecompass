@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import type { Game } from "../types"
 
@@ -9,6 +10,7 @@ function hue(id: string) {
 
 export function Cover({ game, className = "" }: { game: Game; className?: string }) {
   const tone = hue(game.id)
+  const [broken, setBroken] = useState(false)
   return (
     <div
       className={`cover ${className}`.trim()}
@@ -17,7 +19,11 @@ export function Cover({ game, className = "" }: { game: Game; className?: string
       }}
       aria-hidden="true"
     >
-      <span>{game.title.slice(0, 1)}</span>
+      {game.image_url && !broken ? (
+        <img src={game.image_url} alt="" loading="lazy" onError={() => setBroken(true)} />
+      ) : (
+        <span>{game.title.slice(0, 1)}</span>
+      )}
     </div>
   )
 }

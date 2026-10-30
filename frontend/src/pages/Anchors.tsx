@@ -1,31 +1,65 @@
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { Cover } from "../components/GameCard"
+import { CatalogStatus } from "../components/CatalogStatus"
 import { PageHeader } from "../components/PageHeader"
+import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
-import { GAMES, findGame } from "../data/catalog"
-import { fold } from "../lib/text"
+import { apiError, apiGet } from "../lib/api"
+import type { GameSearchResult } from "../types"
 
 export function Anchors() {
   const { user, updateUser } = useSession()
+  const { games, loadGame } = useCatalog()
   const [query, setQuery] = useState("")
+  const [results, setResults] = useState<GameSearchResult[]>([])
+  const [searching, setSearching] = useState(false)
+  const [adding, setAdding] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const anchorIds = user?.anchorIds ?? []
-  const results = useMemo(() => {
-    const q = fold(query.trim())
-    if (!q) return []
-    return GAMES.filter((game) => fold(game.title).includes(q) && !anchorIds.includes(game.id)).slice(0, 6)
-  }, [query, anchorIds])
+  const full = anchorIds.length >= 3
+  const term = query.trim()
+
+  useEffect(() => {
+    const controller = new AbortController()
+    setResults([])
+    setError(null)
+    setSearching(false)
+    if (term.length < 2 || full) return () => controller.abort()
+    setSearching(true)
+    const timer = setTimeout(() => {
+      apiGet<{ items: GameSearchResult[] }>(`/games/search?q=${encodeURIComponent(term)}`, controller.signal)
+        .then((data) => {
+          if (!controller.signal.aborted) setResults(data.items)
+        })
+        .catch((error) => {
+          if (!controller.signal.aborted) setError(apiError(error))
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setSearching(false)
+        })
+    }, 350)
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
+  }, [term, full])
   if (!user) return null
+  const selected = anchorIds.map((id) => games.find((game) => game.id === id))
 
-  const selected = anchorIds.map((id) => findGame(id)).filter((game) => Boolean(game))
-
-  function add(id: string) {
-    if (anchorIds.length >= 3 || anchorIds.includes(id)) return
-    updateUser({ anchorIds: [...anchorIds, id] })
-    setQuery("")
-  }
-
-  function remove(id: string) {
-    updateUser({ anchorIds: anchorIds.filter((item) => item !== id) })
+  async function add(result: GameSearchResult) {
+    if (full || adding || anchorIds.includes(result.id)) return
+    setAdding(result.id)
+    setError(null)
+    try {
+      await loadGame(result.id)
+      updateUser({ anchorIds: [...anchorIds, result.id] })
+      setQuery("")
+      setResults([])
+    } catch (error) {
+      setError(apiError(error))
+    } finally {
+      setAdding(null)
+    }
   }
 
   return (
@@ -33,12 +67,13 @@ export function Anchors() {
       <PageHeader
         eyebrow="Jogos âncora"
         title="Três jogos que representam você"
-        lede="Eles precisam existir no catálogo de demonstração. A lista de recomendações não repete esses títulos."
+        lede="Pesquise pelo nome e escolha três jogos que você gosta. Eles ajudam a encontrar títulos parecidos."
       />
-
+      <CatalogStatus />
       <ol className="slots">
         {[0, 1, 2].map((index) => {
           const game = selected[index]
+          const id = anchorIds[index]
           return (
             <li key={index}>
               <span>Âncora {index + 1}</span>
@@ -49,7 +84,24 @@ export function Anchors() {
                     <strong>{game.title}</strong>
                     <p>{game.genres.join(" · ")}</p>
                   </div>
-                  <button type="button" className="btn ghost small" onClick={() => remove(game.id)}>
+                  <button
+                    type="button"
+                    className="btn ghost small"
+                    disabled={Boolean(adding)}
+                    onClick={() => updateUser({ anchorIds: anchorIds.filter((item) => item !== game.id) })}
+                  >
+                    Remover
+                  </button>
+                </div>
+              ) : id ? (
+                <div>
+                  <p>Detalhes do jogo salvo ainda não disponíveis.</p>
+                  <button
+                    type="button"
+                    className="btn ghost small"
+                    disabled={Boolean(adding)}
+                    onClick={() => updateUser({ anchorIds: anchorIds.filter((item) => item !== id) })}
+                  >
                     Remover
                   </button>
                 </div>
@@ -60,36 +112,50 @@ export function Anchors() {
           )
         })}
       </ol>
-
       <label className="stack-label">
-        Buscar no catálogo
+        Buscar jogos na Steam
         <input
           value={query}
-          placeholder={anchorIds.length >= 3 ? "Remova um jogo para trocar" : "Nome do jogo"}
-          disabled={anchorIds.length >= 3}
+          maxLength={100}
+          placeholder={full ? "Remova um jogo para trocar" : "Digite o nome do jogo"}
+          disabled={full || Boolean(adding)}
           onChange={(event) => setQuery(event.target.value)}
         />
       </label>
-
-      {query.trim() && results.length === 0 && (
-        <p className="empty">Nenhum jogo com esse nome na base de demonstração.</p>
+      {searching && (
+        <p className="hint" role="status">
+          Buscando jogos…
+        </p>
       )}
-
-      <ul className="search-results">
-        {results.map((game) => (
-          <li key={game.id}>
-            <div>
-              <strong>{game.title}</strong>
-              <p>
-                {game.developer} · {game.genres.join(", ")}
-              </p>
-            </div>
-            <button type="button" className="btn small" onClick={() => add(game.id)}>
-              Usar
-            </button>
-          </li>
-        ))}
-      </ul>
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+      {!searching && !error && term.length >= 2 && !full && !results.length && (
+        <p className="empty">Nenhum jogo encontrado para esse nome.</p>
+      )}
+      {!full && (
+        <ul className="search-results">
+          {results
+            .filter((game) => !anchorIds.includes(game.id))
+            .map((game) => (
+              <li key={game.id}>
+                <div>
+                  <strong>{game.title}</strong>
+                </div>
+                <button
+                  type="button"
+                  className="btn small"
+                  disabled={Boolean(adding)}
+                  onClick={() => void add(game)}
+                >
+                  {adding === game.id ? "Carregando…" : "Usar"}
+                </button>
+              </li>
+            ))}
+        </ul>
+      )}
     </div>
   )
 }
