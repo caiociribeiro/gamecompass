@@ -26,6 +26,7 @@ export function SearchSelect({
   const [open, setOpen] = useState(false)
   const box = useRef<HTMLDivElement>(null)
   const listId = useId()
+  const inputId = useId()
   const selected = options.find((option) => option.id === value) ?? null
   const filtered = options.filter((option) => fold(option.label).includes(fold(query))).slice(0, 8)
 
@@ -39,7 +40,9 @@ export function SearchSelect({
 
   return (
     <div className="search-select" ref={box}>
-      <span className="field-label">{label}</span>
+      <label className="field-label" htmlFor={inputId}>
+        {label}
+      </label>
       {selected ? (
         <div className="picked">
           <div>
@@ -53,6 +56,9 @@ export function SearchSelect({
       ) : (
         <>
           <input
+            id={inputId}
+            role="combobox"
+            aria-autocomplete="list"
             value={query}
             placeholder={placeholder}
             aria-expanded={open}
@@ -79,6 +85,8 @@ export function SearchSelect({
                 <li key={option.id}>
                   <button
                     type="button"
+                    role="option"
+                    aria-selected={false}
                     onClick={() => {
                       onChange(option.id)
                       setQuery("")

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { PageHeader } from "../components/PageHeader"
 
 export function About() {
@@ -6,32 +5,32 @@ export function About() {
     <div className="page narrow">
       <PageHeader
         eyebrow="Sobre"
-        title="O que este protótipo faz"
-        lede="É a interface do GameCompass antes da API. O cálculo acontece no navegador para o fluxo poder ser demonstrado."
+        title="GameCompass conectado"
+        lede="Jogos consultados na Steam e CPUs e GPUs lidas do catálogo no Neo4j."
       />
       <div className="prose">
+        <h2>Dados dos jogos</h2>
         <p>
-          Você cria uma conta, marca gêneros e temáticas, escolhe três jogos âncora e informa o computador. A lista
-          resultante ordena por afinidade e esconde o que não roda na máquina.
-        </p>
-        <h2>Afinidade</h2>
-        <p>
-          A nota de 0 a 100 mistura o quanto o jogo compartilha gêneros e temáticas com o seu perfil e com os três
-          jogos âncora. Estúdio em comum soma um pouco. Os âncoras não voltam na lista. Abaixo de 20, o título nem
-          entra na disputa.
+          Pesquise seus jogos pelo nome e escolha suas âncoras. Títulos, capas, gêneros e requisitos vêm da
+          Steam. A interface começa sem catálogo de jogos. As sugestões são consultadas quando você solicitar.
         </p>
         <h2>Hardware</h2>
         <p>
-          Cada peça da base tem uma pontuação ilustrativa. O jogo entra se o processador, a placa, a memória e o
-          sistema alcançam o mínimo daquele título. Não há chute: ou atende, ou fica na seção “fora do seu computador”.
+          CPUs e GPUs usam o índice manual versionado do projeto. Uma peça conhecida sem nota ou um requisito
+          não identificado permanece pendente. RAM e sistema operacional são opções locais; não recebem nós
+          próprios no catálogo.
         </p>
-        <h2>O que ainda não existe</h2>
+        <h2>Afinidade e validação</h2>
         <p>
-          Não há FastAPI, Neo4j nem base real da Steam nesta tela. As pontuações não são benchmarks publicados. Quando
-          o backend existir, estas páginas passam a chamar a API no lugar das funções locais.
+          As preferências usam gêneros e temáticas. A associação temática dos jogos será preenchida em uma
+          etapa posterior; por enquanto a afinidade usa os gêneros e as âncoras. Requisitos incompletos e
+          versão do sistema operacional ficam visíveis como pendências. A classificação manual é uma
+          aproximação do TCC1.
         </p>
+        <h2>Conta e perfil</h2>
         <p>
-          <Link to="/app">Voltar ao painel</Link>
+          A conta de teste, o perfil e a configuração do computador continuam salvos neste navegador. A
+          autenticação de produção será integrada posteriormente.
         </p>
       </div>
     </div>

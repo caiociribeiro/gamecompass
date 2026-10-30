@@ -1,7 +1,7 @@
 import { anchorsOf } from "./recommend"
-import type { ProfileStep, UserProfile } from "../types"
+import type { Game, HardwareCatalog, ProfileStep, UserProfile } from "../types"
 
-export function profileSteps(user: UserProfile): ProfileStep[] {
+export function profileSteps(user: UserProfile, games: Game[], hardware: HardwareCatalog): ProfileStep[] {
   return [
     {
       id: "prefs",
@@ -13,15 +13,18 @@ export function profileSteps(user: UserProfile): ProfileStep[] {
     {
       id: "anchors",
       label: "Três jogos âncora",
-      hint: "Três títulos que você já jogou e jogaria de novo.",
-      done: anchorsOf(user).length === 3,
+      hint: "Escolha três títulos reais da Steam.",
+      done: anchorsOf(user, games).length === 3,
       to: "/app/ancoras",
     },
     {
       id: "hardware",
       label: "Computador",
-      hint: "Processador, placa de vídeo, memória e sistema.",
-      done: user.hardware !== null,
+      hint: "CPU, GPU, memória RAM e sistema operacional.",
+      done:
+        user.hardware !== null &&
+        hardware.CPU.some((part) => part.id === user.hardware?.cpuId) &&
+        hardware.GPU.some((part) => part.id === user.hardware?.gpuId),
       to: "/app/hardware",
     },
   ]

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { useSession } from "../context/SessionContext"
+import { useCatalog } from "../context/CatalogContext"
 import { profileSteps } from "../lib/profile"
 import { Logo } from "./Logo"
 
@@ -16,9 +17,10 @@ const LINKS = [
 
 export function AppShell() {
   const { user, logout } = useSession()
+  const { games, hardware } = useCatalog()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
-  const steps = user ? profileSteps(user) : []
+  const steps = user ? profileSteps(user, games, hardware) : []
 
   function closeAnd(action?: () => void) {
     setOpen(false)
@@ -48,7 +50,7 @@ export function AppShell() {
           })}
         </nav>
         <div className="rail-foot">
-          <p className="muted tiny">Protótipo local. Nada é enviado a um servidor.</p>
+          <p className="muted tiny">Catálogo conectado. Conta e perfil salvos neste navegador.</p>
           <div className="who">
             <strong>{user?.name}</strong>
             <span>{user?.email}</span>

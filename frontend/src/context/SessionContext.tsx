@@ -1,5 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react"
 import { DEMO_USER } from "../data/demo"
+import { GENRES, THEMES } from "../data/preferences"
+import { migrateProfile } from "../lib/migrateProfile"
 import type { UserProfile } from "../types"
 
 const USERS_KEY = "gamecompass.users.v1"
@@ -32,12 +34,15 @@ function loadUsers() {
   try {
     const raw = localStorage.getItem(USERS_KEY)
     const parsed: unknown = raw ? JSON.parse(raw) : []
-    const users = Array.isArray(parsed) ? parsed.filter(isUser) : []
+    const users = Array.isArray(parsed)
+      ? parsed.filter(isUser).map((user) => migrateProfile(user, GENRES, THEMES))
+      : []
     if (!users.some((user) => user.email === DEMO_USER.email)) {
       const next = [DEMO_USER, ...users]
       localStorage.setItem(USERS_KEY, JSON.stringify(next))
       return next
     }
+    localStorage.setItem(USERS_KEY, JSON.stringify(users))
     return users
   } catch {
     localStorage.setItem(USERS_KEY, JSON.stringify([DEMO_USER]))
@@ -91,6 +96,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           themes: [],
           anchorIds: [],
           hardware: null,
+          catalogVersion: "steam-v2",
         }
         persist([...users, created])
         setSession(created.id)
@@ -101,7 +107,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       },
       updateUser(patch) {
         if (!user) return
-        persist(users.map((item) => (item.id === user.id ? { ...item, ...patch, id: item.id, email: item.email } : item)))
+        setUsers((current) => {
+          const next = current.map((item) =>
+            item.id === user.id ? { ...item, ...patch, id: item.id, email: item.email } : item,
+          )
+          localStorage.setItem(USERS_KEY, JSON.stringify(next))
+          return next
+        })
       },
       changePassword(current, next) {
         if (!user) return "Sessão expirada."

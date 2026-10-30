@@ -1,9 +1,9 @@
 # GameCompass — ambiente de desenvolvimento
 
-API FastAPI, Neo4j Community 5.23.0 e um ambiente Python separado para
-construir a pipeline de dados. Os scripts normalizam catálogos CSV de
-benchmarks e carregam CPUs e GPUs no grafo. A coleta automática e a
-extração de requisitos da Steam serão implementadas nas próximas etapas.
+Frontend React, API FastAPI, Neo4j Community 5.23.0 e pipeline Python.
+A interface consulta jogos na loja Steam e lê CPUs e GPUs do catálogo
+manual carregado no Neo4j. As etapas de coleta e limpeza também podem
+ser executadas pelos scripts de dados.
 
 ## Pré-requisitos
 
@@ -133,7 +133,7 @@ em `data/raw/` e `data/processed/` continuam ignorados conforme a regra
 atual do projeto. Os formatos e a política de versionamento dos dados
 serão definidos na próxima etapa.
 
-## Pipeline de hardware e próximas etapas
+## Pipeline de hardware e formato legado
 
 O contrato do catálogo e suas regras de validação estão em
 [data/README.md](data/README.md). Para inspecioná-lo sem conectar ao banco:
@@ -163,8 +163,9 @@ Próximas etapas:
    aos benchmarks, encaminhando correspondências ambíguas para revisão.
 3. Carregar os jogos validados no contrato de grafo da API.
 
-Para CPUs, o campo `passmark_score` representará CPU Mark; para GPUs,
-G3D Mark. As métricas têm escalas diferentes e serão comparadas dentro
+No formato legado, `passmark_score` representa CPU Mark para CPUs e
+G3D Mark para GPUs. O catálogo atual usa `performance_score` e `score_version`,
+conforme [o contrato manual](data/catalog/README.md). As métricas têm escalas diferentes e serão comparadas dentro
 do mesmo tipo de componente e de um mesmo conjunto de dados. Nomes de
 variantes, como Ti, SUPER, XT, versões de notebook e capacidades de VRAM,
 devem ser preservados na identificação dos modelos.
@@ -182,16 +183,116 @@ docker compose down
 
 `docker compose down` encerra os serviços preservando os volumes nomeados.
 
-## Interface de demonstração
+## Interface conectada: Steam e hardware
 
-O frontend em `frontend/` é um protótipo sem API. Conta, perfil e recomendações ficam no navegador.
+Use Node.js 22.18+ ou Node.js 24. Docker Desktop precisa estar iniciado no Windows.
+Na raiz do projeto, valide e carregue o catálogo manual que está disponível
+no seu checkout. Este passo funciona com a base anterior e com sua ampliação:
 
-É preciso Node.js 20 ou superior.
+```text
+docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
+docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv
+docker compose up -d --build api
+```
 
-```bash
+Em outro terminal, a partir da raiz:
+
+```text
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-A interface abre em http://localhost:5173. A conta de demonstração é `demo@gamecompass.dev`, senha `demo123`.
+Abra http://localhost:5173. O Vite encaminha `/api` para a API na porta
+`API_PORT` do `.env` da raiz, usando 8000 por padrão. Também existe proxy
+em `npm run preview`. Uma configuração de produção precisará encaminhar
+esse prefixo para o backend. O Swagger permanece em http://localhost:8000/docs.
+
+A conta local de teste continua sendo `demo@gamecompass.dev`, senha
+`demo123`. Escolha novamente as preferências, as âncoras e o computador:
+a primeira abertura migra o perfil antigo, que usava IDs fictícios,
+preservando a conta. O cadastro, a senha e o perfil ainda ficam neste navegador.
+
+### O que vem de cada fonte
+
+| Informação | Fonte |
+| --- | --- |
+| CPU e GPU, nomes, notas e versão do índice | Neo4j, somente registros `manual_v1` |
+| Aliases para identificar os requisitos | `data/catalog/hardware_aliases.json`, validado contra o CSV versionado |
+| Título, capa, preço, gêneros, recursos e requisitos | Endpoint público `appdetails` da loja Steam, região BR, idioma português |
+| Seleção inicial de jogos | Vinte AppIDs em `data/catalog/steam_appids.json`; o arquivo não contém dados fictícios de jogos |
+| RAM e família de sistema operacional | Opções locais em `frontend/src/data/hardware.ts` |
+
+RAM e sistema operacional são valores do perfil e não ganham nós próprios
+no Neo4j. Os requisitos de RAM dos jogos continuam numéricos. A comparação
+usa as notas lidas do banco; não usa as antigas pontuações da interface.
+CPU e GPU têm escalas independentes. Peças sem nota permanecem selecionáveis
+com indicação de classificação pendente.
+
+### Rotas de leitura
+
+| Rota | Resposta |
+| --- | --- |
+| `GET /api/hardware` | CPUs e GPUs carregadas, incluindo notas nulas |
+| `GET /api/games` | Seleção consultada na Steam, com falhas parciais identificadas |
+| `GET /api/games/{appid}` | Um jogo por AppID, com requisitos por plataforma e nível |
+| `GET /api/games?extra_appids=123,456` | Até três jogos adicionais para restaurar âncoras salvas |
+
+No PowerShell, para verificar a comunicação:
+
+```powershell
+Invoke-RestMethod http://localhost:8000/api/hardware
+Invoke-RestMethod http://localhost:8000/api/games/1091500
+```
+
+A API monta `scripts/` e `data/` como leitura para reutilizar o parser e o
+matching existentes. Os endpoints não criam nem alteram nós. Esta etapa
+consulta os jogos diretamente da Steam; a carga de jogos no grafo continua
+como etapa da pipeline.
+
+### Fluxo para testar
+
+1. Entre na conta local e confira o catálogo no painel.
+2. Abra um jogo e veja mínimos e recomendados de Windows, Linux e macOS.
+3. Em Hardware, procure as peças carregadas no seu Neo4j e salve RAM e SO.
+4. Escolha gêneros e recursos e três jogos âncora.
+5. Consulte a afinidade e as verificações técnicas na lista e no detalhe.
+6. Para outro título, abra Jogos âncora e informe seu Steam AppID.
+
+Os recursos usados nesta etapa vêm de `categories` da Steam, como cooperação
+ou um jogador. As tags da comunidade ficam para uma integração posterior.
+A ordenação por afinidade permanece no navegador. Não são inventadas
+pontuações para preencher requisitos desconhecidos.
+
+A interface distingue restrições confirmadas de validações pendentes.
+Escolher a família Windows, Linux ou macOS não confirma a versão exigida;
+por isso a checagem completa de SO permanece pendente. VRAM, DirectX,
+instruções e SSD também precisam de verificações específicas. Os textos
+originais limpos ficam acessíveis para conferência; não há garantia de FPS.
+
+A API mantém até 128 respostas em memória por seis horas, com três chamadas
+simultâneas e intervalo mínimo entre inícios. Reiniciar a API limpa esse
+cache. Ao atualizar o catálogo e recarregar o Neo4j, use Atualizar catálogo
+na interface: os requisitos são processados novamente contra as notas
+atuais, mesmo quando a resposta Steam vem do cache. As respostas incluem
+origem, data e hashes para rastrear o que foi consultado.
+
+Falhas da Steam são mostradas na interface. Um AppID indisponível não é
+substituído por um jogo fictício. Banco vazio não gera peças de demonstração.
+
+### Testes desta integração
+
+```text
+docker compose run --rm --no-deps api python -m unittest discover -s tests -v
+```
+
+Os testes HTTP usam fixtures identificadas e não exigem uma chamada externa
+à Steam ou conexão real com Neo4j. Na pasta `frontend/`:
+
+```text
+npm test
+npm run build
+```
+
+Os testes verificam notas nulas, versões do índice, plataformas, RAM,
+cache, falhas de serviços e distinção entre pendência e restrição.

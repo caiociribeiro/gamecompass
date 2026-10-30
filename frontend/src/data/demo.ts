@@ -8,13 +8,9 @@ export const DEMO_USER: UserProfile = {
   name: "Demo",
   email: DEMO_EMAIL,
   password: DEMO_PASSWORD,
-  genres: ["RPG", "Aventura", "Indie"],
-  themes: ["Exploração", "Narrativa", "Fantasia"],
-  anchorIds: ["hades", "hollow-knight", "the-witcher-3"],
-  hardware: {
-    cpuId: "r5-5600",
-    gpuId: "rtx-3060",
-    ramGb: 16,
-    os: "Windows",
-  },
+  genres: [],
+  themes: [],
+  anchorIds: [],
+  hardware: null,
+  catalogVersion: "steam-v2",
 }
