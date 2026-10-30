@@ -1,4 +1,22 @@
-# Catálogo de equivalência de hardware — contrato inicial
+# Dados do GameCompass
+
+O catálogo atual de hardware usa o índice manual `manual_v1`.
+Sua fonte versionada fica em `data/catalog/hardware_manual_v1.csv`,
+acompanhada por `data/catalog/hardware_aliases.json`.
+
+Consulte [Base de hardware](catalog/README.md) para entender o armazenamento,
+os modelos cadastrados, as pontuações pendentes e os comandos atuais.
+O Neo4j continua como banco da aplicação; os arquivos desta pasta permitem
+reproduzir sua população em outro computador.
+
+`data/raw/` e `data/processed/` continuam locais e ignorados pelo Git.
+O catálogo revisado de `data/catalog/` é versionado junto com o projeto.
+
+## Histórico: formato PassMark
+
+As seções abaixo documentam o formato anterior, mantido nos scripts durante
+a migração. A base nova usa `--format manual` e `performance_score`.
+O histórico não autoriza coletar ou republicar benchmarks de terceiros.
 
 O catálogo associa o modelo exato de uma peça à sua pontuação de benchmark.
 Os scripts validam o CSV e carregam seus registros no Neo4j. A coleta

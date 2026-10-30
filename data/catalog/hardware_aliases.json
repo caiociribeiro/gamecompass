@@ -1,0 +1,807 @@
+[
+  {
+    "component_type": "CPU",
+    "alias": "AMD FX 8350",
+    "canonical_name": "AMD FX-8350"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD r5 3600",
+    "canonical_name": "AMD Ryzen 5 3600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD Ryzen 5 1400 (3.2Ghz)",
+    "canonical_name": "AMD Ryzen 5 1400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD Ryzen 5 3600 (3.6 Ghz)",
+    "canonical_name": "AMD Ryzen 5 3600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-2500K",
+    "canonical_name": "Intel Core i5-2500K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-4690",
+    "canonical_name": "Intel Core i5-4690"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-6600",
+    "canonical_name": "Intel Core i5-6600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-8400",
+    "canonical_name": "Intel Core i5-8400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i7-12700",
+    "canonical_name": "Intel Core i7-12700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i7-4770K",
+    "canonical_name": "Intel Core i7-4770K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i7-6700",
+    "canonical_name": "Intel Core i7-6700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i7-8700",
+    "canonical_name": "Intel Core i7-8700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i7-8700K",
+    "canonical_name": "Intel Core i7-8700K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "FX-6300",
+    "canonical_name": "AMD FX-6300"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "FX-8350",
+    "canonical_name": "AMD FX-8350"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-2500K",
+    "canonical_name": "Intel Core i5-2500K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-4690",
+    "canonical_name": "Intel Core i5-4690"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-6600",
+    "canonical_name": "Intel Core i5-6600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-8400",
+    "canonical_name": "Intel Core i5-8400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i7-12700",
+    "canonical_name": "Intel Core i7-12700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i7-4770K",
+    "canonical_name": "Intel Core i7-4770K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i7-6700",
+    "canonical_name": "Intel Core i7-6700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i7-8700",
+    "canonical_name": "Intel Core i7-8700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i7-8700K",
+    "canonical_name": "Intel Core i7-8700K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i5-6600 (3.3Ghz)",
+    "canonical_name": "Intel Core i5-6600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i5-8400 @ 2.80GHz",
+    "canonical_name": "Intel Core i5-8400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i7-8700 (3.2Ghz)",
+    "canonical_name": "Intel Core i7-8700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel I5 4690",
+    "canonical_name": "Intel Core i5-4690"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i7 8700K",
+    "canonical_name": "Intel Core i7-8700K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel® Core™ i5-2500K",
+    "canonical_name": "Intel Core i5-2500K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel® Core™ i7-4770K",
+    "canonical_name": "Intel Core i7-4770K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 3 3300X",
+    "canonical_name": "AMD Ryzen 3 3300X"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 1400",
+    "canonical_name": "AMD Ryzen 5 1400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 1500X",
+    "canonical_name": "AMD Ryzen 5 1500X"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 1600",
+    "canonical_name": "AMD Ryzen 5 1600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 3600",
+    "canonical_name": "AMD Ryzen 5 3600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 3600X",
+    "canonical_name": "AMD Ryzen 5 3600X"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 9600X",
+    "canonical_name": "AMD Ryzen 5 9600X"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 7 7800X3D",
+    "canonical_name": "AMD Ryzen 7 7800X3D"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 7 9700X",
+    "canonical_name": "AMD Ryzen 7 9700X"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R9 280",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R9 280 3 GB",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 470 4 GB",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 480 4 GB",
+    "canonical_name": "AMD Radeon RX 480 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 580 4 GB",
+    "canonical_name": "AMD Radeon RX 580 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 580 8 GB",
+    "canonical_name": "AMD Radeon RX 580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 9070",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 9070 16 GB",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX Vega 56",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX Vega 56 8 GB",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A380",
+    "canonical_name": "Intel Arc A380 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A380 6 GB",
+    "canonical_name": "Intel Arc A380 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A380 6GB",
+    "canonical_name": "Intel Arc A380 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A580",
+    "canonical_name": "Intel Arc A580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A580 8 GB",
+    "canonical_name": "Intel Arc A580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A580 8GB",
+    "canonical_name": "Intel Arc A580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A770 16 GB",
+    "canonical_name": "Intel Arc A770 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A770 16GB",
+    "canonical_name": "Intel Arc A770 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A770 8 GB",
+    "canonical_name": "Intel Arc A770 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Arc A770 8GB",
+    "canonical_name": "Intel Arc A770 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1060 3 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1060 3GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1060 6 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1060 6GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1070",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1070 8 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1070 8GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1080 Ti",
+    "canonical_name": "NVIDIA GeForce GTX 1080 Ti"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 770 2 GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 770 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 960 4 GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 960 4GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 970",
+    "canonical_name": "NVIDIA GeForce GTX 970"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce RTX 2060 SUPER",
+    "canonical_name": "NVIDIA GeForce RTX 2060 SUPER"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce RTX 5070",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce RTX 5070 12 GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce RTX 5070 12GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1060 3 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1060 3GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1060 6 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1060 6GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1070",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1070 8 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1070 8GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1080 Ti",
+    "canonical_name": "NVIDIA GeForce GTX 1080 Ti"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 770 2 GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 770 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 960 4 GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 960 4GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 970",
+    "canonical_name": "NVIDIA GeForce GTX 970"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A380",
+    "canonical_name": "Intel Arc A380 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A380 6 GB",
+    "canonical_name": "Intel Arc A380 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A580",
+    "canonical_name": "Intel Arc A580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A580 8 GB",
+    "canonical_name": "Intel Arc A580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A770 16 GB",
+    "canonical_name": "Intel Arc A770 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A770 8 GB",
+    "canonical_name": "Intel Arc A770 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Nvidia 2060 Super",
+    "canonical_name": "NVIDIA GeForce RTX 2060 SUPER"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce 1080 Ti",
+    "canonical_name": "NVIDIA GeForce GTX 1080 Ti"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 1060 3 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 1060 6 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 1070",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 1070 8 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 770 2 GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 960 4 GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce RTX 5070",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce RTX 5070 12 GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1060 3 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1060 3GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1060 6 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1060 6GB",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1070 8 GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1070 8GB",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1080 Ti",
+    "canonical_name": "NVIDIA GeForce GTX 1080 Ti"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 770 2 GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 770 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 960 4 GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 960 4GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 970",
+    "canonical_name": "NVIDIA GeForce GTX 970"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA RTX 2060 SUPER",
+    "canonical_name": "NVIDIA GeForce RTX 2060 SUPER"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA RTX 5070 12 GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA RTX 5070 12GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R9 280",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R9 280 3 GB",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R9 280 3GB",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R9 280",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R9 280 3 GB",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R9 280 3GB",
+    "canonical_name": "AMD Radeon R9 280 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 470 4 GB",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 470 4GB",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 480 4 GB",
+    "canonical_name": "AMD Radeon RX 480 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 480 4GB",
+    "canonical_name": "AMD Radeon RX 480 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 5700 XT",
+    "canonical_name": "AMD Radeon RX 5700 XT"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 580 4 GB",
+    "canonical_name": "AMD Radeon RX 580 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 580 4GB",
+    "canonical_name": "AMD Radeon RX 580 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 580 8 GB",
+    "canonical_name": "AMD Radeon RX 580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 580 8GB",
+    "canonical_name": "AMD Radeon RX 580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 9070",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 9070 16 GB",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 9070 16GB",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX Vega 56",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX Vega 56 8 GB",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX Vega 56 8GB",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RTX 2060 SUPER",
+    "canonical_name": "NVIDIA GeForce RTX 2060 SUPER"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RTX 5070",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RTX 5070 12 GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RTX 5070 12GB",
+    "canonical_name": "NVIDIA GeForce RTX 5070 12GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 470 4 GB",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 470 4GB",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 480 4 GB",
+    "canonical_name": "AMD Radeon RX 480 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 480 4GB",
+    "canonical_name": "AMD Radeon RX 480 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 5700 XT",
+    "canonical_name": "AMD Radeon RX 5700 XT"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 580 4 GB",
+    "canonical_name": "AMD Radeon RX 580 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 580 4GB",
+    "canonical_name": "AMD Radeon RX 580 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 580 8 GB",
+    "canonical_name": "AMD Radeon RX 580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 580 8GB",
+    "canonical_name": "AMD Radeon RX 580 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 9070",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 9070 16 GB",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 9070 16GB",
+    "canonical_name": "AMD Radeon RX 9070 16GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX Vega 56",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX Vega 56 8 GB",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX Vega 56 8GB",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  }
+]
