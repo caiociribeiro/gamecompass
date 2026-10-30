@@ -34,9 +34,15 @@ Notebooks, GPUs integradas, Apple Silicon e outras CPUs ARM exigirão
 cadastros e critérios próprios. Os requisitos coletados dessas plataformas
 continuam preservados nos snapshots da Steam.
 
-Há 4 GPUs classificadas: GTX 1060 6GB e RX 580 8GB na classe 100;
-GTX 1060 3GB e RX 570 4GB na classe 50. As outras 38 peças têm
-`performance_score` vazio e continuam pendentes.
+Há 6 GPUs classificadas:
+
+| Classe | Modelos |
+| ---: | --- |
+| 50 | GTX 1060 3GB e RX 570 4GB |
+| 100 | GTX 1060 6GB e RX 580 8GB |
+| 200 | GTX 1070 8GB e RX Vega 56 8GB |
+
+As outras 36 peças têm `performance_score` vazio e continuam pendentes.
 Consulte [Critério do índice manual](SCORING.md) para a justificativa,
 o recorte da avaliação e os limites da aproximação.
 
@@ -137,7 +143,7 @@ Primeiro valide e conte o lote sem conectar ao banco:
 docker compose run --rm --no-deps data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv --dry-run
 ```
 
-O catálogo atual terá `classified: 4` e `pending: 38`. Para cadastrar as peças:
+O catálogo atual terá `classified: 6` e `pending: 36`. Para cadastrar as peças:
 
 ```text
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv

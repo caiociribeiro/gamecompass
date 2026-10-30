@@ -6,9 +6,10 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 4 GPUs estão classificadas e 38 peças continuam pendentes:
-20 CPUs e 18 GPUs. Há dois grupos: classe 100, com GTX 1060 6GB e RX 580 8GB;
-classe 50, com GTX 1060 3GB e RX 570 4GB. O cadastro tem 42 peças.
+Nesta etapa, 6 GPUs estão classificadas e 36 peças continuam pendentes:
+20 CPUs e 16 GPUs. Há três grupos: classe 50, com GTX 1060 3GB e RX 570 4GB;
+classe 100, com GTX 1060 6GB e RX 580 8GB; classe 200, com GTX 1070 8GB e
+RX Vega 56 8GB. O cadastro tem 42 peças.
 
 ## Significado da pontuação
 
@@ -99,6 +100,41 @@ A RX 570 4GB foi adicionada ao catálogo com cinco aliases que preservam a
 capacidade de memória. Uma consulta genérica por RX 570 não escolhe a
 variante de 4GB, pois outras capacidades exigem avaliação independente.
 
+## Terceiro grupo: classe GPU 200
+
+| Modelo canônico | performance_score | score_version |
+| --- | ---: | --- |
+| NVIDIA GeForce GTX 1070 8GB | 200 | manual_v1 |
+| AMD Radeon RX Vega 56 8GB | 200 | manual_v1 |
+
+Referência principal: [avaliação de 25 jogos do TechSpot](https://www.techspot.com/review/1468-amd-radeon-rx-vega-56/page8.html),
+de Steven Walton, em 14/08/2017. O autor descreve desempenho próximo em
+1080p e informa vantagem média de 2,5% da Vega 56 em 1440p. O recorte
+numérico desta classe é 2560 x 1440, dentro do limite experimental de 10%.
+O percentual de 2,5% não foi tratado como um resultado de 1080p.
+A uniformização quantitativa em 1080p continua aberta para esta classe.
+
+As [condições do teste](https://www.techspot.com/review/1468-amd-radeon-rx-vega-56/)
+incluem Core i7-7700K a 4,9 GHz, 32 GB DDR4-3200, GTX 1070 MSI Gaming X
+e Vega 56 de referência. Qualidade varia por jogo. A avaliação é histórica,
+com drivers de 2017 e diferenças de placa parceira não modeladas no CSV.
+
+Para a ordenação preliminar acima da classe 100, a referência adicional
+é a [comparação direta de GTX 1070 e RX 580 8GB em 15 jogos](https://www.techspot.com/review/2285-geforce-gtx-1070-revisit/),
+de Steven Walton, em 14/07/2021: a GTX 1070 ficou cerca de 27% à frente
+no agregado publicado para cada resolução, 1080p e 1440p. Esse estudo usou
+Ryzen 9 5950X e 32 GB DDR4-3200, com diferentes presets por jogo.
+
+O projeto usa essa comparação como apoio à ordem entre grupos. Não
+normaliza os dois estudos nem calcula uma vantagem percentual da Vega 56
+sobre a RX 580 por transitividade. A uniformização entre as amostras ainda
+precisa ser validada. A classe 200 é uma aproximação preliminar e não
+representa o dobro do desempenho da classe 100.
+
+GTX 1070 Ti, modelos de notebook e outras GPUs Vega não recebem esta nota
+por semelhança do nome. Os modelos deste grupo já estavam cadastrados;
+não foram adicionados novos aliases ou novas peças nesta etapa.
+
 ## Outros grupos e limites
 
 As demais GPUs aguardam avaliações próprias. A RTX 5070 e a RX 9070
@@ -120,7 +156,7 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 4` e `pending: 38`.
+Após esta etapa, a carga informa `classified: 6` e `pending: 36`.
 Requisitos que citam alternativas ainda sem nota continuam com
 `required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
 segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência
