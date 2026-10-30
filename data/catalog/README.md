@@ -10,6 +10,7 @@ carregam CPUs e GPUs no grafo. O catálogo não fica embutido nos scripts.
 | --- | --- | --- |
 | `hardware_manual_v1.csv` | Cadastro de modelos, pontuações e referências | Versionado |
 | `hardware_aliases.json` | Nomes alternativos da mesma peça | Versionado |
+| `SCORING.md` | Critério de classificação e avaliações registradas | Versionado |
 | `data/raw/` | Respostas originais e coletas locais | Ignorado, exceto `.gitkeep` |
 | `data/processed/` | CSV validado, requisitos e relatórios gerados | Ignorado, exceto `.gitkeep` |
 | Neo4j | Cópia do catálogo utilizada pela aplicação | Persistido no volume Docker |
@@ -18,7 +19,7 @@ Assim, outro computador recebe o catálogo pelo Git e pode reconstruir a
 carga. O `.env`, as coletas locais e o volume do Neo4j pertencem a cada
 ambiente. Edite o CSV desta pasta e gere novamente a saída processada.
 
-## Conteúdo inicial
+## Conteúdo do catálogo
 
 São 20 CPUs Intel/AMD e 21 GPUs NVIDIA/AMD/Intel, todas de desktop.
 Os modelos foram selecionados a partir dos requisitos Windows de
@@ -32,11 +33,15 @@ Notebooks, GPUs integradas, Apple Silicon e outras CPUs ARM exigirão
 cadastros e critérios próprios. Os requisitos coletados dessas plataformas
 continuam preservados nos snapshots da Steam.
 
-As 41 peças começam com `performance_score` vazio. O catálogo reconhece
-suas identidades, mas a classificação de desempenho está pendente.
-Nesta etapa, `source_url` comprova a identidade ou a menção nos requisitos;
-não representa uma avaliação de desempenho. Nenhum score PassMark foi
-copiado ou convertido em índice próprio.
+Há 2 GPUs classificadas: GTX 1060 6GB e RX 580 8GB, ambas na classe 100.
+As outras 39 peças têm `performance_score` vazio e continuam pendentes.
+Consulte [Critério do índice manual](SCORING.md) para a justificativa,
+o recorte da avaliação e os limites da aproximação.
+
+Para peças pendentes, `source_url` comprova a identidade ou a menção nos
+requisitos. Nas duas peças classificadas, aponta para a comparação que
+fundamenta a classe. Nenhum score PassMark foi copiado ou convertido
+em índice próprio.
 
 ## Contrato do CSV
 
@@ -113,8 +118,9 @@ O resultado inicial informa `CPU: 20`, `GPU: 21`, formato manual e versão
 docker compose run --rm --no-deps data python scripts/hardware_matcher.py --format manual --catalog data/processed/hardware_manual_v1.csv --aliases data/catalog/hardware_aliases.json --type GPU --name "GeForce GTX 1060 6GB"
 ```
 
-A identidade é encontrada, com `status: matched`, `score_status: pending`
-e `performance_score: null`. Cadastros pendentes também são reconhecidos.
+A identidade é encontrada, com `status: matched`, `score_status: classified`
+e `performance_score: 100`. Modelos como a GTX 1060 3GB continuam sendo
+reconhecidos com `score_status: pending` e `performance_score: null`.
 
 Para processar um bloco de requisitos, use `process_requirements.py` com
 `--format manual`, `--catalog data/processed/hardware_manual_v1.csv` e
@@ -129,7 +135,7 @@ Primeiro valide e conte o lote sem conectar ao banco:
 docker compose run --rm --no-deps data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv --dry-run
 ```
 
-O primeiro lote terá `classified: 0` e `pending: 41`. Para cadastrar as peças:
+O catálogo atual terá `classified: 2` e `pending: 39`. Para cadastrar as peças:
 
 ```text
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv
