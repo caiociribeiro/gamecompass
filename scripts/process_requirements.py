@@ -2,6 +2,7 @@
 
 Recebe um bloco de requisitos mínimos OU recomendados via --text ou --input.
 Imprime JSON e permite salvá-lo com --output, preservando as entradas.
+Use --format manual para processar o novo índice e registrar sua versão.
 """
 
 import argparse
@@ -13,13 +14,17 @@ from pathlib import Path
 import sys
 import tempfile
 
-from hardware_catalog import ROOT, read_catalog
+from hardware_catalog import MANUAL_SCORE_VERSION, ROOT, read_catalog
 from hardware_matcher import match_alternatives, normalize_name, read_aliases
 from regex_parser import clean_html, extract_hardware_text, extract_ram_gb
 
 
-def process_requirements(html: str, catalog: dict, aliases: dict) -> dict:
+def process_requirements(
+    html: str, catalog: dict, aliases: dict, *, catalog_format: str = "passmark",
+) -> dict:
     """Processa cada campo e preserva resultados parciais para revisão."""
+    if catalog_format not in ("passmark", "manual"):
+        raise ValueError("catalog_format deve ser passmark ou manual.")
     issues = []
     requirements = {"ram_gb": None, "cpu_score": None, "gpu_score": None}
     hardware = {"CPU": None, "GPU": None}
@@ -38,22 +43,33 @@ def process_requirements(html: str, catalog: dict, aliases: dict) -> dict:
                 issues.append(f"{kind}: campo ausente.")
                 continue
 
-            result = match_alternatives(text, kind, catalog, aliases)
+            result = match_alternatives(
+                text, kind, catalog, aliases, catalog_format=catalog_format,
+            )
             hardware[kind] = result
             requirements[f"{kind.lower()}_score"] = result["required_score"]
 
             if result["status"] != "resolved":
-                issues.append(f"{kind}: há alternativas não identificadas.")
+                if any(item["status"] == "not_found" for item in result["alternatives"]):
+                    issues.append(f"{kind}: há alternativas não identificadas.")
+                if catalog_format == "manual" and any(
+                    item["score_status"] == "pending"
+                    for item in result["alternatives"]
+                ):
+                    issues.append(f"{kind}: há alternativas sem classificação de desempenho.")
         except ValueError as exc:
             issues.append(f"{kind}: {exc}")
 
-    return {
+    output = {
         "status": "resolved" if not issues else "needs_review",
         "requirements": requirements,
         "issues": issues,
         "hardware": hardware,
         "text": clean_html(html),
     }
+    if catalog_format == "manual":
+        output.update(catalog_format="manual", score_version=MANUAL_SCORE_VERSION)
+    return output
 
 
 def write_json_atomic(path: Path, result: dict) -> None:
@@ -73,6 +89,10 @@ def write_json_atomic(path: Path, result: dict) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--format", dest="catalog_format", choices=("passmark", "manual"),
+        default="passmark", help="Formato do catálogo; manual usa o novo índice.",
+    )
 
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument(
@@ -92,7 +112,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--catalog",
         type=Path,
-        default=ROOT / "data/processed/hardware_benchmarks.csv",
     )
     parser.add_argument(
         "--aliases",
@@ -102,9 +121,14 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
+        filename = (
+            "hardware_manual_v1.csv" if args.catalog_format == "manual"
+            else "hardware_benchmarks.csv"
+        )
+        catalog_path = args.catalog if args.catalog is not None else ROOT / "data/processed" / filename
         inputs = [
             path
-            for path in (args.input, args.catalog, args.aliases)
+            for path in (args.input, catalog_path, args.aliases)
             if path is not None
         ]
 
@@ -124,22 +148,24 @@ def main(argv: list[str] | None = None) -> int:
         )
         html = input_bytes.decode("utf-8-sig")
 
-        records = read_catalog(args.catalog)
+        records = read_catalog(catalog_path, catalog_format=args.catalog_format)
         catalog = {
             (row["component_type"], normalize_name(row["name"])): row
             for row in records
         }
         aliases = read_aliases(args.aliases, catalog)
 
-        result = process_requirements(html, catalog, aliases)
+        result = process_requirements(
+            html, catalog, aliases, catalog_format=args.catalog_format,
+        )
         result["source"] = {
             "input_path": (
                 str(args.input) if args.input is not None else None
             ),
             "input_sha256": hashlib.sha256(input_bytes).hexdigest(),
-            "catalog_path": str(args.catalog),
+            "catalog_path": str(catalog_path),
             "catalog_sha256": hashlib.sha256(
-                args.catalog.read_bytes()
+                catalog_path.read_bytes()
             ).hexdigest(),
             "aliases_path": (
                 str(args.aliases) if args.aliases is not None else None

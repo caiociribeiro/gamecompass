@@ -2,6 +2,7 @@
 
 Use --alternatives para separar modelos ligados por 'ou' ou 'or'.
 Cada alternativa mantém sua identificação e sua pontuação.
+Use --format manual para consultar performance_score no índice manual_v1.
 """
 
 import argparse
@@ -11,7 +12,7 @@ from pathlib import Path
 import sys
 import re
 
-from hardware_catalog import BENCHMARKS, ROOT, read_catalog
+from hardware_catalog import COMPONENT_TYPES, MANUAL_SCORE_VERSION, ROOT, read_catalog
 
 
 def normalize_name(name: str) -> str:
@@ -45,7 +46,7 @@ def read_aliases(path: Path | None, catalog: dict) -> dict:
             )
 
         kind = row["component_type"].strip().upper()
-        if kind not in BENCHMARKS:
+        if kind not in COMPONENT_TYPES:
             raise ValueError(
                 f"Alias {position}: component_type deve ser CPU ou GPU."
             )
@@ -73,11 +74,15 @@ def match_hardware(
     component_type: str,
     catalog: dict,
     aliases: dict,
+    *,
+    catalog_format: str = "passmark",
 ) -> dict:
     """Consulta um índice validado; um modelo desconhecido mantém score None."""
     kind = component_type.strip().upper()
 
-    if kind not in BENCHMARKS:
+    if catalog_format not in ("passmark", "manual"):
+        raise ValueError("catalog_format deve ser passmark ou manual.")
+    if kind not in COMPONENT_TYPES:
         raise ValueError("component_type deve ser CPU ou GPU.")
     if not name.strip():
         raise ValueError("Informe um nome de modelo.")
@@ -90,16 +95,30 @@ def match_hardware(
         record = catalog[aliases[key]]
         method = "alias"
 
-    return {
+    result = {
         "status": "matched" if record is not None else "not_found",
         "component_type": kind,
         "query": name,
         "name": record["name"] if record is not None else None,
-        "passmark_score": (
-            record["passmark_score"] if record is not None else None
-        ),
         "method": method,
     }
+    if catalog_format == "manual":
+        if record is not None and record.get("score_version") != MANUAL_SCORE_VERSION:
+            raise ValueError(f"O modelo deve usar score_version {MANUAL_SCORE_VERSION}.")
+        score = record["performance_score"] if record is not None else None
+        if score is not None and (type(score) is not int or score <= 0):
+            raise ValueError("performance_score deve ser inteiro positivo ou None.")
+        result.update(
+            performance_score=score,
+            score_version=record["score_version"] if record is not None else None,
+            score_status=(
+                "not_found" if record is None
+                else "pending" if score is None else "classified"
+            ),
+        )
+    else:
+        result["passmark_score"] = record["passmark_score"] if record is not None else None
+    return result
 
 def split_alternatives(text: str) -> list[str]:
     """Separa alternativas explícitas, preservando o texto de cada modelo."""
@@ -121,43 +140,52 @@ def match_alternatives(
     component_type: str,
     catalog: dict,
     aliases: dict,
+    *,
+    catalog_format: str = "passmark",
 ) -> dict:
-    """Resolve alternativas com OU e calcula seu limite escalar por benchmark."""
+    """Calcula o limite somente se todas as alternativas estiverem avaliadas."""
     kind = component_type.strip().upper()
 
     results = [
-        match_hardware(name, kind, catalog, aliases)
+        match_hardware(name, kind, catalog, aliases, catalog_format=catalog_format)
         for name in split_alternatives(text)
     ]
 
+    score_key = "performance_score" if catalog_format == "manual" else "passmark_score"
     resolved = all(
-        result["status"] == "matched"
+        result["status"] == "matched" and result[score_key] is not None
         for result in results
     )
 
     required_score = None
     if resolved:
         required_score = min(
-            result["passmark_score"]
+            result[score_key]
             for result in results
         )
 
-    return {
+    output = {
         "status": "resolved" if resolved else "needs_review",
         "component_type": kind,
         "query": text,
         "required_score": required_score,
         "alternatives": results,
     }
+    if catalog_format == "manual":
+        output["score_version"] = MANUAL_SCORE_VERSION
+    return output
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--format", dest="catalog_format", choices=("passmark", "manual"),
+        default="passmark", help="Formato do catálogo; manual usa o novo índice.",
+    )
 
     parser.add_argument(
         "--catalog",
         type=Path,
-        default=ROOT / "data/processed/hardware_benchmarks.csv",
     )
     parser.add_argument(
         "--aliases",
@@ -167,7 +195,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--type",
         dest="component_type",
-        choices=BENCHMARKS,
+        choices=COMPONENT_TYPES,
         required=True,
     )
     parser.add_argument("--name", required=True)
@@ -179,7 +207,12 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        records = read_catalog(args.catalog)
+        filename = (
+            "hardware_manual_v1.csv" if args.catalog_format == "manual"
+            else "hardware_benchmarks.csv"
+        )
+        catalog_path = args.catalog if args.catalog is not None else ROOT / "data/processed" / filename
+        records = read_catalog(catalog_path, catalog_format=args.catalog_format)
 
         catalog = {
             (row["component_type"], normalize_name(row["name"])): row
@@ -193,6 +226,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.component_type,
                 catalog,
                 aliases,
+                catalog_format=args.catalog_format,
             )
         else:
             result = match_hardware(
@@ -200,6 +234,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.component_type,
                 catalog,
                 aliases,
+                catalog_format=args.catalog_format,
             )
     except (OSError, ValueError, UnicodeError, csv.Error) as exc:
         print(f"Erro no matching: {exc}", file=sys.stderr)
