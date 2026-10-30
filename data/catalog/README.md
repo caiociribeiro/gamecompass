@@ -21,7 +21,7 @@ ambiente. Edite o CSV desta pasta e gere novamente a saída processada.
 
 ## Conteúdo do catálogo
 
-São 20 CPUs Intel/AMD e 22 GPUs NVIDIA/AMD/Intel, todas de desktop.
+São 21 CPUs Intel/AMD e 22 GPUs NVIDIA/AMD/Intel, todas de desktop.
 Os modelos foram selecionados a partir dos requisitos Windows de
 Cyberpunk 2077, Elden Ring, Baldur's Gate 3, Red Dead Redemption 2 e
 Hogwarts Legacy, além de páginas oficiais dos fabricantes e comparações
@@ -34,15 +34,16 @@ Notebooks, GPUs integradas, Apple Silicon e outras CPUs ARM exigirão
 cadastros e critérios próprios. Os requisitos coletados dessas plataformas
 continuam preservados nos snapshots da Steam.
 
-Há 6 GPUs classificadas:
+Há 3 CPUs e 6 GPUs classificadas:
 
-| Classe | Modelos |
-| ---: | --- |
-| 50 | GTX 1060 3GB e RX 570 4GB |
-| 100 | GTX 1060 6GB e RX 580 8GB |
-| 200 | GTX 1070 8GB e RX Vega 56 8GB |
+| Tipo | Classe | Modelos |
+| --- | ---: | --- |
+| CPU | 100 | Ryzen 5 3600, Ryzen 5 3600X e Core i5-9600K |
+| GPU | 50 | GTX 1060 3GB e RX 570 4GB |
+| GPU | 100 | GTX 1060 6GB e RX 580 8GB |
+| GPU | 200 | GTX 1070 8GB e RX Vega 56 8GB |
 
-As outras 36 peças têm `performance_score` vazio e continuam pendentes.
+As outras 34 peças têm `performance_score` vazio e continuam pendentes.
 Consulte [Critério do índice manual](SCORING.md) para a justificativa,
 o recorte da avaliação e os limites da aproximação.
 
@@ -88,7 +89,7 @@ Todos os destinos precisam existir neste CSV. Há variantes de escrita,
 abreviações e nomes efetivamente encontrados nos requisitos consultados.
 
 `Core i7-6700` identifica `Intel Core i7-6700`. Equivalência aproximada entre
-AMD e Intel/NVIDIA será representada pela classificação de desempenho,
+AMD e Intel/NVIDIA é representada pela classificação de desempenho,
 preservando registros distintos.
 
 Consultas genéricas como `GTX 1060`, `RX 480`, `RX 570`, `RX 580` e `Arc A770` não
@@ -119,7 +120,7 @@ versionada com `--input`, pois o padrão antigo do script ainda usa `data/raw`.
 docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
 ```
 
-O resultado informa `CPU: 20`, `GPU: 22`, formato manual e versão
+O resultado informa `CPU: 21`, `GPU: 22`, formato manual e versão
 `manual_v1`. O processamento é local e preserva o arquivo de entrada.
 
 ```text
@@ -129,6 +130,15 @@ docker compose run --rm --no-deps data python scripts/hardware_matcher.py --form
 A identidade é encontrada, com `status: matched`, `score_status: classified`
 e `performance_score: 100`. Modelos como a RX 580 4GB continuam sendo
 reconhecidos com `score_status: pending` e `performance_score: null`.
+
+O primeiro grupo de CPU pode ser consultado com alternativas:
+
+```text
+docker compose run --rm --no-deps data python scripts/hardware_matcher.py --format manual --catalog data/processed/hardware_manual_v1.csv --aliases data/catalog/hardware_aliases.json --type CPU --name "Ryzen 5 3600 ou Core i5-9600K" --alternatives
+```
+
+O resultado informa `status: resolved` e `required_score: 100`. CPU e GPU
+usam escalas independentes, mesmo quando o número da classe coincide.
 
 Para processar um bloco de requisitos, use `process_requirements.py` com
 `--format manual`, `--catalog data/processed/hardware_manual_v1.csv` e
@@ -143,7 +153,7 @@ Primeiro valide e conte o lote sem conectar ao banco:
 docker compose run --rm --no-deps data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv --dry-run
 ```
 
-O catálogo atual terá `classified: 6` e `pending: 36`. Para cadastrar as peças:
+O catálogo atual terá `classified: 9` e `pending: 34`. Para cadastrar as peças:
 
 ```text
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv

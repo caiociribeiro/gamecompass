@@ -6,19 +6,26 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 6 GPUs estão classificadas e 36 peças continuam pendentes:
-20 CPUs e 16 GPUs. Há três grupos: classe 50, com GTX 1060 3GB e RX 570 4GB;
-classe 100, com GTX 1060 6GB e RX 580 8GB; classe 200, com GTX 1070 8GB e
-RX Vega 56 8GB. O cadastro tem 42 peças.
+Nesta etapa, 3 CPUs e 6 GPUs estão classificadas. As 34 peças pendentes
+são 18 CPUs e 16 GPUs. O cadastro tem 43 peças.
+
+| Tipo | Classe | Modelos |
+| --- | ---: | --- |
+| CPU | 100 | Ryzen 5 3600, Ryzen 5 3600X e Core i5-9600K |
+| GPU | 50 | GTX 1060 3GB e RX 570 4GB |
+| GPU | 100 | GTX 1060 6GB e RX 580 8GB |
+| GPU | 200 | GTX 1070 8GB e RX Vega 56 8GB |
 
 ## Significado da pontuação
 
 `performance_score` representa uma classe ordenada dentro do mesmo tipo
-de componente. O número 100 foi escolhido como referência inicial de GPU.
+de componente. O número 100 foi escolhido como referência inicial nas
+escalas independentes de CPU e GPU.
 Classes inferiores poderão usar valores positivos menores que 100;
 classes superiores usarão valores maiores, quando houver comparação que
 sustente a ordem. Os intervalos entre números não representam proporções
-de desempenho, FPS ou porcentagens. CPUs terão classificação independente.
+de desempenho, FPS ou porcentagens. Uma comparação exige o mesmo tipo de
+componente e a mesma versão do índice.
 
 Modelos com a mesma pontuação permanecem como registros distintos.
 Compartilhar uma classe significa proximidade aproximada no recorte
@@ -135,9 +142,64 @@ GTX 1070 Ti, modelos de notebook e outras GPUs Vega não recebem esta nota
 por semelhança do nome. Os modelos deste grupo já estavam cadastrados;
 não foram adicionados novos aliases ou novas peças nesta etapa.
 
+## Regra inicial de curadoria das CPUs
+
+1. Confirmar o modelo exato, incluindo sufixos e segmento desktop/notebook.
+2. Usar comparações diretas de desempenho em jogos, com plataformas e
+   condições de memória, GPU, resolução e qualidade documentadas.
+3. Priorizar 1080p e testes que procurem reduzir a limitação pela GPU.
+4. Avaliar os resultados em configuração de fábrica, preservando o boost
+   normal. Resultados de overclock manual precisam de avaliação separada.
+5. Usar o agregado de jogos publicado pelo autor e manter a mesma classe
+   quando a diferença for de até 10%, registrando as limitações da amostra.
+6. Exigir comparação com todos os integrantes ao ampliar um grupo. Uma
+   alternativa citada pela Steam não atribui classe a outro modelo.
+7. Preservar a pendência quando faltar comparação suficiente.
+
+O limite de 10% também é uma escolha experimental para CPUs. A nota
+classifica proximidade em jogos no recorte documentado. Não agrega
+Cinebench, renderização ou produtividade ao índice de jogos. Frequência,
+núcleos, instruções suportadas e estabilidade dos tempos de quadro
+continuam sendo características que exigem avaliação própria.
+
+## Primeiro grupo de CPU: classe 100
+
+| Modelo canônico | performance_score | score_version |
+| --- | ---: | --- |
+| AMD Ryzen 5 3600 | 100 | manual_v1 |
+| AMD Ryzen 5 3600X | 100 | manual_v1 |
+| Intel Core i5-9600K | 100 | manual_v1 |
+
+Referência: [avaliação do Tweakers](https://tweakers.net/reviews/7222/ryzen-5-3600-en-3600x-nieuwe-ryzens-op-budget.html),
+de Willem de Moor, em 19/07/2019. Os três modelos participam da mesma
+avaliação. O autor relata diferença inferior a 1% no agregado de jogos
+entre o i5-9600K e os dois Ryzen. Esse recorte sustenta a classe preliminar
+compartilhada, dentro do limite experimental de 10%.
+
+A amostra tem seis jogos em 1080p, nos presets Medium e Ultra. O agregado
+de jogos da fonte dá o mesmo peso aos testes. O GameCompass conserva essa
+interpretação e atribui seu próprio rótulo ordinal 100, sem converter
+os pontos publicados em uma pontuação de benchmark própria.
+
+Foi usada uma GTX 1080 Ti. O sistema AMD usou X570 e 2x8 GB DDR4-3200 CL14;
+o Intel, Z390 e 2x8 GB DDR4-2667 CL13. O estudo também lista Windows 10 x64
+nas versões 1903 e 1803. Essas diferenças fazem parte das condições da
+comparação. Alguns presets Ultra também apresentam limitação
+pela GPU. A amostra e essas condições limitam a generalização para
+outros jogos e configurações.
+
+A nota considera a comparação principal em configuração de fábrica.
+As experiências de overclock e de troca de plataforma relatadas em
+outras seções não são misturadas a esse grupo. São medições históricas;
+`collected_at` registra a consulta, sem indicar novo teste de hardware.
+
+O Core i5-9600K foi acrescentado com cinco aliases da mesma peça. O
+Ryzen 5 3600 e o 3600X mantêm registros distintos. Sufixos como KF e XT
+identificam outros modelos e não herdam a nota automaticamente.
+
 ## Outros grupos e limites
 
-As demais GPUs aguardam avaliações próprias. A RTX 5070 e a RX 9070
+As demais CPUs e GPUs aguardam avaliações próprias. A RTX 5070 e a RX 9070
 não herdam uma classe apenas por terem sido sugeridas como um par.
 Estudos consultados desse par usam amostras e configurações diferentes:
 [Tom's Hardware, 29/05/2025](https://www.tomshardware.com/pc-components/gpus/nvidia-rtx-5070-vs-amd-rx-9070-face-off)
@@ -156,7 +218,7 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 6` e `pending: 36`.
+Após esta etapa, a carga informa `classified: 9` e `pending: 34`.
 Requisitos que citam alternativas ainda sem nota continuam com
 `required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
 segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência

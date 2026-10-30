@@ -21,6 +21,11 @@
   },
   {
     "component_type": "CPU",
+    "alias": "Core i5 9600K",
+    "canonical_name": "Intel Core i5-9600K"
+  },
+  {
+    "component_type": "CPU",
     "alias": "Core i5-2500K",
     "canonical_name": "Intel Core i5-2500K"
   },
@@ -38,6 +43,11 @@
     "component_type": "CPU",
     "alias": "Core i5-8400",
     "canonical_name": "Intel Core i5-8400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-9600K",
+    "canonical_name": "Intel Core i5-9600K"
   },
   {
     "component_type": "CPU",
@@ -76,6 +86,11 @@
   },
   {
     "component_type": "CPU",
+    "alias": "i5 9600K",
+    "canonical_name": "Intel Core i5-9600K"
+  },
+  {
+    "component_type": "CPU",
     "alias": "i5-2500K",
     "canonical_name": "Intel Core i5-2500K"
   },
@@ -93,6 +108,11 @@
     "component_type": "CPU",
     "alias": "i5-8400",
     "canonical_name": "Intel Core i5-8400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-9600K",
+    "canonical_name": "Intel Core i5-9600K"
   },
   {
     "component_type": "CPU",
@@ -118,6 +138,11 @@
     "component_type": "CPU",
     "alias": "i7-8700K",
     "canonical_name": "Intel Core i7-8700K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i5 9600K",
+    "canonical_name": "Intel Core i5-9600K"
   },
   {
     "component_type": "CPU",
