@@ -15,7 +15,8 @@ from hardware_catalog import MANUAL_SCORE_VERSION, read_catalog
 from hardware_matcher import normalize_name, read_aliases
 from process_requirements import process_requirements
 from regex_parser import clean_html
-from extract_steam_requirements import extract_os_text
+from extract_steam_requirements import extract_os_text, is_empty_requirement_text
+from requirements_curation import apply_curation, read_curation
 
 
 QUERY = """
@@ -66,6 +67,7 @@ def matching_context(hardware: dict) -> dict:
     """Usa as notas do banco; os arquivos versionados validam apenas aliases."""
     catalog_path = ROOT / "data/catalog/hardware_manual_v1.csv"
     aliases_path = ROOT / "data/catalog/hardware_aliases.json"
+    curation_path = ROOT / "data/catalog/requirements_curation.json"
     records = read_catalog(catalog_path, catalog_format="manual")
     identities = {(r["component_type"], normalize_name(r["name"])): r for r in records}
     aliases = read_aliases(aliases_path, identities)
@@ -77,17 +79,20 @@ def matching_context(hardware: dict) -> dict:
     aliases = {key: target for key, target in aliases.items() if target in catalog}
     return {
         "catalog": catalog, "aliases": aliases,
+        "curation": read_curation(curation_path, identities),
+        "curation_sha256": hashlib.sha256(curation_path.read_bytes()).hexdigest(),
         "catalog_sha256": hashlib.sha256(catalog_path.read_bytes()).hexdigest(),
         "aliases_sha256": hashlib.sha256(aliases_path.read_bytes()).hexdigest(),
         "hardware_sha256": hashlib.sha256(json.dumps(hardware, sort_keys=True).encode()).hexdigest(),
     }
 
 
-def requirements_block(html: object, context: dict | None) -> dict | None:
+def requirements_block(html: object, context: dict | None, *, appid: str = "",
+                       platform: str = "", level: str = "") -> dict | None:
     if not isinstance(html, str) or not html.strip():
         return None
     text = clean_html(html)
-    if not text or all(line.lower().strip(": ") in ("minimum", "recommended", "mínimos", "recomendados") for line in text.splitlines()):
+    if is_empty_requirement_text(text):
         return None
     if context is None:
         result = process_requirements(html, {}, {}, catalog_format="manual")
@@ -95,6 +100,8 @@ def requirements_block(html: object, context: dict | None) -> dict | None:
         result["status"] = "needs_review"
     else:
         result = process_requirements(html, context["catalog"], context["aliases"], catalog_format="manual")
+        result = apply_curation(result, appid, platform, level, context.get("curation", {}),
+                                context["catalog"], context["aliases"])
     try:
         os_text = extract_os_text(text)
     except ValueError as exc:
@@ -102,6 +109,7 @@ def requirements_block(html: object, context: dict | None) -> dict | None:
         result["issues"].append(str(exc))
         result["status"] = "needs_review"
     # O texto será exibido como texto React, sem injetar HTML da Steam.
-    return {"text": text, "os_text": os_text, "status": result["status"],
+    return {**{key: result[key] for key in ("curation", "original_requirements", "original_hardware", "original_issues") if key in result},
+            "text": text, "os_text": os_text, "status": result["status"],
             "requirements": result["requirements"], "issues": result["issues"],
             "hardware": result["hardware"], "score_version": MANUAL_SCORE_VERSION}

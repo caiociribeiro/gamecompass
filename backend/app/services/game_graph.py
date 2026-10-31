@@ -28,7 +28,7 @@ def read_graph_games(driver, database, *, ids=(), anchors=(), genres=(), tags=()
     with driver.session(database=database, default_access_mode="READ") as session:
         rows = session.execute_read(lambda tx: tx.run(QUERY, format="steam_games_v1", ids=list(ids),
             excluded=list(anchors) if related else [], anchors=list(anchors), genres=list(genres),
-            tags=list(tags), related=related, limit=30 if related else 250).data())
+            tags=list(tags), related=related, limit=250).data())
     result = []
     for row in rows:
         raw = row.get("catalog_json")
@@ -49,14 +49,15 @@ def read_graph_games(driver, database, *, ids=(), anchors=(), genres=(), tags=()
 
 def refresh_requirements(game, context):
     """O texto preservado evita servir notas de hardware antigas do snapshot."""
-    for platform in game["platforms"].values():
+    for name, platform in game["platforms"].items():
         for level in ("minimum", "recommended"):
             block = platform.get(level)
             if isinstance(block, dict):
-                platform[level] = requirements_block(block.get("text"), context)
+                platform[level] = requirements_block(block.get("text"), context,
+                    appid=game["id"], platform=name, level=level)
     for level, prefix in (("minimum", "min"), ("recommended", "rec")):
         block = game["platforms"].get("Windows", {}).get(level)
         requirements = block["requirements"] if block else {}
         game.update({f"{prefix}_{field}": requirements.get(field) for field in ("ram_gb", "cpu_score", "gpu_score")})
-    game["hardware_source"] = {key: context[key] for key in ("catalog_sha256", "aliases_sha256", "hardware_sha256")} if context else None
+    game["hardware_source"] = {key: context[key] for key in ("catalog_sha256", "aliases_sha256", "hardware_sha256", "curation_sha256")} if context else None
     return game
