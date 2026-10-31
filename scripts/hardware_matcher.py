@@ -1,6 +1,6 @@
 """Associa modelos ao catálogo por nome exato ou alias explícito.
 
-Use --alternatives para separar modelos ligados por 'ou' ou 'or'.
+Use --alternatives para separar modelos ligados por 'ou', 'or' ou '/'.
 Cada alternativa mantém sua identificação e sua pontuação.
 Use --format manual para consultar performance_score no índice manual_v1.
 """
@@ -121,9 +121,10 @@ def match_hardware(
     return result
 
 def split_alternatives(text: str) -> list[str]:
-    """Separa alternativas explícitas, preservando o texto de cada modelo."""
+    """Separa modelos; abreviações numéricas como '3/6GB' ficam para revisão."""
     parts = re.split(
-        r"\b(?:ou|or)\b",
+        # A barra entre dois dígitos não identifica dois modelos completos.
+        r"\b(?:ou|or)\b|(?<!\d)/|/(?!\d)",
         text,
         flags=re.IGNORECASE,
     )
@@ -202,7 +203,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--alternatives",
         action="store_true",
-        help="Consulta alternativas separadas por 'ou' ou 'or'.",
+        help="Consulta alternativas separadas por 'ou', 'or' ou '/'.",
     )
     args = parser.parse_args(argv)
 
