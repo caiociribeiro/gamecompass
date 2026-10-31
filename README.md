@@ -183,19 +183,50 @@ docker compose down
 
 `docker compose down` encerra os serviços preservando os volumes nomeados.
 
-## Interface conectada: Steam e hardware
+## Interface conectada: busca por nome e hardware
 
 Use Node.js 22.18+ ou Node.js 24. Docker Desktop precisa estar iniciado no Windows.
-Na raiz do projeto, valide e carregue o catálogo manual que está disponível
-no seu checkout. Este passo funciona com a base anterior e com sua ampliação:
+Na raiz do projeto, inicie a API:
+
+```text
+docker compose up -d --build --wait api
+```
+
+Esse comando aguarda a API responder ao healthcheck. O `npm run dev` inicia
+somente o frontend; o container `api` também precisa estar rodando.
+A checagem `/health` confirma o processo da API; `/health/neo4j` verifica
+se a conexão com o banco também funciona.
+
+Se o Vite registrar `ECONNREFUSED 127.0.0.1:8000`, execute na raiz:
+
+```text
+docker compose ps -a api neo4j
+docker compose logs --tail=80 api
+```
+
+Confira http://localhost:8000/health antes de testar a busca. Se `API_PORT`
+for diferente no `.env`, use essa porta no endereço. Se houver
+`API_PROXY_TARGET` definido, ele deve apontar para a API em execução.
+Depois de mudar essas variáveis, reinicie o Vite. Não é necessário apagar
+volumes ou recarregar o hardware para iniciar a API novamente.
+
+Se a página Hardware informar que o servidor respondeu sem componentes,
+a rota foi acessada, mas não retornou CPUs ou GPUs utilizáveis. Consulte
+http://localhost:8000/api/hardware para conferir as listas. A API expõe
+somente registros com `score_version: manual_v1`; carregar um catálogo
+legado não preenche essa seleção. Um volume Neo4j novo também começa vazio.
+Execute os dois comandos abaixo para validar e carregar o catálogo manual,
+depois clique em Atualizar catálogo na interface. O carregador atualiza por
+nome, sem duplicar componentes ou apagar os modelos omitidos.
+
+O catálogo manual já carregado continua sendo usado. Se precisar reconstruí-lo:
 
 ```text
 docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
 docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv
-docker compose up -d --build api
 ```
 
-Em outro terminal, a partir da raiz:
+Em outro terminal:
 
 ```text
 cd frontend
@@ -203,96 +234,190 @@ npm ci
 npm run dev
 ```
 
-Abra http://localhost:5173. O Vite encaminha `/api` para a API na porta
-`API_PORT` do `.env` da raiz, usando 8000 por padrão. Também existe proxy
-em `npm run preview`. Uma configuração de produção precisará encaminhar
-esse prefixo para o backend. O Swagger permanece em http://localhost:8000/docs.
+Abra http://localhost:5173. O Vite encaminha `/api` para a porta `API_PORT`
+do `.env` da raiz, usando 8000 por padrão. O proxy também funciona no preview.
+O Swagger permanece em http://localhost:8000/docs.
 
-A conta local de teste continua sendo `demo@gamecompass.dev`, senha
-`demo123`. Escolha novamente as preferências, as âncoras e o computador:
-a primeira abertura migra o perfil antigo, que usava IDs fictícios,
-preservando a conta. O cadastro, a senha e o perfil ainda ficam neste navegador.
+A conta local de teste é `demo@gamecompass.dev`, senha `demo123`. Conta,
+senha e perfil continuam no navegador. A migração preserva peças e âncoras
+Steam já escolhidas; os recursos da loja deixam de fazer parte do perfil.
+As listas originais de gêneros e temáticas ficam disponíveis mesmo sem jogos.
 
-### O que vem de cada fonte
+### Fluxo da interface
+
+1. Uma conta nova começa com três espaços vazios para âncoras; nenhum jogo é escolhido automaticamente.
+2. Em Preferências, escolha gêneros e temáticas nas listas originais.
+3. Em Jogos âncora, escolha uma das oito sugestões ou busque pelo nome e clique em Usar.
+4. Em Hardware, escolha CPU e GPU do Neo4j e informe RAM e sistema operacional.
+5. Em Recomendações, clique em Buscar sugestões quando quiser consultar candidatos.
+6. Abra o detalhe de um jogo para conferir os requisitos mínimos e recomendados por plataforma.
+
+A tela de âncoras oferece uma seleção editorial de oito jogos conhecidos:
+Cyberpunk 2077, Red Dead Redemption 2, The Witcher 3, Elden Ring,
+Baldur's Gate 3, Stardew Valley, Hollow Knight e Hades. É uma ajuda para
+escolher âncoras, sem representar um ranking da Steam. A seleção contém
+somente IDs em `data/catalog/anchor_suggestions.json`; nomes e capas são
+consultados na Steam. Falhas individuais não escondem os demais resultados,
+e há um botão para tentar novamente em caso de indisponibilidade.
+
+Esses cards são carregados apenas ao abrir Jogos âncora. Eles ficam separados
+do catálogo de recomendações e não contam como escolhas até clicar em Usar.
+A busca pelo nome continua disponível para títulos fora dessa seleção.
+Não há entrada manual de AppID na interface. IDs continuam internos para
+identificar os resultados e persistir as escolhas. Ao entrar novamente,
+somente as âncoras que o próprio cliente salvou são restauradas.
+A página pública não mostra uma vitrine de títulos predefinidos.
+
+A busca exige ao menos dois caracteres, aguarda 350 ms de pausa e cancela
+consultas anteriores. Pesquisar retorna nomes; os detalhes são consultados
+após selecionar um resultado. A busca da loja também pode encontrar DLCs e
+software: a seleção valida o tipo e informa quando o resultado não é um jogo base.
+
+### Fontes dos dados
 
 | Informação | Fonte |
 | --- | --- |
-| CPU e GPU, nomes, notas e versão do índice | Neo4j, somente registros `manual_v1` |
-| Aliases para identificar os requisitos | `data/catalog/hardware_aliases.json`, validado contra o CSV versionado |
-| Título, capa, preço, gêneros, recursos e requisitos | Endpoint público `appdetails` da loja Steam, região BR, idioma português |
-| Seleção inicial de jogos | Vinte AppIDs em `data/catalog/steam_appids.json`; o arquivo não contém dados fictícios de jogos |
-| RAM e família de sistema operacional | Opções locais em `frontend/src/data/hardware.ts` |
+| Nomes de jogos na busca | Endpoint público `storesearch` da Steam |
+| Sugestões para escolher âncoras | IDs editoriais versionados; nomes e capas reais de `appdetails` |
+| Título, capa, preço, gêneros e requisitos | Endpoint público `appdetails` da Steam, região BR e idioma português |
+| Candidatos para sugestões | Jogos do Neo4j relacionados por gênero/temática; consulta aos mais vendidos da Steam se faltarem candidatos, com aviso |
+| Gêneros e temáticas do perfil | Listas originais em `frontend/src/data/preferences.ts` |
+| CPUs, GPUs e suas notas | Neo4j, somente registros `manual_v1` |
+| RAM e família do SO | Opções locais em `frontend/src/data/hardware.ts` |
 
-RAM e sistema operacional são valores do perfil e não ganham nós próprios
-no Neo4j. Os requisitos de RAM dos jogos continuam numéricos. A comparação
-usa as notas lidas do banco; não usa as antigas pontuações da interface.
-CPU e GPU têm escalas independentes. Peças sem nota permanecem selecionáveis
-com indicação de classificação pendente.
+RAM e SO não recebem nós próprios no Neo4j. As notas de hardware são lidas
+do banco. Os aliases versionados servem à identificação dos requisitos;
+os endpoints não criam nem alteram nós e não usam as antigas notas fictícias.
+
+As temáticas são salvas no perfil. Os jogos do catálogo versionado recebem
+tags editoriais do GameCompass, ligadas por `HAS_TAG`; essas temáticas
+participam da afinidade. Consultas fora do catálogo podem retornar
+`themes: []` e `themes_status: pending`. Recursos de `categories` não são
+usados como temáticas. A ordenação permanece no navegador; informações
+ausentes não são tratadas como desinteresse.
+
+Mais vendidos são apenas uma fonte de candidatos, não uma recomendação
+personalizada pronta. A análise de afinidade e de requisitos é aplicada
+a esses candidatos pelo protótipo, após a solicitação do cliente.
 
 ### Rotas de leitura
 
 | Rota | Resposta |
 | --- | --- |
 | `GET /api/hardware` | CPUs e GPUs carregadas, incluindo notas nulas |
-| `GET /api/games` | Seleção consultada na Steam, com falhas parciais identificadas |
-| `GET /api/games/{appid}` | Um jogo por AppID, com requisitos por plataforma e nível |
-| `GET /api/games?extra_appids=123,456` | Até três jogos adicionais para restaurar âncoras salvas |
+| `GET /api/games` | Lista vazia, sem chamada à Steam ou ao banco |
+| `GET /api/games/search?q=nome` | Busca por nome, sem carregar detalhes de cada resultado |
+| `GET /api/games/anchors` | Até oito nomes e capas da Steam, sem ler hardware nem selecionar jogos no perfil |
+| `GET /api/games/discover` | Candidatos solicitados pelo botão de sugestões |
+| `GET /api/games/{appid}` | Detalhes de um jogo, utilizado internamente pela interface |
+| `GET /api/games?appids=123,456` | Até trinta jogos explicitamente identificados, inclusive âncoras salvas |
 
-No PowerShell, para verificar a comunicação:
+No PowerShell:
 
 ```powershell
 Invoke-RestMethod http://localhost:8000/api/hardware
-Invoke-RestMethod http://localhost:8000/api/games/1091500
+Invoke-RestMethod "http://localhost:8000/api/games/search?q=cyberpunk"
 ```
 
-A API monta `scripts/` e `data/` como leitura para reutilizar o parser e o
-matching existentes. Os endpoints não criam nem alteram nós. Esta etapa
-consulta os jogos diretamente da Steam; a carga de jogos no grafo continua
-como etapa da pipeline.
+A API reutiliza os scripts de limpeza e matching por volumes de leitura.
+A carga de jogos no grafo é executada pelos scripts descritos abaixo.
 
-### Fluxo para testar
+O cache em memória guarda até 128 consultas por seis horas, com no máximo
+três chamadas simultâneas e intervalo mínimo entre inícios. Ao recarregar
+o Neo4j, atualize o catálogo de hardware e solicite novamente as sugestões:
+os requisitos são processados contra as notas atuais, mesmo com Steam em cache.
+As respostas incluem origem, data e hashes. Falhas ficam visíveis e não são
+substituídas por jogos ou peças fictícias.
 
-1. Entre na conta local e confira o catálogo no painel.
-2. Abra um jogo e veja mínimos e recomendados de Windows, Linux e macOS.
-3. Em Hardware, procure as peças carregadas no seu Neo4j e salve RAM e SO.
-4. Escolha gêneros e recursos e três jogos âncora.
-5. Consulte a afinidade e as verificações técnicas na lista e no detalhe.
-6. Para outro título, abra Jogos âncora e informe seu Steam AppID.
+Notas ausentes, modelos não identificados e versões de SO sem validação
+continuam pendentes. VRAM, DirectX, instruções e SSD exigem conferências
+próprias. Os requisitos limpos continuam visíveis no detalhe, sem garantia de FPS.
 
-Os recursos usados nesta etapa vêm de `categories` da Steam, como cooperação
-ou um jogador. As tags da comunidade ficam para uma integração posterior.
-A ordenação por afinidade permanece no navegador. Não são inventadas
-pontuações para preencher requisitos desconhecidos.
-
-A interface distingue restrições confirmadas de validações pendentes.
-Escolher a família Windows, Linux ou macOS não confirma a versão exigida;
-por isso a checagem completa de SO permanece pendente. VRAM, DirectX,
-instruções e SSD também precisam de verificações específicas. Os textos
-originais limpos ficam acessíveis para conferência; não há garantia de FPS.
-
-A API mantém até 128 respostas em memória por seis horas, com três chamadas
-simultâneas e intervalo mínimo entre inícios. Reiniciar a API limpa esse
-cache. Ao atualizar o catálogo e recarregar o Neo4j, use Atualizar catálogo
-na interface: os requisitos são processados novamente contra as notas
-atuais, mesmo quando a resposta Steam vem do cache. As respostas incluem
-origem, data e hashes para rastrear o que foi consultado.
-
-Falhas da Steam são mostradas na interface. Um AppID indisponível não é
-substituído por um jogo fictício. Banco vazio não gera peças de demonstração.
-
-### Testes desta integração
+### Testes
 
 ```text
 docker compose run --rm --no-deps api python -m unittest discover -s tests -v
 ```
 
-Os testes HTTP usam fixtures identificadas e não exigem uma chamada externa
-à Steam ou conexão real com Neo4j. Na pasta `frontend/`:
+Os testes HTTP usam fixtures identificadas e dispensam serviços externos.
+Na pasta `frontend/`:
 
 ```text
 npm test
 npm run build
 ```
 
-Os testes verificam notas nulas, versões do índice, plataformas, RAM,
-cache, falhas de serviços e distinção entre pendência e restrição.
+A verificação cobre âncoras inicialmente vazias, sugestões editoriais,
+busca por nome, cache, falhas totais e parciais, migração do perfil,
+classificações pendentes e preservação dos dados já escolhidos.
+
+## Jogos, gêneros e tags no Neo4j
+
+A seleção inicial está em `data/catalog/games.json`: 20 jogos reais,
+incluindo Cyberpunk, RDR2, The Witcher 3, Elden Ring, BG3 e jogos indie.
+As informações vêm da Steam; as tags seguem a curadoria do projeto.
+Detalhes dos scripts, esquema e limites: [GAMES.md](data/catalog/GAMES.md).
+
+Na raiz do projeto, valide e atualize primeiro o hardware. A revisão
+atual tem 41 CPUs e 40 GPUs, com 61 peças classificadas e 20 pendentes;
+as justificativas estão em
+[HARDWARE_REVIEW_2026_10.md](data/catalog/HARDWARE_REVIEW_2026_10.md).
+
+```bash
+docker compose build data
+docker compose up -d neo4j
+docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
+docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv
+```
+
+Colete o lote em uma pasta nova. No Linux, a variável abaixo evita colidir
+com coletas anteriores. Preserve seu valor se precisar continuar a coleta:
+
+```bash
+GC_SNAPSHOT="data/raw/steam_games_$(date -u +%Y%m%dT%H%M%SZ)"
+docker compose run --rm --no-deps data python scripts/fetch_games.py --output-dir "$GC_SNAPSHOT"
+```
+
+Se houver falha parcial, repita o último comando acrescentando `--resume`.
+O comando precisa terminar com `status: ok` antes do processamento.
+
+```bash
+docker compose run --rm --no-deps data python scripts/process_games.py --snapshot-dir "$GC_SNAPSHOT"
+docker compose run --rm --no-deps data python scripts/load_games.py --dry-run
+docker compose run --rm data python scripts/load_games.py
+docker compose up -d --build --wait api
+```
+
+Não há limpeza geral. A carga usa `MERGE`, preserva hardware, jogos
+omitidos e relações de outras origens. Repetir o lote conserva a quantidade
+de nós e relações. Os campos planos de requisitos correspondem ao Windows;
+macOS/Linux permanecem separados no JSON preservado. Ausências continuam
+nulas. Alterar CSV ou aliases exige reprocessamento antes de carregar jogos.
+
+No frontend, atualize o catálogo de hardware e clique em Buscar sugestões.
+A API usa `HAS_GENRE`/`HAS_TAG` para escolher candidatos; o frontend aplica
+a afinidade e mostra pendências e restrições. Os jogos não são escolhidos
+automaticamente para as âncoras. As preferências originais foram mantidas.
+
+Teste a resposta no Linux:
+
+```bash
+curl -fsS 'http://localhost:8000/api/games/discover?anchor_ids=1091500,292030,1245620' | python3 -m json.tool
+```
+
+Com o lote carregado, a resposta deve ter `source: neo4j`. Os arquivos
+raw e processados ficam locais; seleção, curadoria, scripts e consultas
+são versionados. No [Neo4j Browser](http://localhost:7474), execute uma
+das consultas de [games_queries.cypher](data/catalog/games_queries.cypher).
+
+Testes específicos desta etapa:
+
+```bash
+docker compose run --rm --no-deps data python scripts/test_game_catalog.py
+docker compose run --rm data python scripts/test_game_loader.py --integration
+docker compose run --rm --no-deps api python -m unittest discover -s tests -v
+```
+
+Os testes de carga usam identidades exclusivas e limpam apenas suas
+fixtures. Não apagam o banco. A comparação de versão do SO e outras
+restrições ainda pendentes não são aprovadas automaticamente.

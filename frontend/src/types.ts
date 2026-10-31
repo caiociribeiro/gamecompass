@@ -39,7 +39,7 @@ export type Part = {
   score_version: string
 }
 export type HardwareCatalog = { CPU: Part[]; GPU: Part[]; score_version: string; source: "neo4j" }
-export type GameSearchResult = { id: string; title: string }
+export type GameSearchResult = { id: string; title: string; image_url?: string | null }
 export type HardwareProfile = { cpuId: string; gpuId: string; ramGb: number; os: OperatingSystem }
 export type UserProfile = {
   id: string

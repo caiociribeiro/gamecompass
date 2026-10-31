@@ -1,0 +1,186 @@
+{
+  "schema_version": "steam_games_v1",
+  "tag_vocabulary": [
+    "Exploração",
+    "Narrativa",
+    "Cooperativo",
+    "Competitivo",
+    "Mundo aberto",
+    "Gestão",
+    "Terror",
+    "Ficção científica",
+    "Fantasia",
+    "Relaxante"
+  ],
+  "curation_method": "gamecompass_editorial_v1",
+  "games": [
+    {
+      "id": "1091500",
+      "tags": [
+        "Ficção científica",
+        "Mundo aberto",
+        "Narrativa"
+      ],
+      "curation_notes": "RPG em Night City; campanha narrativa e exploração de mundo aberto."
+    },
+    {
+      "id": "1174180",
+      "tags": [
+        "Mundo aberto",
+        "Narrativa",
+        "Exploração"
+      ],
+      "curation_notes": "Campanha no Velho Oeste e exploração de mundo aberto."
+    },
+    {
+      "id": "292030",
+      "tags": [
+        "Fantasia",
+        "Mundo aberto",
+        "Narrativa"
+      ],
+      "curation_notes": "RPG de fantasia com missões narrativas em mundo aberto."
+    },
+    {
+      "id": "1245620",
+      "tags": [
+        "Fantasia",
+        "Mundo aberto",
+        "Exploração"
+      ],
+      "curation_notes": "Fantasia sombria e exploração do mundo aberto das Terras Intermédias."
+    },
+    {
+      "id": "1086940",
+      "tags": [
+        "Fantasia",
+        "Narrativa",
+        "Cooperativo"
+      ],
+      "curation_notes": "RPG de fantasia com escolhas narrativas e campanha cooperativa."
+    },
+    {
+      "id": "413150",
+      "tags": [
+        "Relaxante",
+        "Gestão",
+        "Cooperativo"
+      ],
+      "curation_notes": "Cultivo e gestão da fazenda; modo cooperativo disponível."
+    },
+    {
+      "id": "367520",
+      "tags": [
+        "Exploração",
+        "Fantasia"
+      ],
+      "curation_notes": "Exploração de Hallownest e ambientação de fantasia."
+    },
+    {
+      "id": "1145360",
+      "tags": [
+        "Fantasia",
+        "Narrativa"
+      ],
+      "curation_notes": "Mitologia grega e narrativa que avança entre tentativas."
+    },
+    {
+      "id": "620",
+      "tags": [
+        "Ficção científica",
+        "Cooperativo",
+        "Narrativa"
+      ],
+      "curation_notes": "Quebra-cabeças com portais, campanha narrativa e campanha cooperativa."
+    },
+    {
+      "id": "105600",
+      "tags": [
+        "Exploração",
+        "Fantasia",
+        "Cooperativo"
+      ],
+      "curation_notes": "Exploração, construção e combate em mundos de fantasia, com multiplayer."
+    },
+    {
+      "id": "504230",
+      "tags": [
+        "Narrativa"
+      ],
+      "curation_notes": "A história de Madeline acompanha a escalada e os desafios de plataforma."
+    },
+    {
+      "id": "588650",
+      "tags": [
+        "Exploração",
+        "Fantasia"
+      ],
+      "curation_notes": "Exploração de um castelo mutável em ambientação de fantasia."
+    },
+    {
+      "id": "646570",
+      "tags": [
+        "Fantasia"
+      ],
+      "curation_notes": "Construção de baralho e monstros em uma torre de fantasia."
+    },
+    {
+      "id": "990080",
+      "tags": [
+        "Fantasia",
+        "Mundo aberto",
+        "Exploração"
+      ],
+      "curation_notes": "Exploração do mundo aberto da ambientação de Hogwarts."
+    },
+    {
+      "id": "275850",
+      "tags": [
+        "Ficção científica",
+        "Exploração",
+        "Mundo aberto",
+        "Cooperativo"
+      ],
+      "curation_notes": "Exploração espacial e planetária com modos multiplayer."
+    },
+    {
+      "id": "782330",
+      "tags": [
+        "Ficção científica"
+      ],
+      "curation_notes": "Combate contra demônios em ambientação tecnológica e futurista."
+    },
+    {
+      "id": "2050650",
+      "tags": [
+        "Terror",
+        "Narrativa"
+      ],
+      "curation_notes": "Campanha narrativa de sobrevivência e terror."
+    },
+    {
+      "id": "813780",
+      "tags": [
+        "Gestão",
+        "Competitivo"
+      ],
+      "curation_notes": "Gestão de recursos e exércitos; partidas competitivas de estratégia."
+    },
+    {
+      "id": "227300",
+      "tags": [
+        "Relaxante",
+        "Gestão"
+      ],
+      "curation_notes": "Simulação de viagens de caminhão e gestão de uma empresa de transporte."
+    },
+    {
+      "id": "289070",
+      "tags": [
+        "Gestão",
+        "Competitivo"
+      ],
+      "curation_notes": "Gestão de civilizações e disputa estratégica por condições de vitória."
+    }
+  ]
+}

@@ -18,6 +18,8 @@ export function Hardware() {
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   if (!user) return null
+  const cpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.CPU.length
+  const gpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.GPU.length
   const summary = hardwareSummary(user.hardware, hardware)
   const hint = (part: Part) =>
     `${part.vendor} · ${part.performance_score === null ? "Classificação pendente" : `Classe ${part.performance_score}`}`
@@ -30,9 +32,13 @@ export function Hardware() {
       />
       <CatalogStatus scope="hardware" />
       {!hardwareLoading && !hardwareError && (!hardware.CPU.length || !hardware.GPU.length) && (
-        <p className="banner warn">
-          O catálogo de hardware está vazio ou incompleto. Carregue as peças para continuar.
-        </p>
+        <div className="banner warn" role="status">
+          <p>O servidor respondeu, mas faltam componentes no catálogo deste ambiente.</p>
+          <p>
+            Processadores: {hardware.CPU.length} · Placas de vídeo: {hardware.GPU.length}.
+          </p>
+          <p>Atualize o catálogo depois que os componentes estiverem disponíveis.</p>
+        </div>
       )}
       <button type="button" className="btn ghost small" disabled={hardwareLoading} onClick={refresh}>
         Atualizar catálogo
@@ -60,24 +66,38 @@ export function Hardware() {
       >
         <SearchSelect
           label="Processador"
+          disabled={cpuUnavailable}
           options={hardware.CPU.map((part) => ({ id: part.id, label: part.name, hint: hint(part) }))}
           value={cpuId}
           onChange={(id) => {
             setCpuId(id)
             setSaved(false)
           }}
-          placeholder="Buscar modelo de CPU"
+          placeholder={
+            hardwareLoading
+              ? "Carregando processadores…"
+              : cpuUnavailable
+                ? "Catálogo de CPUs indisponível"
+                : "Buscar modelo de CPU"
+          }
           empty="Nenhum processador com esse nome no catálogo carregado."
         />
         <SearchSelect
           label="Placa de vídeo"
+          disabled={gpuUnavailable}
           options={hardware.GPU.map((part) => ({ id: part.id, label: part.name, hint: hint(part) }))}
           value={gpuId}
           onChange={(id) => {
             setGpuId(id)
             setSaved(false)
           }}
-          placeholder="Buscar modelo de GPU"
+          placeholder={
+            hardwareLoading
+              ? "Carregando placas de vídeo…"
+              : gpuUnavailable
+                ? "Catálogo de GPUs indisponível"
+                : "Buscar modelo de GPU"
+          }
           empty="Nenhuma placa com esse nome no catálogo carregado."
         />
         <label>
@@ -124,7 +144,7 @@ export function Hardware() {
             Computador salvo neste navegador.
           </p>
         )}
-        <button className="btn" type="submit" disabled={hardwareLoading || Boolean(hardwareError)}>
+        <button className="btn" type="submit" disabled={cpuUnavailable || gpuUnavailable}>
           Salvar computador
         </button>
       </form>

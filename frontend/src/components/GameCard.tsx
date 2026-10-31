@@ -8,7 +8,10 @@ function hue(id: string) {
   return hash
 }
 
-export function Cover({ game, className = "" }: { game: Game; className?: string }) {
+export function Cover({ game, className = "" }: {
+  game: Pick<Game, "id" | "title" | "image_url">
+  className?: string
+}) {
   const tone = hue(game.id)
   const [broken, setBroken] = useState(false)
   return (

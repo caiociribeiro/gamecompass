@@ -419,3 +419,26 @@ input, select {
 .stack + .stack { margin-top: 2rem; }
 button:disabled { opacity: .55; cursor: not-allowed; }
 @media (max-width: 680px) { .requirements-grid { grid-template-columns: 1fr; } }
+
+.anchor-suggestions-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.anchor-suggestion {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raise);
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.anchor-suggestion > .cover { aspect-ratio: 460 / 215; }
+.anchor-suggestion-body { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px; }
+.anchor-suggestion h3 { font-size: 1rem; overflow-wrap: anywhere; }
+.anchor-suggestion .btn { flex: none; }
+@media (max-width: 560px) { .anchor-suggestions-grid { grid-template-columns: 1fr; } }

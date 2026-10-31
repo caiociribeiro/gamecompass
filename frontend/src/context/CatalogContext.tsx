@@ -12,7 +12,7 @@ import { apiError, apiGet } from "../lib/api"
 import type { Game, HardwareCatalog } from "../types"
 import { useSession } from "./SessionContext"
 
-type Collection = { items: Game[]; issues: { appid: string; message: string }[] }
+type Collection = { items: Game[]; issues: { appid: string; message: string }[]; source?: string }
 type CatalogValue = {
   games: Game[]
   hardware: HardwareCatalog
@@ -22,6 +22,7 @@ type CatalogValue = {
   hardwareError: string | null
   gameIssues: Collection["issues"]
   discovered: boolean
+  candidateSource: string | null
   refresh: () => void
   loadGame: (appid: string) => Promise<Game>
   discoverGames: () => Promise<void>
@@ -44,6 +45,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [hardwareError, setHardwareError] = useState<string | null>(null)
   const [gameIssues, setGameIssues] = useState<Collection["issues"]>([])
   const [discovered, setDiscovered] = useState(false)
+  const [candidateSource, setCandidateSource] = useState<string | null>(null)
   const [revision, setRevision] = useState(0)
   const generation = useRef(0)
   const refresh = useCallback(() => setRevision((value) => value + 1), [])
@@ -59,20 +61,23 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     setGamesLoading(true)
     setGamesError(null)
     try {
-      const data = await apiGet<Collection>("/games/discover")
+      const filters = new URLSearchParams({ anchor_ids: anchorIds,
+        genres: (user?.genres ?? []).join(","), tags: (user?.themes ?? []).join(",") })
+      const data = await apiGet<Collection>(`/games/discover?${filters}`)
       if (token !== generation.current) return
       setGames((current) => [
-        ...current.filter((game) => !data.items.some((item) => item.id === game.id)),
+        ...current.filter((game) => anchorIds.split(",").includes(game.id) && !data.items.some((item) => item.id === game.id)),
         ...data.items,
       ])
       setGameIssues(data.issues)
       setDiscovered(true)
+      setCandidateSource(data.source ?? "steam")
     } catch (error) {
       if (token === generation.current) setGamesError(apiError(error))
     } finally {
       if (token === generation.current) setGamesLoading(false)
     }
-  }, [])
+  }, [anchorIds, user])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -101,6 +106,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     setGameIssues([])
     setGamesError(null)
     setDiscovered(false)
+    setCandidateSource(null)
     setGamesLoading(Boolean(anchorIds))
     // Nenhuma consulta de jogos para uma conta que ainda não escolheu âncoras.
     if (anchorIds) {
@@ -131,6 +137,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       hardwareError,
       gameIssues,
       discovered,
+      candidateSource,
       refresh,
       loadGame,
       discoverGames,
@@ -144,6 +151,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       hardwareError,
       gameIssues,
       discovered,
+      candidateSource,
       refresh,
       loadGame,
       discoverGames,

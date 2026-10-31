@@ -65,6 +65,19 @@ const user: UserProfile = {
   catalogVersion: "steam-v2",
 }
 
+test("tags classificadas do catálogo mudam a ordem e explicam a afinidade", () => {
+  const anchors = [fixture("1"), fixture("2"), fixture("3")]
+  const fantasy = fixture("4")
+  const horror = { ...fixture("5"), themes: ["Terror"] }
+  const games = [...anchors, horror, fantasy]
+  const result = buildRecommendations(user, games, hardware)
+  assert.deepEqual(result.pending.map((match) => match.game.id), ["4", "5"])
+  assert.ok(result.pending[0].affinity > result.pending[1].affinity)
+  assert.ok(result.pending[0].reasons.some((reason) => reason.includes("Temáticas do perfil: Fantasia")))
+  assert.ok(result.pending[0].reasons.some((reason) => reason.includes("jogos âncora") && reason.includes("Fantasia")))
+  assert.equal(result.items.length, 0) // Versão do SO continua pendente.
+})
+
 test("null de requisito não vira zero ou aprovação", () => {
   const game = fixture()
   game.platforms.Windows.minimum!.requirements.cpu_score = null

@@ -6,9 +6,11 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 23 CPUs e 25 GPUs estão classificadas. As 33 peças pendentes
-são 18 CPUs e 15 GPUs. O cadastro tem 81 peças. A tabela abaixo preserva
-os grupos iniciais; o novo lote está detalhado mais adiante.
+Na revisão atual, 28 CPUs e 33 GPUs estão classificadas. As 20 peças
+pendentes são 13 CPUs e sete GPUs. O cadastro tem 81 peças. A tabela
+abaixo preserva os grupos iniciais; as ampliações estão documentadas em
+[RESEARCH_2026_10.md](RESEARCH_2026_10.md) e
+[HARDWARE_REVIEW_2026_10.md](HARDWARE_REVIEW_2026_10.md).
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
@@ -236,8 +238,8 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 48` e `pending: 33`.
+Após esta revisão, a carga informa `classified: 61` e `pending: 20`.
 Requisitos que citam alternativas ainda sem nota continuam com
-`required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
-segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência
-mesmo com as duas alternativas deste primeiro grupo já classificadas.
+`required_score: null` e `status: needs_review`. A Arc A380 agora possui
+nota; os mínimos do Cyberpunk 2077 ainda têm a CPU pendente. A revisão
+complementar explicita as 13 novas classificações e as 20 pendências.

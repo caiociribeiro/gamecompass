@@ -11,7 +11,7 @@ import { fold } from "../lib/text"
 
 export function Recommendations() {
   const { user } = useSession()
-  const { games, hardware, discovered, discoverGames, gamesLoading } = useCatalog()
+  const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues } = useCatalog()
   const [query, setQuery] = useState("")
   if (!user) return null
   const ready = profileReady(user, games, hardware)
@@ -22,7 +22,7 @@ export function Recommendations() {
       <PageHeader
         eyebrow="Recomendações"
         title="Jogos para o seu perfil e para o seu PC"
-        lede="A afinidade usa os dados da Steam. As verificações mostram o que já foi comparado e o que ainda precisa de revisão."
+        lede="A afinidade considera gêneros e temáticas dos seus jogos âncora. As verificações mostram o que já foi comparado e o que ainda precisa de revisão."
       />
       <CatalogStatus />
       <CatalogStatus scope="hardware" />
@@ -51,6 +51,14 @@ export function Recommendations() {
       )}
       {ready && discovered && (
         <>
+          <p className="hint">
+            {candidateSource === "neo4j"
+              ? "Sugestões encontradas pelas ligações de gêneros e temáticas no catálogo."
+              : "Sugestões consultadas diretamente na Steam."}
+          </p>
+          {gameIssues.filter((issue) => !issue.appid).map((issue) => (
+            <p className="hint" key={issue.message}>{issue.message}</p>
+          ))}
           <label className="stack-label search-wide">
             Filtrar a lista
             <input

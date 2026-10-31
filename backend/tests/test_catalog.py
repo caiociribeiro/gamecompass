@@ -3,6 +3,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 import json
+from pathlib import Path
 from threading import Lock
 import time
 import unittest
@@ -14,7 +15,7 @@ from neo4j.exceptions import ServiceUnavailable
 
 from app.main import app
 from app.services.hardware import matching_context, read_hardware
-from app.services.steam import SteamClient, SteamError
+from app.services.steam import SteamClient, SteamError, Snapshot, normalize_game
 
 
 def fixture_data(appid="1091500"):
@@ -58,6 +59,7 @@ class FakeDriver:
         self.rows = fixture_rows()
         self.queries = []
         self.error = None
+        self.graph_rows = []
     def session(self, **kwargs):
         self.session_options = kwargs
         return self
@@ -69,18 +71,74 @@ class FakeDriver:
     def run(self, query, **params):
         if self.error: raise self.error
         self.queries.append((query, params))
-        return FakeResult(self.rows)
+        return FakeResult(self.graph_rows if "c.catalog_json" in query else self.rows)
     def close(self): pass
 
 
 class CatalogTests(unittest.TestCase):
+    def graph_fixture(self, appid="1091500"):
+        game = normalize_game(Snapshot(fixture_data(appid), {"source_url": "https://example.org/fixture"}), matching_context(read_hardware(self.driver, "neo4j")))
+        self.driver.graph_rows = [{"id": appid, "catalog_json": json.dumps(game),
+            "genres": ["RPG"], "tags": ["Fantasia"], "shared": ["RPG"]}]
+
+    def test_graph_game_uses_edges_and_current_database_scores_without_steam(self):
+        self.graph_fixture()
+        self.driver.rows[0]["performance_score"] = 901
+        data = self.client.get("/api/games/1091500").json()
+        self.assertEqual(data["catalog_source"], "neo4j")
+        self.assertEqual(data["themes"], ["Fantasia"])
+        self.assertEqual(data["themes_status"], "classified")
+        self.assertEqual(data["platforms"]["Windows"]["minimum"]["requirements"]["cpu_score"], 901)
+        self.assertEqual(data["min_cpu_score"], 901)
+        self.assertEqual(self.calls, [])
+
+    def test_graph_collection_reports_correct_source(self):
+        self.graph_fixture()
+        data = self.client.get("/api/games?appids=1091500").json()
+        self.assertEqual(data["source"], "neo4j")
+        self.assertEqual(self.calls, [])
+
+    def test_graph_candidates_receive_anchor_and_profile_filters(self):
+        self.graph_fixture("620")
+        response = self.client.get("/api/games/discover", params={"anchor_ids": "1091500,292030", "genres": "RPG,Aventura", "tags": "Fantasia"})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["source"], "neo4j")
+        self.assertEqual(data["items"][0]["id"], "620")
+        params = next(params for query, params in self.driver.queries if "c.catalog_json" in query)
+        self.assertEqual(params["anchors"], ["1091500", "292030"])
+        self.assertEqual(params["excluded"], params["anchors"])
+        self.assertEqual(params["genres"], ["RPG", "Aventura"])
+        self.assertEqual(params["tags"], ["Fantasia"])
+        self.assertEqual(self.calls, [])
+
+    def test_empty_graph_discovery_explains_steam_fallback(self):
+        data = self.client.get("/api/games/discover").json()
+        self.assertEqual(data["source"], "steam")
+        self.assertTrue(any("catalogados" in issue["message"] for issue in data["issues"]))
+
+    def test_graph_discovery_rejects_invalid_filters(self):
+        for params in ({"anchor_ids": "1,2,3,4"}, {"tags": "Fantasia,,Terror"}, {"genres": "a" * 81}):
+            self.assertEqual(self.client.get("/api/games/discover", params=params).status_code, 422)
+        self.assertEqual(self.calls, [])
+
     def setUp(self):
         self.driver = FakeDriver()
         self.calls = []
         self.responses = {}
+        self.search_rows = [{"id": 1091500, "name": "Jogo fixture 1091500", "type": "app"}]
         def handle(request):
-            appid = request.url.params["appids"]
             self.calls.append(request)
+            if request.url.path.endswith("/storesearch/"):
+                if "search" in self.responses:
+                    status, body = self.responses["search"]
+                    return httpx.Response(status, json=body)
+                return httpx.Response(200, json={"total": len(self.search_rows), "items": self.search_rows})
+            if request.url.path.endswith("/featuredcategories/"):
+                return httpx.Response(200, json={"top_sellers": {"items": [
+                    {"id": 10, "type": 0}, {"id": 11, "type": 0},
+                    {"id": 10, "type": 0}, {"id": 99, "type": 1}]}})
+            appid = request.url.params["appids"]
             if appid in self.responses:
                 status, body = self.responses[appid]
                 return httpx.Response(status, json=body)
@@ -127,7 +185,9 @@ class CatalogTests(unittest.TestCase):
         data = response.json()
         self.assertEqual(data["id"], "1091500")
         self.assertEqual(data["genres"], ["RPG"])
-        self.assertEqual(data["features"], ["Um jogador"])
+        self.assertEqual(data["themes"], [])
+        self.assertEqual(data["themes_status"], "pending")
+        self.assertNotIn("features", data)
         self.assertNotIn("oculto", data["summary"])
         self.assertEqual(data["platforms"]["Windows"]["minimum"]["requirements"], {"ram_gb": 8, "cpu_score": 777, "gpu_score": 555})
         self.assertEqual(data["platforms"]["Windows"]["recommended"]["requirements"], {"ram_gb": 16, "cpu_score": 888, "gpu_score": None})
@@ -179,22 +239,122 @@ class CatalogTests(unittest.TestCase):
 
     def test_partial_selection_reports_failed_appids(self):
         self.responses["1091500"] = (200, {"1091500": {"success": False}})
-        response = self.client.get("/api/games")
+        response = self.client.get("/api/games?appids=1091500,620")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEqual(len(data["items"]), 19)
+        self.assertEqual(len(data["items"]), 1)
         self.assertEqual(data["issues"][0]["appid"], "1091500")
 
-    def test_saved_extra_anchor_is_reloaded_from_steam(self):
-        response = self.client.get("/api/games?extra_appids=12345")
+    def test_saved_anchor_is_reloaded_without_a_preset_catalog(self):
+        response = self.client.get("/api/games?appids=12345")
         self.assertEqual(response.status_code, 200)
         self.assertIn("12345", [game["id"] for game in response.json()["items"]])
-        self.assertEqual(self.client.get("/api/games?extra_appids=1,2,3,4").status_code, 422)
-        self.assertEqual(self.client.get("/api/games?extra_appids=abc").status_code, 422)
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertEqual(self.client.get("/api/games?appids=" + ",".join(str(i) for i in range(1, 32))).status_code, 422)
+        self.assertEqual(self.client.get("/api/games?appids=abc").status_code, 422)
 
     def test_all_steam_requests_failing_is_503_not_mock_data(self):
         with patch.object(self.steam, "get_many", return_value=([], [{"appid": "1", "message": "fixture"}])):
-            self.assertEqual(self.client.get("/api/games").status_code, 503)
+            self.assertEqual(self.client.get("/api/games?appids=1091500").status_code, 503)
+
+    def test_empty_catalog_does_not_query_steam_or_database(self):
+        response = self.client.get("/api/games")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items"], [])
+        self.assertEqual(self.calls, [])
+        self.assertEqual(self.driver.queries, [])
+
+    def test_anchor_suggestions_use_real_snapshots_without_hardware_queries(self):
+        self.driver.error = ServiceUnavailable("fixture")
+        response = self.client.get("/api/games/anchors")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data["items"]), 8)
+        self.assertEqual(data["selection"], "editorial")
+        self.assertEqual(data["items"][0]["title"], "Jogo fixture 1091500")
+        self.assertTrue(data["items"][0]["image_url"].startswith("https://"))
+        self.assertEqual(len(data["items"][0]["source"]["response_sha256"]), 64)
+        self.assertNotIn("platforms", data["items"][0])
+        self.assertEqual(self.driver.queries, [])
+        self.assertTrue(all(call.url.path.endswith("/appdetails") for call in self.calls))
+
+    def test_anchor_suggestions_reuse_cache_and_do_not_replace_search(self):
+        for _ in range(2):
+            self.assertEqual(self.client.get("/api/games/anchors").status_code, 200)
+        self.assertEqual(len(self.calls), 8)
+        self.assertEqual(self.client.get("/api/games/search?q=outro").status_code, 200)
+        self.assertEqual(len(self.calls), 9)
+        self.assertEqual(self.client.get("/api/games").json()["items"], [])
+
+    def test_anchor_suggestions_keep_available_games_when_one_fails(self):
+        self.responses["1091500"] = (200, {"1091500": {"success": False}})
+        response = self.client.get("/api/games/anchors")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["items"]), 7)
+        self.assertEqual(response.json()["issues"][0]["appid"], "1091500")
+
+    def test_anchor_suggestions_all_failing_do_not_return_mock_games(self):
+        with patch.object(self.steam, "get_many", return_value=([], [])):
+            self.assertEqual(self.client.get("/api/games/anchors").status_code, 503)
+
+    def test_invalid_anchor_selection_does_not_contact_steam(self):
+        for selection in ({"appids": ["1", "1"]}, {"appids": ["abc"]}, [], {"appids": []}):
+            with patch.object(Path, "read_text", return_value=json.dumps(selection)):
+                self.assertEqual(self.client.get("/api/games/anchors").status_code, 503)
+        self.assertEqual(self.calls, [])
+
+    def test_api_health_is_independent_of_steam_and_database(self):
+        self.driver.error = ServiceUnavailable("fixture")
+        self.assertEqual(self.client.get("/health").json(), {"status": "ok"})
+        self.assertEqual(self.calls, [])
+        self.assertEqual(self.driver.queries, [])
+
+    def test_search_by_name_does_not_load_game_details(self):
+        response = self.client.get("/api/games/search", params={"q": "Cyberpunk"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items"], [{"id": "1091500", "title": "Jogo fixture 1091500"}])
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.calls[0].url.params["term"], "Cyberpunk")
+        self.assertNotIn("appids", self.calls[0].url.params)
+        self.assertEqual(self.driver.queries, [])
+
+    def test_search_is_cached_and_is_not_an_appid_route(self):
+        for query in ("Cyberpunk", "cyberpunk"):
+            self.assertEqual(self.client.get("/api/games/search", params={"q": query}).status_code, 200)
+        self.assertEqual(len(self.calls), 1)
+        self.assertTrue(self.calls[0].url.path.endswith("/storesearch/"))
+
+    def test_invalid_search_is_rejected_before_http(self):
+        for query in ("a", "  ", "x" * 101):
+            self.assertEqual(self.client.get("/api/games/search", params={"q": query}).status_code, 422)
+        self.assertEqual(self.calls, [])
+
+    def test_search_empty_results_do_not_create_examples(self):
+        self.search_rows = []
+        response = self.client.get("/api/games/search", params={"q": "inexistente"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items"], [])
+
+    def test_search_ignores_invalid_rows_and_packages(self):
+        self.search_rows += [None, {"id": 22, "type": "sub", "name": "Pacote fixture"},
+            {"id": True, "type": "app", "name": "Inválido"}, self.search_rows[0]]
+        data = self.client.get("/api/games/search", params={"q": "fixture"}).json()
+        self.assertEqual(len(data["items"]), 1)
+
+    def test_search_failure_is_visible_and_not_cached_as_a_game(self):
+        self.responses["search"] = (429, {})
+        self.assertEqual(self.client.get("/api/games/search", params={"q": "fixture"}).status_code, 503)
+        del self.responses["search"]
+        self.assertEqual(self.client.get("/api/games/search", params={"q": "fixture"}).status_code, 200)
+
+    def test_discovery_only_runs_on_explicit_request(self):
+        self.assertEqual(self.client.get("/api/games").json()["items"], [])
+        self.assertEqual(self.calls, [])
+        response = self.client.get("/api/games/discover")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([game["id"] for game in response.json()["items"]], ["10", "11"])
+        self.assertEqual(len(self.calls), 3)
+        self.assertIn("featuredcategories", response.json()["candidate_source"]["source_url"])
 
     def test_bad_memory_stays_pending_without_losing_hardware(self):
         data = fixture_data()
