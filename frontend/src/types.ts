@@ -1,6 +1,15 @@
-import type { OPERATING_SYSTEMS } from "./data/hardware"
+import type { OPERATING_SYSTEMS, WINDOWS_VERSIONS } from "./data/hardware"
 
 export type OperatingSystem = (typeof OPERATING_SYSTEMS)[number]
+export type WindowsVersion = (typeof WINDOWS_VERSIONS)[number]
+export type HardwareAlternative = {
+  status: "matched" | "not_found"
+  component_type: "CPU" | "GPU"
+  name: string | null
+  performance_score: number | null
+  score_version: string | null
+  score_status: "classified" | "pending" | "not_found"
+}
 export type RequirementsBlock = {
   text: string
   os_text: string | null
@@ -8,6 +17,18 @@ export type RequirementsBlock = {
   requirements: { ram_gb: number | null; cpu_score: number | null; gpu_score: number | null }
   issues: string[]
   score_version: string
+  curation?: {
+    component_type: "CPU" | "GPU"
+    method: "manual_reference"
+    original_query: string
+    reference_models: string[]
+    source_url: string
+    notes: string
+  }[]
+  hardware?: Partial<Record<"CPU" | "GPU", {
+    query?: string
+    alternatives: HardwareAlternative[]
+  } | null>>
 }
 export type Game = {
   id: string
@@ -15,6 +36,7 @@ export type Game = {
   developer: string
   year: number | null
   genres: string[]
+  genre_source?: { steam: string[]; editorial: string[]; method: string; notes?: string }
   themes: string[]
   themes_status: "pending" | "classified"
   summary: string
@@ -40,7 +62,13 @@ export type Part = {
 }
 export type HardwareCatalog = { CPU: Part[]; GPU: Part[]; score_version: string; source: "neo4j" }
 export type GameSearchResult = { id: string; title: string; image_url?: string | null }
-export type HardwareProfile = { cpuId: string; gpuId: string; ramGb: number; os: OperatingSystem }
+export type HardwareProfile = {
+  cpuId: string
+  gpuId: string
+  ramGb: number
+  os: OperatingSystem
+  windowsVersion?: WindowsVersion
+}
 export type UserProfile = {
   id: string
   name: string
@@ -52,14 +80,38 @@ export type UserProfile = {
   hardware: HardwareProfile | null
   catalogVersion?: "steam-v1" | "steam-v2"
 }
-export type Check = { label: string; ok: boolean | null; detail: string }
+export type RequirementLevel = "minimum" | "recommended"
+export type HardwareSuggestion = {
+  name: string
+  partId?: string
+  detail: string
+  alternatives?: { name: string; partId?: string; detail: string }[]
+}
+export type Check = {
+  label: string
+  ok: boolean | null
+  detail: string
+  suggestion?: HardwareSuggestion
+  estimated?: boolean
+}
+export type Compatibility = "compatible" | "incompatible" | "needs_review"
+export type HardwareAssessment = {
+  available: boolean
+  checks: Check[]
+  compatibility: Compatibility
+}
 export type GameMatch = {
   game: Game
   affinity: number
   reasons: string[]
+  anchorMatches?: { id: string; title: string; similarity: number; genres: string[]; themes: string[] }[]
+  preferredGenres?: string[]
   checks: Check[]
   compatible: boolean
-  compatibility: "compatible" | "incompatible" | "needs_review"
+  compatibility: Compatibility
+  meets: RequirementLevel | null
+  estimated?: boolean
+  assessments: Record<RequirementLevel, HardwareAssessment>
   anchor: boolean
 }
 export type ProfileStep = { id: string; label: string; hint: string; done: boolean; to: string }

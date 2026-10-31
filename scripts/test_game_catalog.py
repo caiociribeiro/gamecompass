@@ -11,9 +11,36 @@ from fetch_steam import save_snapshot
 from game_catalog import ROOT, build_catalog, read_selection, validate_catalog
 from load_games import prepare_payload, main as load_main
 from process_games import main as process_main
+from review_game_requirements import main as review_main, review_catalog
 
 
 class GameCatalogTests(unittest.TestCase):
+    def test_editorial_genres_extend_steam_genres_with_separate_provenance(self):
+        selected = json.loads(self.selection.read_text())
+        selected["games"][0].update(editorial_genres=["Roguelike"], genre_curation_notes="Classificação de teste.")
+        self.selection.write_text(json.dumps(selected))
+        data = self.build()
+        game = data["games"][0]
+        self.assertEqual(game["genres"], ["RPG", "Roguelike"])
+        self.assertEqual(game["genre_source"]["steam"], ["RPG"])
+        self.assertEqual(game["genre_source"]["editorial"], ["Roguelike"])
+        self.assertIn("Roguelike", prepare_payload(data)[0]["genres"])
+
+    def test_invalid_or_unexplained_editorial_genres_are_rejected(self):
+        original = json.loads(self.selection.read_text())
+        for genres, note in [(["Categoria desconhecida"], "nota"), (["Puzzle", "Puzzle"], "nota"),
+                             (["Puzzle"], ""), ("Puzzle", "nota"), ([True], "nota")]:
+            selected = deepcopy(original)
+            selected["games"][0].update(editorial_genres=genres, genre_curation_notes=note)
+            self.selection.write_text(json.dumps(selected))
+            with self.assertRaises(ValueError): read_selection(self.selection)
+
+    def test_processed_genres_cannot_disagree_with_their_sources(self):
+        data = self.build()
+        data["games"][0]["genre_source"]["editorial"] = ["Puzzle"]
+        with self.assertRaisesRegex(ValueError, "Origem"):
+            prepare_payload(data)
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
@@ -65,12 +92,90 @@ class GameCatalogTests(unittest.TestCase):
         self.assertIsNone(game["rec_ram_gb"])
         self.assertEqual(game["status"], "needs_review")
 
+    def test_portuguese_os_and_fractional_ram_survive_the_full_pipeline(self):
+        self.raw_data["pc_requirements"]["minimum"] = (
+            self.raw_data["pc_requirements"]["minimum"]
+            .replace("OS: Windows 10", "Sistema Operativo *: Windows 11")
+            .replace("8 GB RAM", "2.5 GB RAM")
+        )
+        self.save()
+        game = self.build()["games"][0]
+        self.assertEqual(game["platforms"]["Windows"]["minimum"]["os_text"], "Windows 11")
+        self.assertEqual(game["min_ram_gb"], 3)
+        self.assertFalse(any("SO ausente" in issue for issue in game["issues"]))
+
+    def test_new_spelling_aliases_keep_the_canonical_models_and_scores(self):
+        self.raw_data["pc_requirements"]["minimum"] = (
+            "Sistema Operativo: Windows 10<br>Processor: Intel Core i7 8700K"
+            "<br>Memory: 8 GB RAM<br>Graphics: Intel Arc A580 (8GB+ of VRAM)"
+        )
+        self.save()
+        minimum = self.build()["games"][0]["platforms"]["Windows"]["minimum"]
+        self.assertEqual(minimum["status"], "resolved")
+        self.assertEqual(minimum["hardware"]["CPU"]["alternatives"][0]["name"], "Intel Core i7-8700K")
+        self.assertEqual(minimum["hardware"]["GPU"]["alternatives"][0]["name"], "Intel Arc A580 8GB")
+        self.assertEqual(minimum["requirements"]["cpu_score"], 100)
+        self.assertEqual(minimum["requirements"]["gpu_score"], 300)
+
     def test_unidentified_model_keeps_other_results(self):
         self.raw_data["pc_requirements"]["minimum"] = self.raw_data["pc_requirements"]["minimum"].replace("AMD Ryzen 5 3600", "CPU fixture desconhecida")
         self.save()
         game = self.build()["games"][0]
         self.assertIsNone(game["min_cpu_score"])
         self.assertEqual(game["min_gpu_score"], 550)
+
+    def test_known_or_alternative_survives_without_fabricating_unknown_vram(self):
+        self.raw_data["pc_requirements"]["recommended"] = (
+            "OS: Windows 10<br>Processor: Intel Core i7-8700<br>Memory: 16 GB RAM"
+            "<br>Graphics: NVIDIA GeForce 1080 Ti or AMD Radeon RX 5700 XT or INTEL Arc A770"
+        )
+        self.save()
+        data = self.build()
+        block = data["games"][0]["platforms"]["Windows"]["recommended"]
+        self.assertIsNone(block["requirements"]["gpu_score"])
+        alternatives = block["hardware"]["GPU"]["alternatives"]
+        self.assertEqual([a["performance_score"] for a in alternatives], [300, 300, None])
+        self.assertIsNone(alternatives[-1]["name"])
+        report = review_catalog(data)
+        self.assertEqual(report["summary"]["recommended"]["has_known_alternative"], 1)
+
+    def test_boilerplate_only_recommended_is_absent_instead_of_an_empty_checklist(self):
+        self.raw_data["pc_requirements"]["recommended"] = (
+            "<strong>Recomendados:</strong><br>Requer um sistema operativo e processador de 64 bits"
+        )
+        self.save()
+        data = self.build()
+        self.assertIsNone(data["games"][0]["platforms"]["Windows"]["recommended"])
+        self.assertEqual(review_catalog(data)["summary"]["recommended"]["not_provided"], 1)
+
+    def test_review_distinguishes_generic_frequency_from_a_classified_model(self):
+        self.raw_data["pc_requirements"]["minimum"] = (
+            "OS: Windows 10<br>Processor: 2.0 GHz<br>Memory: 4 GB RAM<br>Graphics: Intel HD 4000"
+        )
+        self.raw_data["pc_requirements"]["recommended"] = ""
+        self.save()
+        report = review_catalog(self.build())
+        self.assertEqual(report["summary"]["requiring_curation"], 1)
+        self.assertEqual(report["pending_queries"][0]["query"], "2.0 GHz")
+
+    def test_review_cli_keeps_the_input_hash_and_level_counts(self):
+        source = self.root / "processed.json"
+        source.write_text(json.dumps(self.build()), encoding="utf-8")
+        output = self.root / "review.json"
+        self.assertEqual(review_main(["--input", str(source), "--output", str(output)]), 0)
+        report = json.loads(output.read_text())
+        self.assertEqual(report["source"]["input_sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertEqual(report["summary"]["minimum"]["resolved"], 1)
+        self.assertEqual(report["summary"]["with_comparison_basis"], 1)
+
+    def test_review_cli_preserves_previous_output_when_input_is_invalid(self):
+        source = self.root / "invalid.json"
+        source.write_text('{"schema_version":"invalid"}')
+        output = self.root / "previous-review.json"
+        output.write_text('{"previous":"preserve"}')
+        original = output.read_bytes()
+        self.assertEqual(review_main(["--input", str(source), "--output", str(output)]), 1)
+        self.assertEqual(output.read_bytes(), original)
 
     def test_missing_price_is_not_free(self):
         del self.raw_data["price_overview"]

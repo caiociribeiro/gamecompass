@@ -198,6 +198,8 @@ def process_catalog(
             writer = csv.DictWriter(handle, fieldnames=columns)
             writer.writeheader()
             writer.writerows(records)
+        # Saídas criadas pelo contêiner também precisam ser legíveis no host Linux.
+        temporary_path.chmod(0o644)
         os.replace(temporary_path, output_path)
     finally:
         if temporary_path is not None:

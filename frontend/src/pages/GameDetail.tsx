@@ -1,16 +1,26 @@
-import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { useEffect, useState, type MouseEvent } from "react"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { Cover } from "../components/GameCard"
 import { useTitle } from "../components/PageHeader"
+import { RequirementsComparison } from "../components/RequirementsComparison"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { OPERATING_SYSTEMS } from "../data/hardware"
 import { apiError } from "../lib/api"
-import { describeMatch } from "../lib/recommend"
+import { gameReturnTarget } from "../lib/navigation"
+import { compatibilityLabel, describeMatch } from "../lib/recommend"
 import type { OperatingSystem } from "../types"
 
 export function GameDetail() {
   const { id } = useParams()
+  const back = gameReturnTarget(useLocation().state)
+  const navigate = useNavigate()
+  function goBack(event: MouseEvent<HTMLAnchorElement>) {
+    if (back.historyBack && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault()
+      navigate(-1)
+    }
+  }
   const { user } = useSession()
   const { games, hardware, loadGame } = useCatalog()
   const game = games.find((item) => item.id === id)
@@ -41,15 +51,15 @@ export function GameDetail() {
             Tentar novamente
           </button>
         )}
-        <Link to="/app">Voltar ao painel</Link>
+        <Link to={back.to} replace onClick={goBack}>{back.label}</Link>
       </div>
     )
   const match = describeMatch(user, game, games, hardware)
   const platform = game.platforms[system]
   return (
     <div className="page">
-      <Link className="back" to="/app">
-        Voltar ao painel
+      <Link className="back" to={back.to} replace onClick={goBack}>
+        {back.label}
       </Link>
       <article className="detail">
         <Cover game={game} className="cover-lg" />
@@ -60,6 +70,9 @@ export function GameDetail() {
           <h1>{game.title}</h1>
           <p className="lede">{game.summary}</p>
           <p className="tags">{game.genres.join(" · ")}</p>
+          {Boolean(game.genre_source?.editorial.length) && (
+            <p className="hint">Categorias de jogabilidade classificadas pelo GameCompass: {game.genre_source!.editorial.join(", ")}.</p>
+          )}
           <p className="hint">{game.price_text}</p>
           <a href={game.store_url} target="_blank" rel="noreferrer">
             Abrir na Steam
@@ -69,13 +82,15 @@ export function GameDetail() {
             <span>de afinidade com o perfil informado</span>
           </div>
           {match.anchor && <p className="banner">Este é um dos seus jogos âncora.</p>}
-          {user.hardware && match.compatibility === "needs_review" && (
-            <p className="banner warn">
-              Há verificações pendentes. A compatibilidade completa ainda não foi confirmada.
+          {user.hardware && (
+            <p className={`banner ${match.compatible ? "ok" : "warn"}`}>
+              {compatibilityLabel(match)}.
+              {match.meets === "minimum" && match.assessments.recommended.compatibility === "needs_review" && (
+                <> {match.assessments.recommended.available
+                  ? "A validação dos recomendados está pendente."
+                  : "A Steam não informou requisitos recomendados para esta plataforma."}</>
+              )}
             </p>
-          )}
-          {user.hardware && match.compatibility === "incompatible" && (
-            <p className="banner warn">Há restrições identificadas para o computador informado.</p>
           )}
         </div>
       </article>
@@ -110,12 +125,19 @@ export function GameDetail() {
                 {block ? (
                   <>
                     <pre className="requirements-text">{block.text}</pre>
-                    <p className="hint">
-                      RAM:{" "}
-                      {block.requirements.ram_gb === null ? "pendente" : `${block.requirements.ram_gb} GB`} ·
-                      CPU: {block.requirements.cpu_score ?? "pendente"} · GPU:{" "}
-                      {block.requirements.gpu_score ?? "pendente"}.
-                    </p>
+                    {Boolean(block.curation?.length) && (
+                      <details>
+                        <summary>A comparação usa referências manuais para requisitos genéricos</summary>
+                        <ul>
+                          {block.curation!.map((reference) => (
+                            <li key={reference.component_type}>
+                              <strong>{reference.component_type === "CPU" ? "Processador" : "Placa de vídeo"}:</strong>{" "}
+                              {reference.reference_models.join(" ou ")}. {reference.notes}
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
                     {block.issues.length > 0 && (
                       <details>
                         <summary>Pendências de identificação</summary>
@@ -144,26 +166,15 @@ export function GameDetail() {
       </section>
       <section className="stack">
         <h2>Comparação com seu computador</h2>
+        {user.hardware && <p className="hint">Requisitos da versão para {user.hardware.os}, o sistema salvo no seu perfil.</p>}
         {!match.checks.length ? (
           <p className="empty">Cadastre seu computador para comparar.</p>
         ) : (
-          <ul className="checks">
-            {match.checks.map((check) => (
-              <li key={check.label}>
-                <span className={check.ok === true ? "pill ok" : check.ok === false ? "pill no" : "pill"}>
-                  {check.ok === true ? "Atende" : check.ok === false ? "Não atende" : "Pendente"}
-                </span>
-                <div>
-                  <strong>{check.label}</strong>
-                  <p>{check.detail}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          user.hardware && <RequirementsComparison match={match} profile={user.hardware} catalog={hardware} />
         )}
         <p className="hint">
-          A análise usa requisitos da plataforma do seu computador. Versão do SO, VRAM, DirectX e outros
-          requisitos específicos ainda exigem conferência.
+          As sugestões são referências de desempenho. Confira soquete, placa-mãe, fonte e espaço físico
+          antes de trocar uma peça. VRAM, DirectX e outros requisitos específicos exigem conferência.
         </p>
       </section>
       {match.reasons.length > 0 && (

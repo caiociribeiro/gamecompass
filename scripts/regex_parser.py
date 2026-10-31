@@ -1,17 +1,20 @@
 """Limpa um bloco de requisitos (mínimos OU recomendados) e extrai a RAM.
 
-Versão inicial: valores inteiros em MB ou GB, com 1024 MB por GB.
+Aceita valores inteiros ou decimais em MB/GB, com 1024 MB por GB.
 """
 
 import argparse
+from fractions import Fraction
 from html.parser import HTMLParser
 import json
+from math import ceil
 import re
 import sys
 
 
 RAM_VALUE = re.compile(
-    r"([0-9]+)\s*(MB|GB)(?:\s+(?:de\s+)?RAM)?",
+    r"([0-9]+(?:[.,][0-9]{1,2})?)\s*(MB|GB)(?:\s+(?:de\s+)?RAM)?"
+    r"(?:\s+DDR[2-5](?:[- ]?\d{3,5})?)?",
     re.IGNORECASE,
 )
 
@@ -70,24 +73,24 @@ def clean_html(html: str) -> str:
 
 
 def normalize_ram_gb(value: str) -> int:
-    """Converte MB/GB inteiros para GB, arredondando para cima quando necessário."""
+    """Converte MB/GB para GB inteiros, arredondando frações para cima."""
     match = RAM_VALUE.fullmatch(value.strip())
 
     if match is None:
         raise ValueError(
-            "RAM inválida: use um valor inteiro em MB ou GB, "
-            "por exemplo 8192 MB ou 8 GB RAM."
+            "RAM inválida: use um valor em MB ou GB, "
+            "por exemplo 8192 MB, 8 GB RAM ou 2.5 GB."
         )
 
-    amount = int(match.group(1))
+    amount = Fraction(match.group(1).replace(",", "."))
 
     if amount <= 0:
         raise ValueError("A quantidade de RAM deve ser maior que zero.")
 
     if match.group(2).upper() == "MB":
-        return (amount + 1023) // 1024
+        return ceil(amount / 1024)
 
-    return amount
+    return ceil(amount)
 
 
 def extract_ram_gb(html: str) -> int | None:

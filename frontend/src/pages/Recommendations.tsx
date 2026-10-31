@@ -1,22 +1,36 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation, useSearchParams } from "react-router-dom"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { GameCard } from "../components/GameCard"
 import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { profileSteps } from "../lib/profile"
-import { buildRecommendations, profileReady } from "../lib/recommend"
+import { buildRecommendations, compatibilityLabel, profileReady } from "../lib/recommend"
 import { fold } from "../lib/text"
 
 export function Recommendations() {
   const { user } = useSession()
+  const location = useLocation()
+  const [params, setParams] = useSearchParams()
   const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues } = useCatalog()
-  const [query, setQuery] = useState("")
+  const query = params.get("q") ?? ""
+  const status = params.get("status") ?? "all"
+  const filter = ["recommended", "minimum", "pending", "incompatible"].includes(status) ? status : "all"
+  function updateFilter(key: "q" | "status", value: string) {
+    const next = new URLSearchParams(params)
+    if (value && !(key === "status" && value === "all")) next.set(key, value)
+    else next.delete(key)
+    setParams(next, { replace: true })
+  }
   if (!user) return null
   const ready = profileReady(user, games, hardware)
   const result = buildRecommendations(user, games, hardware)
   const matches = (title: string) => fold(title).includes(fold(query.trim()))
+  const items = result.items.filter((match) => matches(match.game.title) && (filter === "all" || match.meets === filter))
+  const pending = filter === "all" || filter === "pending" ? result.pending.filter((match) => matches(match.game.title)) : []
+  const excluded = filter === "all" || filter === "incompatible" ? result.excluded.filter((match) => matches(match.game.title)) : []
+  const visible = items.length + pending.length + excluded.length
+  const total = result.items.length + result.pending.length + result.excluded.length
   return (
     <div className="page">
       <PageHeader
@@ -56,70 +70,85 @@ export function Recommendations() {
               ? "Sugestões encontradas pelas ligações de gêneros e temáticas no catálogo."
               : "Sugestões consultadas diretamente na Steam."}
           </p>
+          {total > 0 && ![...result.items, ...result.pending, ...result.excluded].some((match) => match.preferredGenres?.length) && (
+            <p className="hint">Não há outros jogos dos gêneros escolhidos entre os candidatos desta busca. A lista usa afinidade com suas âncoras e temáticas.</p>
+          )}
           {gameIssues.filter((issue) => !issue.appid).map((issue) => (
             <p className="hint" key={issue.message}>{issue.message}</p>
           ))}
-          <label className="stack-label search-wide">
-            Filtrar a lista
-            <input
-              value={query}
-              placeholder="Nome do jogo"
-              onChange={(event) => setQuery(event.target.value)}
-            />
-          </label>
+          <div className="recommendation-filters">
+            <label className="stack-label">
+              Filtrar a lista
+              <input
+                value={query}
+                placeholder="Nome do jogo"
+                onChange={(event) => updateFilter("q", event.target.value)}
+              />
+            </label>
+            <label className="stack-label">
+              Situação dos requisitos
+              <select value={filter} onChange={(event) => updateFilter("status", event.target.value)}>
+                <option value="all">Todos os resultados</option>
+                <option value="recommended">Recomendados atendidos</option>
+                <option value="minimum">Apenas mínimos atendidos</option>
+                <option value="pending">Validação pendente</option>
+                <option value="incompatible">Com restrições</option>
+              </select>
+            </label>
+          </div>
           <p className="hint">
-            {result.items.length} com verificações atendidas · {result.pending.length} com validação pendente
+            {result.items.filter((match) => match.meets === "recommended").length} atendem aos recomendados
+            {" · "}{result.items.filter((match) => match.meets === "minimum").length} atendem aos mínimos
+            {" · "}{result.pending.length} com validação pendente
             · {result.excluded.length} com restrições identificadas.
           </p>
-          {result.items.length > 0 && (
+          <p className="hint" role="status">Exibindo {visible} de {total} resultados.</p>
+          {visible === 0 && <p className="empty">{total > 0
+            ? "Nenhum jogo encontrado com esses filtros."
+            : "Nenhuma sugestão disponível para este conjunto de âncoras e preferências. Experimente outras escolhas."}</p>}
+          {items.length > 0 && (
             <section className="stack">
-              <h2>Verificações atendidas</h2>
+              <h2>Requisitos atendidos</h2>
               <div className="card-grid">
-                {result.items
-                  .filter((match) => matches(match.game.title))
-                  .map((match) => (
+                {items.map((match) => (
                     <GameCard
                       key={match.game.id}
                       game={match.game}
                       affinity={match.affinity}
                       href={`/app/jogos/${match.game.id}`}
-                      note="Atende aos campos comparados"
+                      note={compatibilityLabel(match)}
+                      reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
                     />
                   ))}
               </div>
             </section>
           )}
+          {pending.length > 0 && (
           <section className="stack">
             <h2>Com afinidade, aguardando validação</h2>
             <p className="hint">
               Esses jogos combinam com seu perfil. Consulte as pendências antes de concluir se atendem ao
               computador.
             </p>
-            {result.pending.filter((match) => matches(match.game.title)).length ? (
-              <div className="card-grid">
-                {result.pending
-                  .filter((match) => matches(match.game.title))
-                  .map((match) => (
+            <div className="card-grid">
+                {pending.map((match) => (
                     <GameCard
                       key={match.game.id}
                       game={match.game}
                       affinity={match.affinity}
                       href={`/app/jogos/${match.game.id}`}
-                      note="Validação pendente"
+                      note={compatibilityLabel(match)}
+                      reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
                     />
                   ))}
-              </div>
-            ) : (
-              <p className="empty">Nenhum título pendente com esse filtro.</p>
-            )}
+            </div>
           </section>
-          {result.excluded.length > 0 && (
-            <details className="excluded">
+          )}
+          {excluded.length > 0 && (
+            <details className="excluded" open={filter === "incompatible"}>
               <summary>Restrições identificadas</summary>
               <ul>
-                {result.excluded
-                  .filter((match) => matches(match.game.title))
-                  .map((match) => (
+                {excluded.map((match) => (
                     <li key={match.game.id}>
                       <div>
                         <strong>{match.game.title}</strong>
@@ -130,7 +159,7 @@ export function Recommendations() {
                             .join(", ")}
                         </span>
                       </div>
-                      <Link to={`/app/jogos/${match.game.id}`}>Ver o motivo</Link>
+                      <Link to={`/app/jogos/${match.game.id}`} state={{ returnTo: location.pathname + location.search, returnKey: location.key }}>Ver o motivo</Link>
                     </li>
                   ))}
               </ul>

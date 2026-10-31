@@ -4,9 +4,9 @@ import { PageHeader } from "../components/PageHeader"
 import { SearchSelect } from "../components/SearchSelect"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
-import { OPERATING_SYSTEMS, RAM_OPTIONS } from "../data/hardware"
+import { OPERATING_SYSTEMS, RAM_OPTIONS, WINDOWS_VERSIONS } from "../data/hardware"
 import { hardwareSummary } from "../lib/hardware"
-import type { OperatingSystem, Part } from "../types"
+import type { OperatingSystem, WindowsVersion } from "../types"
 
 export function Hardware() {
   const { user, updateUser } = useSession()
@@ -15,14 +15,15 @@ export function Hardware() {
   const [gpuId, setGpuId] = useState(user?.hardware?.gpuId ?? "")
   const [ramGb, setRamGb] = useState(String(user?.hardware?.ramGb ?? ""))
   const [os, setOs] = useState<OperatingSystem | "">(user?.hardware?.os ?? "")
+  const [windowsVersion, setWindowsVersion] = useState<WindowsVersion | "">(
+    user?.hardware?.windowsVersion ?? "",
+  )
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   if (!user) return null
   const cpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.CPU.length
   const gpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.GPU.length
   const summary = hardwareSummary(user.hardware, hardware)
-  const hint = (part: Part) =>
-    `${part.vendor} · ${part.performance_score === null ? "Classificação pendente" : `Classe ${part.performance_score}`}`
   return (
     <div className="page narrow">
       <PageHeader
@@ -59,7 +60,17 @@ export function Hardware() {
             setError("Selecione uma CPU, uma GPU, a RAM e o sistema operacional disponíveis.")
             return
           }
-          updateUser({ hardware: { cpuId, gpuId, ramGb: Number(ramGb), os } })
+          if (os === "Windows" && !WINDOWS_VERSIONS.some((version) => version === windowsVersion)) {
+            setSaved(false)
+            setError("Selecione sua versão do Windows de 64 bits.")
+            return
+          }
+          updateUser({
+            hardware: {
+              cpuId, gpuId, ramGb: Number(ramGb), os,
+              windowsVersion: os === "Windows" ? windowsVersion as WindowsVersion : undefined,
+            },
+          })
           setError(null)
           setSaved(true)
         }}
@@ -67,7 +78,7 @@ export function Hardware() {
         <SearchSelect
           label="Processador"
           disabled={cpuUnavailable}
-          options={hardware.CPU.map((part) => ({ id: part.id, label: part.name, hint: hint(part) }))}
+          options={hardware.CPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
           value={cpuId}
           onChange={(id) => {
             setCpuId(id)
@@ -85,7 +96,7 @@ export function Hardware() {
         <SearchSelect
           label="Placa de vídeo"
           disabled={gpuUnavailable}
-          options={hardware.GPU.map((part) => ({ id: part.id, label: part.name, hint: hint(part) }))}
+          options={hardware.GPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
           value={gpuId}
           onChange={(id) => {
             setGpuId(id)
@@ -123,6 +134,7 @@ export function Hardware() {
             value={os}
             onChange={(event) => {
               setOs(event.target.value as OperatingSystem | "")
+              setWindowsVersion("")
               setSaved(false)
             }}
           >
@@ -134,6 +146,23 @@ export function Hardware() {
             ))}
           </select>
         </label>
+        {os === "Windows" && (
+          <label>
+            Versão do Windows
+            <select
+              value={windowsVersion}
+              onChange={(event) => {
+                setWindowsVersion(event.target.value as WindowsVersion | "")
+                setSaved(false)
+              }}
+            >
+              <option value="">Selecione</option>
+              {WINDOWS_VERSIONS.map((version) => (
+                <option key={version} value={version}>Windows {version} (64 bits)</option>
+              ))}
+            </select>
+          </label>
+        )}
         {error && (
           <p className="form-error" role="alert">
             {error}
@@ -152,11 +181,6 @@ export function Hardware() {
         <section className="summary-line">
           <p className="eyebrow">Seu computador</p>
           <p>{summary.text}</p>
-          <p className="hint">
-            CPU: {summary.cpu.performance_score ?? "pendente"}. GPU:{" "}
-            {summary.gpu.performance_score ?? "pendente"}. Índice {hardware.score_version}; cada componente
-            tem sua própria escala.
-          </p>
         </section>
       )}
     </div>

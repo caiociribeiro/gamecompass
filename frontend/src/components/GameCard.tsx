@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import type { Game } from "../types"
 
 function hue(id: string) {
@@ -36,14 +36,17 @@ export function GameCard({
   affinity,
   href,
   note,
+  reason,
 }: {
   game: Game
   affinity?: number
   href: string
   note?: string
+  reason?: string
 }) {
+  const location = useLocation()
   return (
-    <Link className="game-card" to={href}>
+    <Link className="game-card" to={href} state={{ returnTo: location.pathname + location.search, returnKey: location.key }}>
       <Cover game={game} />
       <div className="game-card-body">
         <div className="game-card-top">
@@ -60,6 +63,7 @@ export function GameCard({
           </div>
         )}
         {note && <p className="note">{note}</p>}
+        {reason && <p className="hint card-reason">{reason}</p>}
       </div>
     </Link>
   )

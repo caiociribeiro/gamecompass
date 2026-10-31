@@ -160,7 +160,7 @@ button { cursor: pointer; }
 }
 
 .game-card-body, .steps li, .card-block, .summary-line { padding: 16px 16px 18px; }
-.game-card-body { display: grid; gap: 8px; align-content: start; }
+.game-card-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .game-card-top, .affinity-row, .slot-filled, .search-results li, .checks li, .excluded li, .progress-list li {
   display: flex;
   justify-content: space-between;
@@ -168,6 +168,9 @@ button { cursor: pointer; }
   align-items: center;
 }
 .game-card h3 { font-size: 1.15rem; }
+.game-card .game-card-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.game-card h3, .detail > div { min-width: 0; overflow-wrap: anywhere; }
+.game-card .note { margin-top: auto; padding-top: 4px; }
 .game-card-top strong, .affinity-row strong { color: var(--brass); font-family: var(--serif); font-size: 1.4rem; }
 .note { color: var(--moss); font-size: 0.86rem; }
 
@@ -295,6 +298,8 @@ input, select {
 .slots > li > span { color: var(--faint); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .slot-filled { padding: 8px 0; }
 .search-wide { max-width: 420px; }
+.recommendation-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; max-width: 840px; }
+@media (max-width: 680px) { .recommendation-filters { grid-template-columns: minmax(0, 1fr); } }
 
 .search-results, .plain-list, .reasons, .checks, .excluded ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .search-results li, .plain-list li, .excluded li {
@@ -361,6 +366,32 @@ input, select {
 .pill { flex: none; min-width: 96px; text-align: center; border-radius: 999px; padding: 4px 8px; font-size: 0.78rem; font-weight: 600; }
 .pill.ok { color: var(--moss); background: rgba(157, 206, 173, 0.12); }
 .pill.no { color: var(--clay); background: rgba(227, 155, 141, 0.12); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.comparison-wrap { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-raise); }
+.hardware-comparison { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: .9rem; }
+.hardware-comparison th, .hardware-comparison td { padding: 16px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.hardware-comparison thead th { background: rgba(224, 164, 90, .08); color: var(--muted); font-size: .8rem; }
+.hardware-comparison th:first-child { width: 24%; }
+.hardware-comparison th:last-child { width: 28%; }
+.hardware-comparison tbody tr + tr { border-top: 1px solid var(--line); }
+.hardware-comparison tbody th { font-weight: 400; }
+.hardware-comparison tbody strong { display: block; font-weight: 600; }
+.hardware-comparison .pill { display: inline-block; min-width: 0; max-width: 100%; line-height: 1.45; }
+.comparison-current, .comparison-detail { color: var(--muted); line-height: 1.5; margin-top: 8px; }
+.upgrade-list { list-style: none; display: grid; gap: 14px; padding: 0; margin: 0; }
+.upgrade-target { display: block; color: var(--brass); font-size: .78rem; margin-bottom: 4px; }
+.upgrade-list .comparison-detail { font-size: .82rem; }
+@media (max-width: 1100px) {
+  .hardware-comparison, .hardware-comparison tbody { display: block; }
+  .hardware-comparison thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .hardware-comparison tbody tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px; }
+  .hardware-comparison tbody th, .hardware-comparison tbody td { display: block; width: auto; padding: 12px; min-width: 0; }
+  .hardware-comparison tbody th, .hardware-comparison tbody td:last-child { grid-column: 1 / -1; }
+  .hardware-comparison td::before { content: attr(data-label); display: block; font-size: .78rem; font-weight: 600; margin-bottom: 8px; color: var(--muted); }
+}
+@media (max-width: 560px) {
+  .hardware-comparison tbody tr { grid-template-columns: minmax(0, 1fr); }
+}
 .prose { display: grid; gap: 12px; line-height: 1.6; }
 .prose p { color: var(--muted); }
 .missing { min-height: 100vh; display: grid; align-content: center; justify-items: start; gap: 14px; width: min(720px, calc(100% - 32px)); margin: 0 auto; }
@@ -442,3 +473,6 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .anchor-suggestion h3 { font-size: 1rem; overflow-wrap: anywhere; }
 .anchor-suggestion .btn { flex: none; }
 @media (max-width: 560px) { .anchor-suggestions-grid { grid-template-columns: 1fr; } }
+.upgrade-alternatives { margin: .75rem 0 0; padding: .75rem 0 0; list-style: none; border-top: 1px solid var(--line); }
+.upgrade-alternatives li + li { margin-top: .75rem; }
+.card-reason { margin-top: .5rem; }

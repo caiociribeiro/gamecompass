@@ -23,9 +23,23 @@ LEVEL_HEADING = re.compile(
     re.IGNORECASE,
 )
 OS_FIELD = re.compile(
-    r"(?:OS|SO|Operating\s+System|Sistema\s+Operacional)\s*\*?\s*:\s*(.*)",
+    r"(?:OS|SO|Operating\s+System|Sistema\s+(?:Operacional|Operativo))"
+    r"\s*\*?\s*:\s*(.*)",
     re.IGNORECASE,
 )
+
+
+def is_empty_requirement_text(text: str) -> bool:
+    """Cabeçalho e aviso genérico de 64 bits não são uma ficha de requisitos."""
+    boilerplate = re.compile(
+        r"(?:Requires a 64-bit processor and operating system|"
+        r"Requer um sistema operativo e processador de 64 bits)\.?",
+        re.IGNORECASE,
+    )
+    return not text.strip() or all(
+        LEVEL_HEADING.fullmatch(line.strip()) or boilerplate.fullmatch(line.strip())
+        for line in text.splitlines() if line.strip()
+    )
 
 
 def extract_os_text(text: str) -> str | None:
@@ -136,10 +150,7 @@ def extract_snapshot(input_dir: Path) -> dict:
 
             text = clean_html(html)
 
-            if not text or all(
-                LEVEL_HEADING.fullmatch(line)
-                for line in text.splitlines()
-            ):
+            if is_empty_requirement_text(text):
                 if native is True:
                     issues.append(
                         f"{platform}.{level}: requisito ausente."

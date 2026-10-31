@@ -21,7 +21,11 @@
         "Mundo aberto",
         "Narrativa"
       ],
-      "curation_notes": "RPG em Night City; campanha narrativa e exploração de mundo aberto."
+      "curation_notes": "RPG em Night City; campanha narrativa e exploração de mundo aberto.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
     },
     {
       "id": "1174180",
@@ -30,7 +34,11 @@
         "Narrativa",
         "Exploração"
       ],
-      "curation_notes": "Campanha no Velho Oeste e exploração de mundo aberto."
+      "curation_notes": "Campanha no Velho Oeste e exploração de mundo aberto.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
     },
     {
       "id": "292030",
@@ -74,7 +82,11 @@
         "Exploração",
         "Fantasia"
       ],
-      "curation_notes": "Exploração de Hallownest e ambientação de fantasia."
+      "curation_notes": "Exploração de Hallownest e ambientação de fantasia.",
+      "editorial_genres": [
+        "Plataforma"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Progressão centrada em movimentação, saltos ou travessia de cenários."
     },
     {
       "id": "1145360",
@@ -82,7 +94,11 @@
         "Fantasia",
         "Narrativa"
       ],
-      "curation_notes": "Mitologia grega e narrativa que avança entre tentativas."
+      "curation_notes": "Mitologia grega e narrativa que avança entre tentativas.",
+      "editorial_genres": [
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
     },
     {
       "id": "620",
@@ -91,7 +107,11 @@
         "Cooperativo",
         "Narrativa"
       ],
-      "curation_notes": "Quebra-cabeças com portais, campanha narrativa e campanha cooperativa."
+      "curation_notes": "Quebra-cabeças com portais, campanha narrativa e campanha cooperativa.",
+      "editorial_genres": [
+        "Puzzle"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Resolução de quebra-cabeças, investigação de mecanismos ou dedução organiza a progressão."
     },
     {
       "id": "105600",
@@ -107,7 +127,11 @@
       "tags": [
         "Narrativa"
       ],
-      "curation_notes": "A história de Madeline acompanha a escalada e os desafios de plataforma."
+      "curation_notes": "A história de Madeline acompanha a escalada e os desafios de plataforma.",
+      "editorial_genres": [
+        "Plataforma"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Progressão centrada em movimentação, saltos ou travessia de cenários."
     },
     {
       "id": "588650",
@@ -115,14 +139,23 @@
         "Exploração",
         "Fantasia"
       ],
-      "curation_notes": "Exploração de um castelo mutável em ambientação de fantasia."
+      "curation_notes": "Exploração de um castelo mutável em ambientação de fantasia.",
+      "editorial_genres": [
+        "Plataforma",
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Progressão centrada em movimentação, saltos ou travessia de cenários. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
     },
     {
       "id": "646570",
       "tags": [
         "Fantasia"
       ],
-      "curation_notes": "Construção de baralho e monstros em uma torre de fantasia."
+      "curation_notes": "Construção de baralho e monstros em uma torre de fantasia.",
+      "editorial_genres": [
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
     },
     {
       "id": "990080",
@@ -148,7 +181,11 @@
       "tags": [
         "Ficção científica"
       ],
-      "curation_notes": "Combate contra demônios em ambientação tecnológica e futurista."
+      "curation_notes": "Combate contra demônios em ambientação tecnológica e futurista.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
     },
     {
       "id": "2050650",
@@ -156,7 +193,11 @@
         "Terror",
         "Narrativa"
       ],
-      "curation_notes": "Campanha narrativa de sobrevivência e terror."
+      "curation_notes": "Campanha narrativa de sobrevivência e terror.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
     },
     {
       "id": "813780",
@@ -181,6 +222,295 @@
         "Competitivo"
       ],
       "curation_notes": "Gestão de civilizações e disputa estratégica por condições de vitória."
+    },
+    {
+      "id": "489830",
+      "tags": [
+        "Fantasia",
+        "Mundo aberto",
+        "Exploração"
+      ],
+      "curation_notes": "RPG de fantasia com exploração de Skyrim e missões abertas."
+    },
+    {
+      "id": "377160",
+      "tags": [
+        "Ficção científica",
+        "Mundo aberto",
+        "Exploração"
+      ],
+      "curation_notes": "Exploração pós-apocalíptica e construção de assentamentos.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "374320",
+      "tags": [
+        "Fantasia",
+        "Exploração"
+      ],
+      "curation_notes": "Combate e exploração em um mundo de fantasia sombria."
+    },
+    {
+      "id": "814380",
+      "tags": [
+        "Fantasia",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Aventura de combate no Japão fantástico com exploração e narrativa."
+    },
+    {
+      "id": "1627720",
+      "tags": [
+        "Fantasia",
+        "Narrativa"
+      ],
+      "curation_notes": "Ação em uma cidade de fantasia sombria inspirada em Pinóquio."
+    },
+    {
+      "id": "582010",
+      "tags": [
+        "Fantasia",
+        "Cooperativo",
+        "Exploração"
+      ],
+      "curation_notes": "Caçadas cooperativas e exploração de ecossistemas de fantasia."
+    },
+    {
+      "id": "1446780",
+      "tags": [
+        "Fantasia",
+        "Cooperativo"
+      ],
+      "curation_notes": "Caçadas e progressão de equipamentos com partidas cooperativas."
+    },
+    {
+      "id": "1850570",
+      "tags": [
+        "Ficção científica",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Travessia de ambientes e reconstrução de conexões em cenário pós-apocalíptico."
+    },
+    {
+      "id": "870780",
+      "tags": [
+        "Ficção científica",
+        "Narrativa",
+        "Exploração"
+      ],
+      "curation_notes": "Investigação e exploração de uma agência envolvida em fenômenos paranormais.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "412020",
+      "tags": [
+        "Ficção científica",
+        "Narrativa",
+        "Exploração"
+      ],
+      "curation_notes": "Campanha pós-apocalíptica com exploração e sobrevivência.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "239140",
+      "tags": [
+        "Terror",
+        "Mundo aberto",
+        "Cooperativo"
+      ],
+      "curation_notes": "Sobrevivência e exploração urbana em mundo aberto com campanha cooperativa."
+    },
+    {
+      "id": "892970",
+      "tags": [
+        "Fantasia",
+        "Exploração",
+        "Cooperativo"
+      ],
+      "curation_notes": "Sobrevivência, construção e exploração cooperativa em ambientação nórdica."
+    },
+    {
+      "id": "264710",
+      "tags": [
+        "Ficção científica",
+        "Exploração",
+        "Mundo aberto"
+      ],
+      "curation_notes": "Exploração submarina e sobrevivência em um planeta alienígena."
+    },
+    {
+      "id": "427520",
+      "tags": [
+        "Gestão",
+        "Ficção científica",
+        "Cooperativo"
+      ],
+      "curation_notes": "Automação industrial, gestão de recursos e construção cooperativa de fábricas."
+    },
+    {
+      "id": "526870",
+      "tags": [
+        "Gestão",
+        "Exploração",
+        "Cooperativo"
+      ],
+      "curation_notes": "Construção de fábricas e exploração de um planeta com modo cooperativo."
+    },
+    {
+      "id": "294100",
+      "tags": [
+        "Gestão",
+        "Ficção científica",
+        "Narrativa"
+      ],
+      "curation_notes": "Gestão de uma colônia e histórias emergentes em um planeta distante."
+    },
+    {
+      "id": "457140",
+      "tags": [
+        "Gestão",
+        "Ficção científica"
+      ],
+      "curation_notes": "Gestão de recursos, gases e sobrevivência de uma colônia espacial."
+    },
+    {
+      "id": "108600",
+      "tags": [
+        "Terror",
+        "Gestão",
+        "Cooperativo"
+      ],
+      "curation_notes": "Sobrevivência em um apocalipse zumbi com gestão de recursos e multiplayer."
+    },
+    {
+      "id": "632360",
+      "tags": [
+        "Ficção científica",
+        "Cooperativo"
+      ],
+      "curation_notes": "Combate roguelike e exploração de ambientes alienígenas com modo cooperativo.",
+      "editorial_genres": [
+        "Roguelike",
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "1794680",
+      "tags": [
+        "Fantasia",
+        "Terror"
+      ],
+      "curation_notes": "Sobrevivência em arenas com monstros e progressão de habilidades.",
+      "editorial_genres": [
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
+    },
+    {
+      "id": "268910",
+      "tags": [
+        "Fantasia",
+        "Cooperativo"
+      ],
+      "curation_notes": "Combates contra chefes em fantasia animada e modo cooperativo local.",
+      "editorial_genres": [
+        "Plataforma"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Progressão centrada em movimentação, saltos ou travessia de cenários."
+    },
+    {
+      "id": "2379780",
+      "tags": [
+        "Gestão"
+      ],
+      "curation_notes": "Construção de combinações de cartas e gestão de recursos durante as partidas.",
+      "editorial_genres": [
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
+    },
+    {
+      "id": "753640",
+      "tags": [
+        "Ficção científica",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Investigação e exploração de um sistema solar com narrativa não linear.",
+      "editorial_genres": [
+        "Puzzle"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Resolução de quebra-cabeças, investigação de mecanismos ou dedução organiza a progressão."
+    },
+    {
+      "id": "632470",
+      "tags": [
+        "Narrativa"
+      ],
+      "curation_notes": "Investigação criminal e escolhas de diálogo que moldam a história."
+    },
+    {
+      "id": "435150",
+      "tags": [
+        "Fantasia",
+        "Narrativa",
+        "Cooperativo"
+      ],
+      "curation_notes": "RPG de fantasia com escolhas narrativas e campanha cooperativa."
+    },
+    {
+      "id": "268500",
+      "tags": [
+        "Ficção científica",
+        "Gestão"
+      ],
+      "curation_notes": "Estratégia por turnos e gestão de uma resistência contra ocupação alienígena."
+    },
+    {
+      "id": "255710",
+      "tags": [
+        "Gestão",
+        "Relaxante"
+      ],
+      "curation_notes": "Planejamento urbano, serviços e gestão de uma cidade."
+    },
+    {
+      "id": "1551360",
+      "tags": [
+        "Mundo aberto",
+        "Competitivo",
+        "Exploração"
+      ],
+      "curation_notes": "Corridas e exploração do México em mundo aberto com modos competitivos."
+    },
+    {
+      "id": "1332010",
+      "tags": [
+        "Ficção científica",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Exploração de uma cidade habitada por robôs na perspectiva de um gato."
+    },
+    {
+      "id": "601150",
+      "tags": [
+        "Fantasia",
+        "Narrativa"
+      ],
+      "curation_notes": "Campanha de ação contra demônios com narrativa e diferentes protagonistas."
     }
   ]
 }

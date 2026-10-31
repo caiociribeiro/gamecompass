@@ -218,7 +218,8 @@ def normalize_game(snapshot: Snapshot, context: dict | None) -> dict:
         native = flags.get(flag)
         platforms[name] = {
             "native_support": native if type(native) is bool else None,
-            **{level: requirements_block(requirements.get(level), context) for level in ("minimum", "recommended")},
+            **{level: requirements_block(requirements.get(level), context,
+                appid=str(data["steam_appid"]), platform=name, level=level) for level in ("minimum", "recommended")},
         }
 
     def descriptions(field):
@@ -236,8 +237,9 @@ def normalize_game(snapshot: Snapshot, context: dict | None) -> dict:
         **game_preview(snapshot), "developer": developer,
         "year": int(year[0]) if year else None,
         "genres": descriptions("genres"), "themes": [], "themes_status": "pending",
+        "genre_source": {"steam": descriptions("genres"), "editorial": [], "method": "steam"},
         "summary": clean_html(data.get("short_description", "")) if isinstance(data.get("short_description"), str) else "",
         "price_text": "Gratuito" if data.get("is_free") is True else price_text,
         "platforms": platforms, "source": snapshot.source,
-        "hardware_source": {key: context[key] for key in ("catalog_sha256", "aliases_sha256", "hardware_sha256")} if context else None,
+        "hardware_source": {key: context[key] for key in ("catalog_sha256", "aliases_sha256", "hardware_sha256", "curation_sha256")} if context else None,
     }

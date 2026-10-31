@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import sys
 import re
+import unicodedata
 
 from hardware_catalog import COMPONENT_TYPES, MANUAL_SCORE_VERSION, ROOT, read_catalog
 
@@ -18,6 +19,18 @@ from hardware_catalog import COMPONENT_TYPES, MANUAL_SCORE_VERSION, ROOT, read_c
 def normalize_name(name: str) -> str:
     """Uniformiza espaços e caixa, preservando variantes, números e sufixos."""
     return " ".join(name.split()).casefold()
+
+
+def identity_text(name: str, component_type: str) -> str:
+    """Retira apenas formatação: preserva o modelo, sufixo e memória publicados."""
+    text = "".join(c for c in name if c not in "®™" and unicodedata.category(c) != "Cf")
+    text = unicodedata.normalize("NFKC", text).rstrip(" ,;.")
+    text = re.sub(r"(\d)\s+(GB|MB)\b", r"\1\2", text, flags=re.IGNORECASE)
+    text = re.sub(r"\(\s*(?:VRAM\s*)?(\d+(?:\.\d+)?(?:GB|MB))(?:\s*VRAM)?\s*\)",
+                  r" \1", text, flags=re.IGNORECASE)
+    if component_type == "CPU":
+        text = re.sub(r"\s*(?:@\s*)?\d+(?:[.,]\d+)?\s*GHz\s*$", "", text, flags=re.IGNORECASE)
+    return normalize_name(text)
 
 
 def read_aliases(path: Path | None, catalog: dict) -> dict:
@@ -95,6 +108,13 @@ def match_hardware(
         record = catalog[aliases[key]]
         method = "alias"
 
+    if record is None:
+        cleaned = identity_text(name, kind)
+        target = aliases.get((kind, cleaned), (kind, cleaned))
+        record = catalog.get(target)
+        if record is not None:
+            method = "normalized"
+
     result = {
         "status": "matched" if record is not None else "not_found",
         "component_type": kind,
@@ -121,14 +141,36 @@ def match_hardware(
     return result
 
 def split_alternatives(text: str) -> list[str]:
-    """Separa modelos; abreviações numéricas como '3/6GB' ficam para revisão."""
-    parts = re.split(
-        # A barra entre dois dígitos não identifica dois modelos completos.
-        r"\b(?:ou|or)\b|(?<!\d)/|/(?!\d)",
-        text,
-        flags=re.IGNORECASE,
+    """Lê listas de modelos, preservando decimais, parênteses e VRAM ambígua."""
+    model = r"(?:\d+(?:[.,]\d+)?\s*(?:GB|MB)\s+)?(?:Intel|AMD|NVIDIA|ATI|Qualcomm|GeForce|Radeon|Arc|GTX|GTS|RTX|RX|Core|Ryzen|Athlon|FX|Snapdragon)\b"
+    separator = re.compile(
+        rf",\s*(?:(?:or|ou)\s+)?(?={model})|\b(?:ou|or)\b(?!\s+(?:better|greater|higher|newer|similar|superior|equivalent)\b)",
+        re.IGNORECASE,
     )
-    parts = [part.strip() for part in parts]
+    parts, start, index, depth = [], 0, 0, 0
+    while index < len(text):
+        char = text[index]
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth = max(0, depth - 1)
+        if depth == 0:
+            match = separator.match(text, index)
+            slash = char in "/／|" and not (
+                index > 0 and index + 1 < len(text)
+                and text[index - 1].isdigit() and text[index + 1].isdigit()
+            )
+            if match or slash:
+                parts.append(text[start:index])
+                index = match.end() if match else index + 1
+                start = index
+                continue
+        index += 1
+    parts.append(text[start:])
+    parts = [re.sub(
+        r"\s*(?:\(\s*)?\b(?:or|ou)\s+(?:better|greater|higher|newer|similar|superior|equivalent)\s*\)?\s*[,;]?\s*$",
+        "", part, flags=re.IGNORECASE,
+    ).strip() for part in parts]
 
     if any(not part for part in parts):
         raise ValueError("Há uma alternativa vazia no requisito.")

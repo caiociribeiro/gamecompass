@@ -1,4 +1,4 @@
-import { anchorsOf } from "./recommend"
+import { anchorsOf, hardwareProfileReady } from "./recommend"
 import type { Game, HardwareCatalog, ProfileStep, UserProfile } from "../types"
 
 export function profileSteps(user: UserProfile, games: Game[], hardware: HardwareCatalog): ProfileStep[] {
@@ -20,11 +20,8 @@ export function profileSteps(user: UserProfile, games: Game[], hardware: Hardwar
     {
       id: "hardware",
       label: "Computador",
-      hint: "CPU, GPU, memória RAM e sistema operacional.",
-      done:
-        user.hardware !== null &&
-        hardware.CPU.some((part) => part.id === user.hardware?.cpuId) &&
-        hardware.GPU.some((part) => part.id === user.hardware?.gpuId),
+      hint: "CPU, GPU, memória RAM e sistema operacional. Para Windows, informe a versão.",
+      done: hardwareProfileReady(user.hardware, hardware),
       to: "/app/hardware",
     },
   ]

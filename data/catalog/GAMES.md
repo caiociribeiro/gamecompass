@@ -2,14 +2,20 @@
 
 ## O que é versionado
 
-`games.json` contém a seleção de 20 AppIDs, o vocabulário de temáticas e
-uma justificativa editorial por jogo. Nomes, gêneros, requisitos, preços
-e capas vêm da coleta real de `appdetails`, em português e região BR.
+`games.json` contém a seleção de 50 AppIDs, o vocabulário de temáticas e
+uma justificativa editorial por jogo. Nomes, gêneros gerais, requisitos,
+preços e capas vêm da coleta real de `appdetails`, em português e região BR.
+`editorial_genres` complementa os gêneros com Plataforma, Roguelike, Tiro
+e Puzzle quando aplicável; `genre_curation_notes` explica essa decisão.
+Essas categorias compartilham `HAS_GENRE`, com origem separada no JSON
+`genre_source.steam`/`genre_source.editorial`, sem atribuí-las à Steam.
 As tags representam a curadoria do GameCompass; não são apresentadas como
 tags da comunidade Steam. Os recursos de `categories` não substituem
 as preferências originais da interface.
 
-| AppID | Jogo da seleção |
+Seleção inicial, preservada na ampliação para 50 jogos:
+
+| AppID | Jogo da seleção inicial |
 | --- | --- |
 | 1091500 | Cyberpunk 2077 |
 | 1174180 | Red Dead Redemption 2 |
@@ -102,19 +108,58 @@ respostas da Steam ou alterações na curadoria. A segunda carga conservou
 as quantidades. Os testes de integração verificam rollback, idempotência,
 atualização de tags, preservação de relações externas e notas antigas.
 
-Nesta coleta, nenhum dos vinte jogos teve RAM, CPU e GPU completamente
-resolvidas nos mínimos do Windows. O grafo de conteúdo funciona mesmo
-assim; isso não conclui a validação de hardware.
-A lista das 20 peças sem nota está em
-[HARDWARE_REVIEW_2026_10.md](HARDWARE_REVIEW_2026_10.md).
-Textos vagos como CPU de dois núcleos não escolhem um modelo por aproximação.
+O lote ampliado de 31/10/2026 contém 50 jogos, 14 gêneros e dez temáticas,
+usando 98 CPUs e 128 GPUs com faixas aproximadas do TCC1. Foram preservados
+os vinte jogos e os 124 registros anteriores de hardware.
+As quatro categorias adicionais acrescentam 20 relações: a seleção atual
+gera 133 `HAS_GENRE` e 124 `HAS_TAG`, sujeitos à versão dos dados Steam.
+Não é preciso coletar a Steam novamente para acrescentar categorias:
+reprocesse e carregue os snapshots existentes.
+
+No Windows, 38 mínimos estão completamente identificados e outros 12
+oferecem alternativas suficientes para comparação. Entre os recomendados,
+30 estão identificados, dez oferecem alternativas conhecidas e dez não
+foram publicados. Essas contagens incluem referências manuais para 31
+jogos e descrevem cobertura dos dados, sem certificar execução ou FPS.
+
+As referências manuais estão em `requirements_curation.json`. Cada uma
+registra AppID, plataforma, nível, campo, texto esperado, modelos de
+referência, fonte, data e justificativa. São estimativas do GameCompass;
+o texto Steam e a extração original permanecem no resultado processado.
+Um texto alterado não reutiliza a estimativa. A API reaplica as regras com
+as notas atuais do Neo4j, sem recuperar uma nota antiga do CSV se a peça
+estiver ausente ou pendente. O hash da curadoria também acompanha a carga.
+
+Stardew Valley, Hades, Portal 2, Terraria, Dead Cells, Slay the Spire e
+No Man's Sky passaram a ter referências locais para os campos genéricos.
+Isso não transforma famílias ou frequências em aliases globais de modelos.
+O documento [REQUIREMENTS_REVIEW_2026_10.md](REQUIREMENTS_REVIEW_2026_10.md)
+conserva o histórico da amostra anterior, antes dessa ampliação.
+
+`scripts/update_catalog.py` executa coleta retomável, processamento e
+carga com `--fetch --load`. Sem `--load`, não conecta ao banco. Não gera
+relatórios automaticamente. Os scripts individuais continuam disponíveis.
 
 ## Limites atuais da validação
 
-Versão do SO, VRAM, DirectX, instruções e SSD ainda exigem conferência.
-Suporte nativo não comprova a versão do SO; Linux sem suporte nativo não
-herda os requisitos do Windows. A interface mantém essas pendências e não
-promete FPS. Recomendações com pendências aparecem na seção correspondente.
+O extrator reconhece OS, SO, Operating System, Sistema Operacional e
+Sistema Operativo, inclusive o asterisco de requisitos antigos da Steam.
+A interface pede Windows 10 ou 11 de 64 bits e compara a versão principal
+informada com a menor versão Windows reconhecida no mínimo do jogo.
+Aceitar uma versão posterior é uma heurística do TCC1. Não constitui
+certificação de execução de todos os jogos: a própria
+[Microsoft informa que podem ocorrer incompatibilidades](https://support.microsoft.com/en-us/windows/apps/make-older-apps-or-programs-compatible-with-the-latest-version-of-windows).
+
+Quando uma atualização/build específica for exigida na mesma versão,
+o resultado permanece pendente. Linux/macOS continuam com conferência de
+versão própria. Linux sem suporte nativo não herda requisitos Windows.
+VRAM, DirectX, instruções e SSD também exigem conferência. A interface
+mantém essas pendências e não promete FPS.
+
+Três aliases explícitos reconhecem as grafias Intel Core i7 8700K,
+Intel Core i7 8700 e Intel Arc A580 (8GB+ of VRAM). Não escolhem a variante
+de um Arc A770 sem capacidade de memória. A RAM fracionada é arredondada
+para cima: 2.5 GB resulta em 3 GB, sem confundir RAM com VRAM.
 
 `data/raw/steam_games_*` e `data/processed/` continuam locais e ignorados
 pelo Git. Para reproduzir, execute os comandos do README. Para consultar

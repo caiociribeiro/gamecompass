@@ -6,7 +6,7 @@ import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { hardwareSummary } from "../lib/hardware"
 import { profileSteps } from "../lib/profile"
-import { buildRecommendations, profileReady } from "../lib/recommend"
+import { buildRecommendations, compatibilityLabel, profileReady } from "../lib/recommend"
 
 export function Dashboard() {
   const { user } = useSession()
@@ -68,7 +68,7 @@ export function Dashboard() {
                 game={match.game}
                 affinity={match.affinity}
                 href={`/app/jogos/${match.game.id}`}
-                note={match.compatible ? "Verificações atendidas" : "Validação pendente"}
+                note={compatibilityLabel(match)}
               />
             ))}
           </div>

@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react"
 import { apiError, apiGet } from "../lib/api"
+import { discoveryFilters, RequestScope } from "../lib/discovery"
 import type { Game, HardwareCatalog } from "../types"
 import { useSession } from "./SessionContext"
 
@@ -33,13 +34,12 @@ const CatalogContext = createContext<CatalogValue | null>(null)
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const { user } = useSession()
   const userId = user?.id ?? ""
-  const anchorIds = (user?.anchorIds ?? [])
-    .filter((id) => /^[1-9][0-9]{0,9}$/.test(id))
-    .slice(0, 3)
-    .join(",")
+  const { anchor_ids: anchorIds, genres, tags } = discoveryFilters(user)
   const [games, setGames] = useState<Game[]>([])
   const [hardware, setHardware] = useState<HardwareCatalog>(EMPTY)
-  const [gamesLoading, setGamesLoading] = useState(false)
+  const [anchorLoading, setAnchorLoading] = useState(false)
+  const [discoveryLoading, setDiscoveryLoading] = useState(false)
+  const gamesLoading = anchorLoading || discoveryLoading
   const [hardwareLoading, setHardwareLoading] = useState(true)
   const [gamesError, setGamesError] = useState<string | null>(null)
   const [hardwareError, setHardwareError] = useState<string | null>(null)
@@ -48,6 +48,8 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [candidateSource, setCandidateSource] = useState<string | null>(null)
   const [revision, setRevision] = useState(0)
   const generation = useRef(0)
+  const discovery = useRef(new RequestScope())
+  const discoveryKey = JSON.stringify([revision, userId, anchorIds, genres, tags])
   const refresh = useCallback(() => setRevision((value) => value + 1), [])
   const loadGame = useCallback(async (appid: string) => {
     const token = generation.current
@@ -58,13 +60,13 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, [])
   const discoverGames = useCallback(async () => {
     const token = generation.current
-    setGamesLoading(true)
+    const ticket = discovery.current.start()
+    setDiscoveryLoading(true)
     setGamesError(null)
     try {
-      const filters = new URLSearchParams({ anchor_ids: anchorIds,
-        genres: (user?.genres ?? []).join(","), tags: (user?.themes ?? []).join(",") })
-      const data = await apiGet<Collection>(`/games/discover?${filters}`)
-      if (token !== generation.current) return
+      const filters = new URLSearchParams({ anchor_ids: anchorIds, genres, tags })
+      const data = await apiGet<Collection>(`/games/discover?${filters}`, ticket.signal)
+      if (token !== generation.current || !ticket.isCurrent()) return
       setGames((current) => [
         ...current.filter((game) => anchorIds.split(",").includes(game.id) && !data.items.some((item) => item.id === game.id)),
         ...data.items,
@@ -73,11 +75,23 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       setDiscovered(true)
       setCandidateSource(data.source ?? "steam")
     } catch (error) {
-      if (token === generation.current) setGamesError(apiError(error))
+      if (token === generation.current && ticket.isCurrent()) setGamesError(apiError(error))
     } finally {
-      if (token === generation.current) setGamesLoading(false)
+      if (token === generation.current && ticket.isCurrent()) setDiscoveryLoading(false)
     }
-  }, [anchorIds, user])
+  }, [anchorIds, genres, tags])
+
+  useEffect(() => {
+    const scope = discovery.current
+    scope.cancel()
+    setDiscoveryLoading(false)
+    setDiscovered(false)
+    setCandidateSource(null)
+    setGameIssues([])
+    setGamesError(null)
+    setGames((current) => current.filter((game) => anchorIds.split(",").includes(game.id)))
+    return () => scope.cancel()
+  }, [discoveryKey, anchorIds])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -107,7 +121,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     setGamesError(null)
     setDiscovered(false)
     setCandidateSource(null)
-    setGamesLoading(Boolean(anchorIds))
+    setAnchorLoading(Boolean(anchorIds))
     // Nenhuma consulta de jogos para uma conta que ainda não escolheu âncoras.
     if (anchorIds) {
       apiGet<Collection>(`/games?appids=${encodeURIComponent(anchorIds)}`, controller.signal)
@@ -121,7 +135,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
           if (!controller.signal.aborted) setGamesError(apiError(error))
         })
         .finally(() => {
-          if (!controller.signal.aborted) setGamesLoading(false)
+          if (!controller.signal.aborted) setAnchorLoading(false)
         })
     }
     return () => controller.abort()

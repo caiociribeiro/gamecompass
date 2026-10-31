@@ -279,11 +279,12 @@ software: a seleção valida o tipo e informa quando o resultado não é um jogo
 | --- | --- |
 | Nomes de jogos na busca | Endpoint público `storesearch` da Steam |
 | Sugestões para escolher âncoras | IDs editoriais versionados; nomes e capas reais de `appdetails` |
-| Título, capa, preço, gêneros e requisitos | Endpoint público `appdetails` da Steam, região BR e idioma português |
+| Título, capa, preço, gêneros gerais e requisitos | Endpoint público `appdetails` da Steam, região BR e idioma português |
+| Plataforma, Roguelike, Tiro e Puzzle | Curadoria de jogabilidade do GameCompass em `games.json`, com justificativa e origem separada |
 | Candidatos para sugestões | Jogos do Neo4j relacionados por gênero/temática; consulta aos mais vendidos da Steam se faltarem candidatos, com aviso |
 | Gêneros e temáticas do perfil | Listas originais em `frontend/src/data/preferences.ts` |
 | CPUs, GPUs e suas notas | Neo4j, somente registros `manual_v1` |
-| RAM e família do SO | Opções locais em `frontend/src/data/hardware.ts` |
+| RAM, família do SO e Windows 10/11 | Opções locais em `frontend/src/data/hardware.ts` |
 
 RAM e SO não recebem nós próprios no Neo4j. As notas de hardware são lidas
 do banco. Os aliases versionados servem à identificação dos requisitos;
@@ -295,6 +296,40 @@ participam da afinidade. Consultas fora do catálogo podem retornar
 `themes: []` e `themes_status: pending`. Recursos de `categories` não são
 usados como temáticas. A ordenação permanece no navegador; informações
 ausentes não são tratadas como desinteresse.
+
+As preferências originais foram preservadas. Quatro delas precisavam de
+classificação complementar porque o campo de gêneros da Steam é mais
+geral: `Plataforma`, `Roguelike`, `Tiro` e `Puzzle`. Dezoito jogos receberam
+essas categorias, também ligadas por `HAS_GENRE`. `genre_source` mantém
+separados os gêneros Steam e os editoriais. Roguelike é usado aqui como
+categoria ampla da família roguelike/roguelite.
+
+O cálculo usa 40% para gêneros escolhidos, 25% para gêneros das âncoras,
+15% para temáticas escolhidas, 15% para temáticas das âncoras e 5% para
+estúdio compartilhado. A parte das preferências mede a fração atendida;
+a parte das âncoras compara cada conjunto por interseção/união (Jaccard).
+Em cada dimensão, as semelhanças são ordenadas e agregadas com pesos
+60%, 25% e 15%, independentemente da ordem de seleção. Dimensões sem dados
+são removidas e os pesos disponíveis são normalizados. O resultado é
+arredondado de 0 a 100, com limiar 28, e não representa uma probabilidade.
+O desempate usa título e AppID. As explicações identificam até duas
+âncoras com características em comum, combinando gêneros e temas na
+proporção 25:15 dos termos de âncora. São pesos heurísticos do protótipo;
+a avaliação com usuários continua necessária. Se os candidatos não
+contiverem outros jogos dos gêneros escolhidos, a interface explica que
+a lista se aproxima pelas âncoras e temáticas.
+
+Mudar gêneros, temáticas ou âncoras invalida os candidatos anteriores e
+cancela consultas pendentes. O usuário solicita a nova busca pelo botão;
+uma resposta antiga não substitui o novo perfil. Reordenar escolhas ou
+trocar apenas a RAM/peças não exige buscar os mesmos candidatos novamente.
+
+Quando uma peça fica abaixo de um requisito identificado, a sugestão
+prioriza modelos reconhecidos naquele requisito e pode listar até três
+fabricantes. As demais opções seguem as classes suficientes do catálogo.
+No empate de classe, prefere o fabricante atual e depois o nome. Essa
+ordenação não considera preço, disponibilidade nem compatibilidade física.
+Campos pendentes continuam sem gerar uma necessidade de troca automática.
 
 Mais vendidos são apenas uma fonte de candidatos, não uma recomendação
 personalizada pronta. A análise de afinidade e de requisitos é aplicada
@@ -333,6 +368,60 @@ Notas ausentes, modelos não identificados e versões de SO sem validação
 continuam pendentes. VRAM, DirectX, instruções e SSD exigem conferências
 próprias. Os requisitos limpos continuam visíveis no detalhe, sem garantia de FPS.
 
+Em Hardware, selecione Windows 10 ou 11 de **64 bits** e salve novamente
+o computador. Contas anteriores preservam as escolhas e precisam apenas
+informar essa versão. A recomendação compara a versão principal com os
+requisitos Windows identificados na Steam. Atualizações específicas da mesma
+versão, requisitos vagos e versões de Linux/macOS continuam para conferência.
+O checklist compara somente os campos implementados, sem certificar cada jogo.
+RAM fracionada, como 2.5 GB, é arredondada para cima no contrato inteiro.
+
+O detalhe do jogo compara CPU, GPU, RAM e SO em colunas de **mínimos** e
+**recomendados**. Os cards informam o maior nível atendido. Os recomendados
+comprovados também permitem concluir a análise quando os mínimos são
+genéricos, preservando a pendência original. Uma falha mínima conhecida
+continua impedindo aprovação. O card indica mínimos quando estes foram
+validados e os recomendados falharam ou continuam pendentes. Recomendados
+ausentes não são preenchidos com os mínimos. Uma falha nos mínimos continua
+excluindo o jogo da lista de requisitos atendidos.
+
+Para uma CPU ou GPU abaixo de um requisito identificado, o frontend sugere
+um modelo do catálogo do mesmo tipo, com a mesma versão do índice e a menor
+faixa que atenda ao requisito. Desempates usam o nome do modelo; a escolha
+não considera preço. Sem uma opção identificada suficiente ou com versão
+incompatível, a comparação fica pendente e não gera substituição. Se não houver modelo
+suficiente no catálogo, a tela informa isso. Para RAM, a indicação é a
+capacidade total necessária. As sugestões são referências de desempenho e
+exigem conferir soquete, placa-mãe, fonte e demais condições físicas.
+
+As pontuações e versões continuam internas à comparação. A interface de
+hardware e o detalhe do jogo exibem nomes e resultados, sem classes numéricas.
+
+Ao abrir um card, o detalhe guarda a página de origem. O botão Voltar
+retorna às Recomendações quando o jogo foi aberto por essa lista, mantendo
+a busca e o filtro de situação. Também há filtros de recomendados atendidos,
+apenas mínimos, pendências e restrições. Abrir um detalhe diretamente usa
+Recomendações como destino de retorno. Consultar um detalhe e voltar não
+dispara outra busca de sugestões.
+
+Em listas de alternativas, uma opção publicada e identificada é suficiente
+para comprovar o atendimento à CPU ou GPU. Exemplo: em Hogwarts, atender
+à GTX 1080 Ti ou à RX 5700 XT permite validar esse campo recomendado,
+mesmo que a Arc A770 ainda não tenha VRAM especificada. Abaixo das opções
+conhecidas a comparação continua pendente, pois a alternativa desconhecida
+poderia ser menos exigente. O processamento preserva esse desconhecido e
+o limite global nulo; o frontend usa as alternativas e a versão do índice
+para comprovar o caso do computador. Detalhes e fontes em
+[REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md).
+
+O relatório abaixo separa níveis completos, alternativas conhecidas,
+requisitos genéricos e níveis não publicados. Mede cobertura dos dados;
+não certifica um computador nem a execução do jogo:
+
+```text
+docker compose run --rm --no-deps data python scripts/review_game_requirements.py --input data/processed/games_manual_v1.json --output data/processed/games_requirements_review.json
+```
+
 ### Testes
 
 ```text
@@ -353,15 +442,74 @@ classificações pendentes e preservação dos dados já escolhidos.
 
 ## Jogos, gêneros e tags no Neo4j
 
-A seleção inicial está em `data/catalog/games.json`: 20 jogos reais,
-incluindo Cyberpunk, RDR2, The Witcher 3, Elden Ring, BG3 e jogos indie.
+A seleção está em `data/catalog/games.json`: 50 jogos reais,
+incluindo Cyberpunk, RDR2, The Witcher 3, Elden Ring, BG3, Skyrim,
+Fallout 4, Monster Hunter, Factorio, Valheim, Forza Horizon 5 e jogos indie.
 As informações vêm da Steam; as tags seguem a curadoria do projeto.
 Detalhes dos scripts, esquema e limites: [GAMES.md](data/catalog/GAMES.md).
 
 Na raiz do projeto, valide e atualize primeiro o hardware. A revisão
-atual tem 41 CPUs e 40 GPUs, com 61 peças classificadas e 20 pendentes;
-as justificativas estão em
-[HARDWARE_REVIEW_2026_10.md](data/catalog/HARDWARE_REVIEW_2026_10.md).
+atual tem 98 CPUs e 128 GPUs, todas com classificação manual aproximada
+para o TCC1. O lote mais recente adiciona modelos citados pelos requisitos.
+As justificativas estão em
+[REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md)
+e o critério simplificado em [TCC1_REVIEW_2026_10.md](data/catalog/TCC1_REVIEW_2026_10.md).
+
+Para atualizar o lote inteiro, o comando abaixo coleta os jogos que faltam,
+valida todos os snapshots, processa o hardware e os jogos e carrega os dois
+catálogos no Neo4j. A pasta deve ser nova na primeira execução. Repita o
+mesmo comando para retomar uma coleta interrompida; snapshots válidos não
+são baixados novamente. Uma atualização da Steam requer outra pasta nova.
+
+```bash
+docker compose up -d neo4j
+docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote50_20261031 --fetch --load
+docker compose up -d --build --wait api
+```
+
+Sem `--fetch`, usa apenas os snapshots existentes. Sem `--load`, processa
+e valida sem conectar ao Neo4j. As cargas de hardware e jogos são etapas
+separadas: se uma carga falhar, a seguinte não roda; repetir é idempotente.
+O comando não gera relatório adicional. A coleta parcial tem até três
+tentativas e pode ser retomada depois com o mesmo comando.
+
+`data/catalog/requirements_curation.json` registra referências manuais por
+jogo, plataforma, nível e campo quando a descrição original é genérica ou
+omite variantes. O texto original, os resultados anteriores, os modelos
+escolhidos e a justificativa são preservados. Essas comparações aparecem
+como **estimativa** na interface; não são requisitos de SKU certificados
+pelo desenvolvedor. Se o texto mudar ou a peça não estiver classificada no
+Neo4j atual, a regra não preenche a nota. Não há alias global de “2 GHz”,
+“Intel i5+” ou escolha automática da memória de uma Arc A770.
+
+Na coleta de 31/10/2026, os 50 jogos têm base para comparar os mínimos no
+Windows; 40 publicam recomendados com base de comparação e dez não os
+informam. Parte dos campos usa alternativas identificadas ou referências
+manuais. Isso descreve cobertura de dados, sem certificar execução ou FPS.
+Outras plataformas e exigências específicas continuam sujeitas a revisão.
+
+Para incorporar as categorias complementares após atualizar o código,
+reprocesse o lote existente. A contagem de gêneros passa de dez para 14:
+
+```bash
+docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote50_20261031 --load
+docker compose up -d --build --wait api
+```
+
+O coletor também aceita retomar os mesmos AppIDs depois de uma revisão
+editorial, sem baixar novamente respostas válidas. Preserva o hash da
+seleção que iniciou a coleta e registra o hash da seleção atual. Lotes
+antigos completos são reconhecidos pelos diretórios de AppIDs; mudar os
+AppIDs continua exigindo uma pasta nova. Idioma, região e hashes dos
+snapshots são verificados antes de reutilizá-los.
+
+Teste offline do novo fluxo:
+
+```bash
+docker compose run --rm --no-deps data python scripts/test_catalog_batch.py
+```
+
+Os comandos individuais continuam disponíveis:
 
 ```bash
 docker compose build data
@@ -392,7 +540,7 @@ Não há limpeza geral. A carga usa `MERGE`, preserva hardware, jogos
 omitidos e relações de outras origens. Repetir o lote conserva a quantidade
 de nós e relações. Os campos planos de requisitos correspondem ao Windows;
 macOS/Linux permanecem separados no JSON preservado. Ausências continuam
-nulas. Alterar CSV ou aliases exige reprocessamento antes de carregar jogos.
+nulas. Alterar CSV, aliases ou referências manuais exige reprocessamento antes de carregar jogos.
 
 No frontend, atualize o catálogo de hardware e clique em Buscar sugestões.
 A API usa `HAS_GENRE`/`HAS_TAG` para escolher candidatos; o frontend aplica
@@ -419,5 +567,14 @@ docker compose run --rm --no-deps api python -m unittest discover -s tests -v
 ```
 
 Os testes de carga usam identidades exclusivas e limpam apenas suas
-fixtures. Não apagam o banco. A comparação de versão do SO e outras
-restrições ainda pendentes não são aprovadas automaticamente.
+fixtures. Não apagam o banco. Casos pendentes de versão do SO e outras
+restrições não recebem aprovação automática.
+
+Os testes de campos e da interface podem ser executados sem escrever no banco:
+
+```bash
+docker compose run --rm --no-deps data python scripts/test_requirement_fields.py
+cd frontend
+npm test
+npm run build
+```

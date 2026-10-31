@@ -159,6 +159,37 @@ class ManualMatcherTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.alternatives("GPU A ou ")
 
+    def test_commas_separate_model_lists_without_discarding_an_unknown_model(self):
+        self.catalog[("GPU", "nvidia fixture")] = {
+            **self.catalog[("GPU", "gpu fictícia 6gb")], "name": "NVIDIA fixture",
+        }
+        result = self.alternatives("NVIDIA fixture, AMD desconhecida")
+        self.assertEqual(len(result["alternatives"]), 2)
+        self.assertEqual(result["alternatives"][0]["performance_score"], 500)
+        self.assertIsNone(result["required_score"])
+
+    def test_or_better_does_not_become_an_empty_or_unknown_model(self):
+        for suffix in (" or better", " ou superior", " (ou superior)"):
+            self.assertEqual(self.alternatives("GPU A" + suffix)["required_score"], 500)
+        result = self.alternatives("GPU A or better, or GPU fictícia 3GB or better")
+        self.assertEqual(len(result["alternatives"]), 2)
+        self.assertEqual(result["required_score"], 400)
+
+    def test_decimal_commas_and_parenthesized_lists_are_not_model_separators(self):
+        from hardware_matcher import split_alternatives
+        self.assertEqual(split_alternatives("Intel fixture @ 3,3 GHz"), ["Intel fixture @ 3,3 GHz"])
+        self.assertEqual(split_alternatives("Intel fixture (3.0 GHz, AMD info) or CPU fictícia"),
+            ["Intel fixture (3.0 GHz, AMD info)", "CPU fictícia"])
+
+    def test_trademark_normalization_preserves_the_original_query_and_model(self):
+        self.catalog[("GPU", "nvidia fixture")] = {
+            **self.catalog[("GPU", "gpu fictícia 6gb")], "name": "NVIDIA fixture",
+        }
+        result = self.single("NVIDIA® fixture™")
+        self.assertEqual(result["query"], "NVIDIA® fixture™")
+        self.assertEqual(result["name"], "NVIDIA fixture")
+        self.assertEqual(result["method"], "normalized")
+
     def test_incompatible_score_version_is_rejected(self):
         key = ("GPU", normalize_name("GPU fictícia 3GB"))
         self.catalog[key]["score_version"] = "manual_v2"

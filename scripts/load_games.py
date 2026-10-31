@@ -52,6 +52,7 @@ def prepare_payload(data: dict) -> list[dict]:
         properties.update(catalog_format=FORMAT, score_version=data["score_version"],
             hardware_sha256=data["hardware_sha256"], catalog_sha256=data["catalog_sha256"],
             aliases_sha256=data["aliases_sha256"], selection_sha256=data["selection_sha256"],
+            curation_sha256=data.get("curation_sha256"),
             source_url=game["source"]["source_url"], collected_at=game["source"]["collected_at"],
             catalog_json=json.dumps(game, ensure_ascii=False, allow_nan=False))
         rows.append({"id": game["id"], "properties": properties, "genres": game["genres"], "tags": game["themes"]})
@@ -84,6 +85,7 @@ def main(argv=None):
     parser.add_argument("--input", type=Path, default=ROOT / "data/processed/games_manual_v1.json")
     parser.add_argument("--catalog", type=Path, default=ROOT / "data/catalog/hardware_manual_v1.csv")
     parser.add_argument("--aliases", type=Path, default=ROOT / "data/catalog/hardware_aliases.json")
+    parser.add_argument("--curation", type=Path, default=ROOT / "data/catalog/requirements_curation.json")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     try:
@@ -91,6 +93,8 @@ def main(argv=None):
         rows = prepare_payload(data)
         if data["catalog_sha256"] != sha256(args.catalog) or data["aliases_sha256"] != sha256(args.aliases):
             raise ValueError("Catálogo ou aliases mudaram. Reprocesse os jogos antes da carga.")
+        if data.get("curation_sha256") is not None and data["curation_sha256"] != sha256(args.curation):
+            raise ValueError("A curadoria mudou. Reprocesse os jogos antes da carga.")
         if data["hardware"] != hardware_rows(args.catalog):
             raise ValueError("Referência de hardware divergente do CSV.")
         report = {"status": "ok", "dry_run": args.dry_run, "games": len(rows),

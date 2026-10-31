@@ -13,11 +13,13 @@ from hardware_catalog import MANUAL_SCORE_VERSION, ROOT, read_catalog
 from hardware_matcher import normalize_name, read_aliases
 from process_requirements import process_requirements
 from regex_parser import clean_html
+from requirements_curation import apply_curation, read_curation, validate_curated_block
 
 FORMAT = "steam_games_v1"
 OWNER = "gamecompass_catalog_v1"
 FIELDS = ("min_ram_gb", "min_cpu_score", "min_gpu_score", "rec_ram_gb", "rec_cpu_score", "rec_gpu_score")
 PLATFORMS = {"windows": "Windows", "macos": "macOS", "linux": "Linux"}
+EDITORIAL_GENRES = {"Plataforma", "Roguelike", "Tiro", "Puzzle"}
 
 
 def sha256(path: Path) -> str:
@@ -47,6 +49,12 @@ def read_selection(path: Path) -> dict:
             or len(tags) != len(set(tags)) or not isinstance(row.get("curation_notes"), str)
             or not row["curation_notes"].strip()):
             raise ValueError(f"Tags ou justificativa inválidas para {appid}.")
+        genres = row.get("editorial_genres", [])
+        if (not isinstance(genres, list) or any(not isinstance(x, str) or x not in EDITORIAL_GENRES for x in genres)
+            or len(genres) != len(set(genres))
+            or (genres and (not isinstance(row.get("genre_curation_notes"), str)
+                            or not row["genre_curation_notes"].strip()))):
+            raise ValueError(f"Categorias editoriais ou justificativa inválidas para {appid}.")
         seen.add(appid)
     return selection
 
@@ -61,11 +69,14 @@ def hardware_digest(rows: list[dict]) -> str:
     return hashlib.sha256(json.dumps(ordered, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
-def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, aliases_path: Path) -> dict:
+def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, aliases_path: Path,
+                  curation_path: Path | None = None) -> dict:
     selection = read_selection(selection_path)
     records = read_catalog(catalog_path, catalog_format="manual")
     catalog = {(r["component_type"], normalize_name(r["name"])): r for r in records}
     aliases = read_aliases(aliases_path, catalog)
+    curation_path = curation_path or ROOT / "data/catalog/requirements_curation.json"
+    curation = read_curation(curation_path, catalog)
     games = []
     for row in selection["games"]:
         folder = snapshot_dir / row["id"]
@@ -87,6 +98,7 @@ def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, 
                 target[level] = None
                 if block is not None:
                     processed = process_requirements(block["html"], catalog, aliases, catalog_format="manual")
+                    processed = apply_curation(processed, row["id"], target_name, level, curation, catalog, aliases)
                     target[level] = {**processed, "os_text": block["os_text"]}
                     issues.extend(f"{target_name}.{level}: {issue}" for issue in processed["issues"])
             platforms[target_name] = target
@@ -103,6 +115,9 @@ def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, 
             if isinstance(x, dict) and isinstance(x.get("description"), str) and x["description"].strip()}) if isinstance(descriptions, list) else []
         if not genres:
             issues.append("Gêneros não informados pela Steam.")
+        steam_genres = genres
+        editorial_genres = row.get("editorial_genres", [])
+        genres = sorted(set(steam_genres) | set(editorial_genres))
         developers = data.get("developers")
         date = data.get("release_date")
         year = re.search(r"\b(?:19|20)[0-9]{2}\b", str(date.get("date", ""))) if isinstance(date, dict) else None
@@ -115,6 +130,9 @@ def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, 
             "developer": ", ".join(x for x in developers if isinstance(x, str)) if isinstance(developers, list) else "",
             "year": int(year[0]) if year else None,
             "genres": genres, "themes": row["tags"], "themes_status": "classified",
+            "genre_source": {"steam": steam_genres, "editorial": editorial_genres,
+                "method": "gamecompass_genres_v1", "notes": row.get("genre_curation_notes", ""),
+                "source_url": f"https://store.steampowered.com/app/{row['id']}/"},
             "summary": clean_html(data.get("short_description", "")) if isinstance(data.get("short_description"), str) else "",
             "image_url": image, "store_url": f"https://store.steampowered.com/app/{row['id']}/",
             "platforms": platforms, "source": extracted["source"],
@@ -130,6 +148,7 @@ def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, 
     result = {"schema_version": FORMAT, "score_version": MANUAL_SCORE_VERSION, "currency": "BRL",
         "processed_at": datetime.now(timezone.utc).isoformat(), "catalog_sha256": sha256(catalog_path),
         "aliases_sha256": sha256(aliases_path), "selection_sha256": sha256(selection_path),
+        "curation_sha256": sha256(curation_path),
         "hardware": hardware, "hardware_sha256": hardware_digest(hardware), "games": games}
     validate_catalog(result)
     return result
@@ -158,6 +177,10 @@ def validate_catalog(data: dict) -> None:
         seen_hardware.add(key)
     if hardware_digest(rows) != data["hardware_sha256"]:
         raise ValueError("Hash do hardware divergente.")
+    if "curation_sha256" in data and (not isinstance(data["curation_sha256"], str)
+        or not re.fullmatch(r"[a-f0-9]{64}", data["curation_sha256"])):
+        raise ValueError("Hash da curadoria inválido.")
+    hardware_index = {(r["component_type"], normalize_name(r["name"])): r for r in rows}
     games = data.get("games")
     if not isinstance(games, list) or not 1 <= len(games) <= 250:
         raise ValueError("Catálogo deve conter de 1 a 250 jogos.")
@@ -179,6 +202,17 @@ def validate_catalog(data: dict) -> None:
             if (not isinstance(names, list) or any(not isinstance(x, str) or not x.strip() or len(x) > 100 for x in names)
                 or len(names) != len(set(names))):
                 raise ValueError(f"Classificação inválida: {field}.")
+        genre_source = game.get("genre_source")
+        if genre_source is not None:
+            if (not isinstance(genre_source, dict) or genre_source.get("method") != "gamecompass_genres_v1"
+                or any(not isinstance(genre_source.get(key), list) or
+                       any(not isinstance(name, str) or not name.strip() for name in genre_source[key])
+                       for key in ("steam", "editorial"))
+                or any(name not in EDITORIAL_GENRES for name in genre_source["editorial"])
+                or set(game["genres"]) != set(genre_source["steam"]) | set(genre_source["editorial"])
+                or (genre_source["editorial"] and (not isinstance(genre_source.get("notes"), str)
+                                                 or not genre_source["notes"].strip()))):
+                raise ValueError("Origem das categorias editoriais divergente dos gêneros.")
         if game.get("themes_status") != "classified" or not isinstance(game.get("platforms"), dict) or set(game["platforms"]) != set(PLATFORMS.values()):
             raise ValueError("Plataformas ou curadoria inválidas.")
         source = game.get("source")
@@ -198,6 +232,7 @@ def validate_catalog(data: dict) -> None:
                     or not isinstance(block.get("requirements"), dict) or block.get("score_version") != MANUAL_SCORE_VERSION):
                     raise ValueError("Bloco de requisitos inválido.")
                 if block is not None:
+                    validate_curated_block(block, hardware_index)
                     for field in ("ram_gb", "cpu_score", "gpu_score"):
                         value = block["requirements"].get(field)
                         if field not in block["requirements"] or (value is not None and (type(value) is not int or not 0 < value < 2**63)):

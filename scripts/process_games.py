@@ -16,14 +16,15 @@ def main(argv=None):
     parser.add_argument("--selection", type=Path, default=ROOT / "data/catalog/games.json")
     parser.add_argument("--catalog", type=Path, default=ROOT / "data/catalog/hardware_manual_v1.csv")
     parser.add_argument("--aliases", type=Path, default=ROOT / "data/catalog/hardware_aliases.json")
+    parser.add_argument("--curation", type=Path, default=ROOT / "data/catalog/requirements_curation.json")
     parser.add_argument("--output", type=Path, default=ROOT / "data/processed/games_manual_v1.json")
     args = parser.parse_args(argv)
     try:
         output = args.output.resolve()
-        inputs = (args.selection, args.catalog, args.aliases)
+        inputs = (args.selection, args.catalog, args.aliases, args.curation)
         if output in [x.resolve() for x in inputs] or args.snapshot_dir.resolve() == output or args.snapshot_dir.resolve() in output.parents:
             raise ValueError("A saída deve ficar fora dos snapshots e ser diferente das entradas.")
-        data = build_catalog(args.snapshot_dir, args.selection, args.catalog, args.aliases)
+        data = build_catalog(args.snapshot_dir, args.selection, args.catalog, args.aliases, args.curation)
         write_json_atomic(args.output, data)
     except (OSError, ValueError, UnicodeError, csv.Error) as exc:
         print(f"Erro no processamento de jogos: {exc}", file=sys.stderr)
