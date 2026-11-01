@@ -14,6 +14,7 @@ export function SearchSelect({
   onChange,
   placeholder,
   empty,
+  disabled = false,
 }: {
   label: string
   options: Option[]
@@ -21,6 +22,7 @@ export function SearchSelect({
   onChange: (id: string) => void
   placeholder: string
   empty: string
+  disabled?: boolean
 }) {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
@@ -49,7 +51,7 @@ export function SearchSelect({
             <strong>{selected.label}</strong>
             {selected.hint && <span>{selected.hint}</span>}
           </div>
-          <button type="button" className="btn ghost small" onClick={() => onChange("")}>
+          <button type="button" className="btn ghost small" disabled={disabled} onClick={() => onChange("")}>
             Trocar
           </button>
         </div>
@@ -59,9 +61,10 @@ export function SearchSelect({
             id={inputId}
             role="combobox"
             aria-autocomplete="list"
+            disabled={disabled}
             value={query}
             placeholder={placeholder}
-            aria-expanded={open}
+            aria-expanded={open && !disabled}
             aria-controls={listId}
             onChange={(event) => {
               setQuery(event.target.value)
@@ -78,7 +81,7 @@ export function SearchSelect({
               }
             }}
           />
-          {open && (
+          {open && !disabled && (
             <ul id={listId} role="listbox">
               {filtered.length === 0 && <li className="muted">{empty}</li>}
               {filtered.map((option) => (

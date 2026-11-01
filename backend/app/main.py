@@ -6,6 +6,7 @@ from neo4j.exceptions import DriverError, Neo4jError
 
 from app.core.config import settings
 from app.catalog_routes import router as catalog_router
+from app.recommendation_routes import router as recommendation_router
 from app.services.steam import SteamClient
 
 
@@ -33,6 +34,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.include_router(catalog_router)
+app.include_router(recommendation_router)
 
 
 @app.get("/", tags=["Geral"])

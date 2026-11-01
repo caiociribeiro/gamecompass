@@ -1,5 +1,10 @@
 # Seleção de hardware para jogos — outubro de 2026
 
+Este documento registra o lote inicial de 40 modelos. Para o estado
+atual do catálogo completo, consulte a
+[revisão complementar](HARDWARE_REVIEW_2026_10.md): 61 classificadas e
+20 pendentes, mantendo 41 CPUs e 40 GPUs.
+
 ## Escopo e resultado
 
 Curadoria registrada em 30/10/2026. Esta é uma seleção de 20 CPUs e 20 GPUs

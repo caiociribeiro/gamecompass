@@ -13,17 +13,19 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 
-def fetch_app(appid: str) -> tuple[bytes, dict]:
+def fetch_app(appid: str, *, language: str = "english") -> tuple[bytes, dict]:
     """Valida a resposta, mantendo seus bytes originais para auditoria."""
     if not re.fullmatch(r"[1-9][0-9]*", appid):
         raise ValueError(
             "appid deve ser um inteiro positivo, sem zeros iniciais."
         )
 
+    if language not in ("english", "portuguese"):
+        raise ValueError("Idioma inválido para a coleta.")
     url = "https://store.steampowered.com/api/appdetails?" + urlencode({
         "appids": appid,
         "cc": "br",
-        "l": "english",
+        "l": language,
     })
     request = Request(url, headers={
         "Accept": "application/json",
@@ -66,7 +68,7 @@ def fetch_app(appid: str) -> tuple[bytes, dict]:
         "source_url": url,
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "country": "br",
-        "language": "english",
+        "language": language,
         "response_sha256": hashlib.sha256(raw).hexdigest(),
         "requirements_available": {
             level: (

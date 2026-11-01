@@ -6,9 +6,16 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Nesta etapa, 23 CPUs e 25 GPUs estão classificadas. As 33 peças pendentes
-são 18 CPUs e 15 GPUs. O cadastro tem 81 peças. A tabela abaixo preserva
-os grupos iniciais; o novo lote está detalhado mais adiante.
+Na revisão atual, as 53 CPUs e 71 GPUs cadastradas estão classificadas
+por curadoria aproximada para o TCC1: 124 peças, sem notas pendentes.
+As últimas 43 inclusões e os limites de comparação dos jogos estão em
+[REQUIREMENTS_REVIEW_2026_10.md](REQUIREMENTS_REVIEW_2026_10.md).
+As últimas 18 classificações e o critério simplificado estão em
+[TCC1_REVIEW_2026_10.md](TCC1_REVIEW_2026_10.md). A tabela
+abaixo preserva os grupos iniciais; as ampliações estão documentadas em
+[RESEARCH_2026_10.md](RESEARCH_2026_10.md) e
+[HARDWARE_REVIEW_2026_10.md](HARDWARE_REVIEW_2026_10.md) e
+[CPU80_REVIEW_2026_10.md](CPU80_REVIEW_2026_10.md).
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
@@ -35,25 +42,30 @@ documentado; não comprova desempenho igual em cada jogo.
 ## Regra de curadoria das GPUs
 
 1. Confirmar o modelo e a variante de memória.
-2. Usar testes que comparem as placas na mesma configuração e amostra de jogos.
-3. Registrar resolução, qualidade por jogo, renderização e data do estudo.
-4. Registrar o recorte de cada grupo: os primeiros estudos priorizam 1080p;
-   o lote de outubro de 2026 usa 1440p Ultra com rasterização nativa.
-   Não usar geração de quadros ou mistura de upscaling como equivalência.
-5. Admitir a mesma classe quando a diferença média publicada no recorte
-   comparável for de até 10% e as ressalvas do estudo forem registradas.
-6. Exigir uma comparação compatível com os integrantes do grupo ao ampliá-lo.
-   Proximidade entre A/B e B/C não comprova proximidade entre A/C.
-7. Manter a nota vazia quando a comparação for insuficiente ou incompatível.
+2. Consultar avaliações de jogos e localizar uma faixa geral de desempenho
+   próxima a modelos que já estão classificados.
+3. Priorizar rasterização nativa, sem misturar ray tracing, geração de
+   quadros ou upscaling à comparação principal.
+4. Registrar a fonte e uma justificativa curta. Uma comparação direta é
+   preferível, mas avaliações de épocas diferentes também podem orientar
+   uma aproximação de curadoria, explicitando que não são um teste único.
+5. Atribuir a mesma classe a placas de faixa semelhante, aceitando
+   diferenças por jogo, drivers, clocks e memória. Preservar os registros
+   de 4GB e 8GB mesmo quando compartilhem a classe.
+6. Manter a nota vazia para modelos ainda não avaliados. Não classificar
+   automaticamente um nome desconhecido ou ambíguo.
 
-O limite de 10% é uma escolha experimental do GameCompass para o protótipo.
-Sua adequação deverá ser avaliada no TCC2. Esta regra orienta a curadoria;
-os scripts atuais apenas validam e consultam as notas cadastradas.
+Revisão de escopo de 31/10/2026: para o TCC1, não exigimos limite fixo de
+10%, média publicada ou presença de todos os integrantes num mesmo teste.
+As notas são escolhas manuais documentadas, não resultados de um benchmark
+do GameCompass. A calibração quantitativa fica para o TCC2. Comparações
+indiretas servem apenas ao encaixe aproximado, sem calcular percentuais
+entre estudos ou declarar equivalência exata por transitividade.
 
-Não combine médias de FPS, médias de percentuais e médias geométricas como
-se fossem a mesma métrica. Preserve o agregado informado pelo autor.
-Os presets podem variar entre jogos: declare as condições do estudo,
-sem assumir uma configuração Ultra universal.
+As justificativas históricas dos grupos abaixo conservam as condições e
+o antigo critério de 10% usado em sua criação. Esses trechos registram a
+pesquisa anterior e não restabelecem uma exigência para a curadoria atual.
+Os scripts validam o formato e consultam as classes, sem julgar a pesquisa.
 
 ## Primeiro grupo: classe GPU 100
 
@@ -77,9 +89,10 @@ cada jogo no estudo; não foi assumido um preset único para os 32 títulos.
 
 O levantamento é histórico: a data de consulta em `collected_at` não
 representa uma nova execução do benchmark. Diferenças por jogo, drivers
-e configurações continuam relevantes. A classe 100 não foi atribuída à
-GTX 1060 3GB nem à RX 580 4GB. A variante de 3GB recebeu uma avaliação
-própria no segundo grupo; a RX 580 4GB permanece pendente.
+e configurações continuam relevantes. A GTX 1060 3GB recebeu uma avaliação
+própria no segundo grupo. A RX 580 4GB, pendente na etapa original,
+entrou na classe 100 com a revisão aproximada do TCC1, preservando sua
+identidade e sua menor capacidade de memória.
 
 ## Segundo grupo: classe GPU 50
 
@@ -144,25 +157,24 @@ GTX 1070 Ti, modelos de notebook e outras GPUs Vega não recebem esta nota
 por semelhança do nome. Os modelos deste grupo já estavam cadastrados;
 não foram adicionados novos aliases ou novas peças nesta etapa.
 
-## Regra inicial de curadoria das CPUs
+## Regra de curadoria das CPUs
 
 1. Confirmar o modelo exato, incluindo sufixos e segmento desktop/notebook.
-2. Usar comparações diretas de desempenho em jogos, com plataformas e
-   condições de memória, GPU, resolução e qualidade documentadas.
-3. Priorizar 1080p e testes que procurem reduzir a limitação pela GPU.
-4. Avaliar os resultados em configuração de fábrica, preservando o boost
-   normal. Resultados de overclock manual precisam de avaliação separada.
-5. Usar o agregado de jogos publicado pelo autor e manter a mesma classe
-   quando a diferença for de até 10%, registrando as limitações da amostra.
-6. Exigir comparação com todos os integrantes ao ampliar um grupo. Uma
-   alternativa citada pela Steam não atribui classe a outro modelo.
-7. Preservar a pendência quando faltar comparação suficiente.
+2. Consultar avaliações de jogos para identificar a faixa geral. Priorizar
+   testes com menor limitação pela GPU e configuração de fábrica.
+3. Usar modelos próximos já cadastrados como referências para um encaixe
+   manual. Registrar quando o grupo resultar de aproximações entre estudos,
+   sem alegar comparação direta de todos os modelos.
+4. Registrar a fonte e uma justificativa curta. Não exigir média própria,
+   diferença máxima fixa ou uma única configuração para todo o catálogo.
+5. Manter desconhecidos ou modelos ainda não avaliados sem nota. A Steam
+   ajuda a identificar requisitos, mas não fornece nossa classificação.
 
-O limite de 10% também é uma escolha experimental para CPUs. A nota
-classifica proximidade em jogos no recorte documentado. Não agrega
-Cinebench, renderização ou produtividade ao índice de jogos. Frequência,
-núcleos, instruções suportadas e estabilidade dos tempos de quadro
-continuam sendo características que exigem avaliação própria.
+Núcleos, GHz e resultados de produtividade podem contextualizar o modelo,
+mas não são convertidos em uma nota de jogos. Os cálculos detalhados das
+primeiras etapas permanecem como histórico. Para o TCC1 basta uma faixa
+plausível e documentada. CPUs de classe próxima podem trocar de posição
+conforme o jogo; uma classe não garante instruções, estabilidade ou FPS.
 
 ## Primeiro grupo de CPU: classe 100
 
@@ -210,9 +222,11 @@ identificam outros modelos e não herdam a nota automaticamente.
 
 ## Outros grupos e limites
 
-As avaliações sem cobertura comparável continuam pendentes. A seleção
-[de outubro de 2026](RESEARCH_2026_10.md) registra 20 CPUs e 20 GPUs,
-com 37 classificações confirmadas e três propostas ainda sem nota.
+Modelos ainda não avaliados continuam sem nota quando forem adicionados.
+A seleção [de outubro de 2026](RESEARCH_2026_10.md) conserva o histórico
+de 37 classificações e três propostas naquele lote. As três propostas e
+os demais modelos cadastrados receberam agora faixas aproximadas, conforme
+[TCC1_REVIEW_2026_10.md](TCC1_REVIEW_2026_10.md).
 A RTX 5070 12GB e a RX 9070 16GB compartilham agora a classe GPU 550,
 com base no recorte documentado de rasterização nativa a 1440p.
 
@@ -236,8 +250,11 @@ Reprocesse os requisitos afetados para que consultem o catálogo atualizado.
 Use a mesma versão do índice para comparar o PC com os requisitos do jogo.
 O commit Git e os hashes dos arquivos identificam a revisão utilizada.
 
-Após esta etapa, a carga informa `classified: 48` e `pending: 33`.
-Requisitos que citam alternativas ainda sem nota continuam com
-`required_score: null` e `status: needs_review`. Por exemplo, a Arc A380
-segue pendente nos mínimos do Cyberpunk 2077, preservando essa pendência
-mesmo com as duas alternativas deste primeiro grupo já classificadas.
+Após a ampliação de requisitos, a carga informa `classified: 124` e `pending: 0`.
+Isso vale para as peças cadastradas, não para qualquer texto da Steam.
+Requisitos com modelos desconhecidos, ambíguos ou campos ausentes continuam
+com `required_score: null` e `status: needs_review`. Uma alternativa conhecida
+pode comprovar o atendimento de um computador, sem preencher o limite global
+nem escolher uma variante desconhecida. O novo relatório separa a cobertura
+por plataforma e nível. Isso não conclui a validação de VRAM, DirectX ou
+dos demais requisitos. Cada jogo preserva suas pendências específicas.

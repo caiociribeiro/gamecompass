@@ -49,8 +49,8 @@ export function Preferences() {
           {user.genres.length} gêneros · {user.themes.length} temáticas.
         </p>
         <p className="hint">
-          Suas temáticas ficam salvas no perfil. A associação temática dos jogos da Steam ainda será
-          preenchida; por enquanto a afinidade considera gêneros e jogos âncora.
+          As temáticas dos jogos catalogados são classificadas pelo GameCompass e participam da
+          afinidade. Jogos consultados fora desse catálogo podem ter essa classificação pendente.
         </p>
       </section>
     </div>

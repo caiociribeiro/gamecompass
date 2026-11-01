@@ -40,6 +40,16 @@ services:
     volumes:
       - ./scripts:/workspace/scripts:ro
       - ./data:/workspace/data:ro
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import json, urllib.request; response = urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3); assert json.load(response).get('status') == 'ok'"
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
     depends_on:
       neo4j:
         condition: service_healthy

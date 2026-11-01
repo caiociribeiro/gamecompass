@@ -108,6 +108,43 @@ class ManualMatcherTests(unittest.TestCase):
         self.assertEqual(result["score_version"], "manual_v1")
         self.assertEqual(len(result["alternatives"]), 2)
 
+    def test_slashes_and_words_preserve_each_model_and_threshold(self):
+        result = self.alternatives("GPU A/GPU fictícia 3GB or GPU fictícia 6GB")
+        self.assertEqual(result["status"], "resolved")
+        self.assertEqual(result["required_score"], 400)
+        self.assertEqual([a["name"] for a in result["alternatives"]],
+            ["GPU fictícia 6GB", "GPU fictícia 3GB", "GPU fictícia 6GB"])
+
+    def test_numeric_cpu_suffix_can_precede_unspaced_slash(self):
+        self.catalog[("CPU", "cpu fictícia 3600")] = {
+            **self.catalog[("CPU", "cpu fictícia")], "name": "CPU fictícia 3600",
+        }
+        result = self.alternatives("CPU fictícia 3600/CPU fictícia", "CPU")
+        self.assertEqual(result["status"], "resolved")
+        self.assertEqual(result["required_score"], 300)
+        self.assertEqual(len(result["alternatives"]), 2)
+
+    def test_slash_never_approves_pending_or_unknown_memory_variant(self):
+        for name, status in (("GPU fictícia pendente", "pending"), ("GPU fictícia 8GB", "not_found")):
+            with self.subTest(model=name):
+                result = self.alternatives("GPU A / " + name)
+                self.assertEqual(result["status"], "needs_review")
+                self.assertIsNone(result["required_score"])
+                self.assertEqual(result["alternatives"][0]["performance_score"], 500)
+                self.assertEqual(result["alternatives"][1]["score_status"], status)
+
+    def test_numeric_vram_abbreviation_is_not_expanded_into_known_variants(self):
+        result = self.alternatives("GPU fictícia 3/6GB")
+        self.assertEqual(result["status"], "needs_review")
+        self.assertIsNone(result["required_score"])
+        self.assertEqual(len(result["alternatives"]), 1)
+        self.assertEqual(result["alternatives"][0]["query"], "GPU fictícia 3/6GB")
+
+    def test_empty_slash_alternatives_are_rejected(self):
+        for text in ("/ GPU A", "GPU A /", "GPU A // GPU fictícia 3GB"):
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                self.alternatives(text)
+
     def test_pending_alternative_blocks_threshold(self):
         result = self.alternatives("GPU A or GPU fictícia pendente")
         self.assertEqual(result["status"], "needs_review")
@@ -121,6 +158,37 @@ class ManualMatcherTests(unittest.TestCase):
     def test_empty_alternative_is_rejected(self):
         with self.assertRaises(ValueError):
             self.alternatives("GPU A ou ")
+
+    def test_commas_separate_model_lists_without_discarding_an_unknown_model(self):
+        self.catalog[("GPU", "nvidia fixture")] = {
+            **self.catalog[("GPU", "gpu fictícia 6gb")], "name": "NVIDIA fixture",
+        }
+        result = self.alternatives("NVIDIA fixture, AMD desconhecida")
+        self.assertEqual(len(result["alternatives"]), 2)
+        self.assertEqual(result["alternatives"][0]["performance_score"], 500)
+        self.assertIsNone(result["required_score"])
+
+    def test_or_better_does_not_become_an_empty_or_unknown_model(self):
+        for suffix in (" or better", " ou superior", " (ou superior)"):
+            self.assertEqual(self.alternatives("GPU A" + suffix)["required_score"], 500)
+        result = self.alternatives("GPU A or better, or GPU fictícia 3GB or better")
+        self.assertEqual(len(result["alternatives"]), 2)
+        self.assertEqual(result["required_score"], 400)
+
+    def test_decimal_commas_and_parenthesized_lists_are_not_model_separators(self):
+        from hardware_matcher import split_alternatives
+        self.assertEqual(split_alternatives("Intel fixture @ 3,3 GHz"), ["Intel fixture @ 3,3 GHz"])
+        self.assertEqual(split_alternatives("Intel fixture (3.0 GHz, AMD info) or CPU fictícia"),
+            ["Intel fixture (3.0 GHz, AMD info)", "CPU fictícia"])
+
+    def test_trademark_normalization_preserves_the_original_query_and_model(self):
+        self.catalog[("GPU", "nvidia fixture")] = {
+            **self.catalog[("GPU", "gpu fictícia 6gb")], "name": "NVIDIA fixture",
+        }
+        result = self.single("NVIDIA® fixture™")
+        self.assertEqual(result["query"], "NVIDIA® fixture™")
+        self.assertEqual(result["name"], "NVIDIA fixture")
+        self.assertEqual(result["method"], "normalized")
 
     def test_incompatible_score_version_is_rejected(self):
         key = ("GPU", normalize_name("GPU fictícia 3GB"))
@@ -145,6 +213,7 @@ class ManualMatcherTests(unittest.TestCase):
         self.assertEqual(result["passmark_score"], 1234)
         self.assertNotIn("performance_score", result)
         self.assertEqual(match_alternatives("GPU legada A or GPU legada B", "GPU", legacy, {})["required_score"], 1234)
+        self.assertEqual(match_alternatives("GPU legada A / GPU legada B", "GPU", legacy, {})["required_score"], 1234)
 
     def test_cli_reads_validated_manual_catalog_and_aliases(self):
         result = self.cli(
@@ -155,6 +224,16 @@ class ManualMatcherTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["required_score"], 400)
         self.assertEqual(json.loads(result.stdout)["score_version"], "manual_v1")
+
+    def test_cli_splits_slash_only_with_alternatives_flag(self):
+        args = ("--format", "manual", "--catalog", self.csv_path,
+            "--aliases", self.aliases_path, "--type", "GPU", "--name", "GPU A / GPU fictícia 3GB")
+        single = self.cli(*args)
+        self.assertEqual(single.returncode, 0, single.stderr)
+        self.assertEqual(json.loads(single.stdout)["status"], "not_found")
+        multiple = self.cli(*args, "--alternatives")
+        self.assertEqual(multiple.returncode, 0, multiple.stderr)
+        self.assertEqual(json.loads(multiple.stdout)["required_score"], 400)
 
     def test_cli_rejects_legacy_header_in_manual_mode(self):
         legacy = self.root / "legacy.csv"

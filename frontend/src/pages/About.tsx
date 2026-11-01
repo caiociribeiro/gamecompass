@@ -11,21 +11,23 @@ export function About() {
       <div className="prose">
         <h2>Dados dos jogos</h2>
         <p>
-          Pesquise seus jogos pelo nome e escolha suas âncoras. Títulos, capas, gêneros e requisitos vêm da
-          Steam. A interface começa sem catálogo de jogos. As sugestões são consultadas quando você solicitar.
+          Pesquise seus jogos pelo nome e escolha suas âncoras. Títulos, capas, gêneros gerais e requisitos vêm da
+          Steam. Categorias de jogabilidade como Plataforma, Roguelike, Tiro e Puzzle são complementadas
+          pelo GameCompass. As sugestões são consultadas quando você solicitar.
         </p>
         <h2>Hardware</h2>
         <p>
-          CPUs e GPUs usam o índice manual versionado do projeto. Uma peça conhecida sem nota ou um requisito
-          não identificado permanece pendente. RAM e sistema operacional são opções locais; não recebem nós
-          próprios no catálogo.
+          Escolha seu processador e sua placa de vídeo no catálogo. A comparação mostra se cada componente
+          atende aos requisitos mínimos ou recomendados e sugere uma substituição quando há um requisito
+          não atendido, com outras opções de fabricantes quando disponíveis. Informe também a RAM e
+          o sistema operacional do computador.
         </p>
         <h2>Afinidade e validação</h2>
         <p>
-          As preferências usam gêneros e temáticas. A associação temática dos jogos será preenchida em uma
-          etapa posterior; por enquanto a afinidade usa os gêneros e as âncoras. Requisitos incompletos e
-          versão do sistema operacional ficam visíveis como pendências. A classificação manual é uma
-          aproximação do TCC1.
+          Cada jogo é comparado individualmente com suas âncoras e mostra quais características compartilha
+          com elas. Ao mudar suas preferências, solicite uma nova busca. Requisitos ainda
+          não identificados ficam pendentes. A comparação de hardware é uma aproximação do protótipo e
+          não prevê FPS. No Windows, consideramos a versão principal informada no perfil.
         </p>
         <h2>Conta e perfil</h2>
         <p>

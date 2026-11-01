@@ -89,6 +89,32 @@ class ManualRequirementsTests(unittest.TestCase):
         self.assertEqual(result["issues"], [])
         self.assertNotIn("passmark_score", json.dumps(result))
 
+    def test_html_with_slashes_resolves_ram_cpu_and_gpu(self):
+        result = self.document(cpu="CPU A / CPU fictícia A", gpu="GPU A/GPU fictícia B")
+        self.assertEqual(result["status"], "resolved")
+        self.assertEqual(result["requirements"], {"ram_gb": 8, "cpu_score": 300, "gpu_score": 400})
+        self.assertEqual(result["issues"], [])
+
+    def test_slash_identifies_pending_cpu_without_erasing_gpu_or_ram(self):
+        result = self.document(cpu="CPU A / CPU fictícia pendente", gpu="GPU A/GPU fictícia B")
+        self.assertEqual(result["requirements"], {"ram_gb": 8, "cpu_score": None, "gpu_score": 400})
+        review = collect_review([self.save(result)])
+        self.assertEqual(review["pending_models"], [])
+        self.assertEqual([item["name"] for item in review["pending_classifications"]], ["CPU fictícia pendente"])
+
+    def test_slash_keeps_unknown_and_unclassified_models_in_separate_review_groups(self):
+        result = self.document(gpu="GPU A / GPU P / GPU desconhecida")
+        self.assertEqual(result["requirements"], {"ram_gb": 8, "cpu_score": 300, "gpu_score": None})
+        review = collect_review([self.save(result)])
+        self.assertEqual([item["query"] for item in review["pending_models"]], ["GPU desconhecida"])
+        self.assertEqual([item["name"] for item in review["pending_classifications"]], ["GPU fictícia pendente"])
+
+    def test_empty_slash_cpu_preserves_other_requirement_fields(self):
+        result = self.document(cpu="CPU A /")
+        self.assertEqual(result["status"], "needs_review")
+        self.assertIsNone(result["hardware"]["CPU"])
+        self.assertEqual(result["requirements"], {"ram_gb": 8, "cpu_score": None, "gpu_score": 500})
+
     def test_known_gpu_without_score_keeps_identity_and_partial_results(self):
         result = self.document(gpu="GPU P")
         self.assertEqual(result["status"], "needs_review")
