@@ -238,10 +238,11 @@ Abra http://localhost:5173. O Vite encaminha `/api` para a porta `API_PORT`
 do `.env` da raiz, usando 8000 por padrão. O proxy também funciona no preview.
 O Swagger permanece em http://localhost:8000/docs.
 
-A conta local de teste é `demo@gamecompass.dev`, senha `demo123`. Conta,
-senha e perfil continuam no navegador. A migração preserva peças e âncoras
-Steam já escolhidas; os recursos da loja deixam de fazer parte do perfil.
-As listas originais de gêneros e temáticas ficam disponíveis mesmo sem jogos.
+Contas e perfis ficam no servidor (veja "Contas e perfil" abaixo). Não existe
+mais conta de demonstração: crie uma conta em `/cadastro`. Escolhas guardadas
+no navegador pela versão anterior podem ser importadas uma vez, de forma
+explícita, depois do login. As listas originais de gêneros e temáticas ficam
+disponíveis mesmo sem jogos.
 
 ### Fluxo da interface
 
@@ -361,7 +362,32 @@ npm run build
 npm run dev
 ```
 
-O catálogo de 80 jogos e o CSV de hardware já carregados continuam sendo usados. Contas e perfis permanecem locais nesta etapa; a API recebe somente os dados necessários ao cálculo.
+O catálogo de 80 jogos e o CSV de hardware já carregados continuam sendo usados. O cálculo continua recebendo apenas os dados necessários no corpo da requisição; ele não lê a conta.
+
+### Contas e perfil
+
+As contas ficam no Neo4j como `(:User)-[:HAS_SESSION]->(:Session)`, com
+constraints de unicidade em `User.id`, `User.email` e `Session.token_hash`
+(criadas na primeira operação de conta). O perfil são propriedades do próprio
+`User`: `genres`, `themes`, `anchor_ids` (ids Steam, sem relacionamento com
+`:Game`, para que recarregar o catálogo nunca afete contas) e `hw_*`.
+
+| Rota | Função |
+| --- | --- |
+| `POST /api/auth/register` | Cria a conta e abre a sessão. |
+| `POST /api/auth/login` | Abre a sessão; mensagem única para e-mail ou senha inválidos. |
+| `POST /api/auth/logout` | Revoga a sessão no servidor. |
+| `GET /api/auth/me` | Conta e perfil da sessão atual (401 sem sessão válida). |
+| `POST /api/auth/password` | Troca a senha e encerra as demais sessões. |
+| `PATCH /api/me/profile` | Atualização parcial de nome, gêneros, temáticas, âncoras e hardware; `hardware: null` limpa o computador. |
+
+- Senhas: Argon2id (`argon2-cffi`), mínimo de 8 caracteres. Nenhuma senha em texto puro é guardada.
+- Sessão: token aleatório em cookie `gc_session` (`HttpOnly`, `SameSite=Lax`, 7 dias). O banco guarda apenas o SHA-256 do token. Defina `SESSION_COOKIE_SECURE=true` atrás de HTTPS.
+- O usuário vem sempre da sessão, nunca do corpo da requisição; o perfil de outra conta não é alcançável. Campos extras são rejeitados.
+- Rotas que alteram dados recusam `Origin` fora de `ALLOWED_ORIGINS` (padrão: `http://localhost:5173` e `http://127.0.0.1:5173`).
+- Cinco falhas de login em cinco minutos bloqueiam novas tentativas daquele IP/e-mail (contador em memória, reinicia com a API).
+- Conta de demonstração opcional: defina `DEMO_EMAIL` e `DEMO_PASSWORD` no `.env` e rode `docker compose run --rm --no-deps api python -m app.seed_demo`. Repetir o comando redefine a senha e preserva o perfil.
+- Limitações do protótipo: não há recuperação de senha por e-mail nem verificação de e-mail.
 
 ### Rotas de leitura
 
@@ -456,7 +482,14 @@ docker compose run --rm --no-deps data python scripts/review_game_requirements.p
 docker compose run --rm --no-deps api python -m unittest discover -s tests -v
 ```
 
-Os testes HTTP usam fixtures identificadas e dispensam serviços externos.
+Os testes HTTP usam fixtures identificadas e dispensam serviços externos. Os
+testes de conta usam um repositório em memória; a persistência real no Neo4j
+tem um teste próprio, executado apenas com o banco ativo:
+
+```text
+docker compose run --rm -e GAMECOMPASS_TEST_NEO4J=1 api python -m unittest discover -s tests -p "test_users_neo4j.py" -v
+```
+
 Na pasta `frontend/`:
 
 ```text

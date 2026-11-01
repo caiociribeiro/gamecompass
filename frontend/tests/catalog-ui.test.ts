@@ -44,7 +44,7 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
     esbuild.stop()
     await rm(directory, { recursive: true, force: true })
   })
-  const user = { id: "qa", name: "Fixture", email: "fixture@example.invalid", password: "fixture-secret", genres: ["RPG"], themes: ["Fantasia"],
+  const user = { id: "qa", name: "Fixture", email: "fixture@example.invalid", genres: ["RPG"], themes: ["Fantasia"],
     anchorIds: ["101", "102", "103"], hardware: { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" }, catalogVersion: "steam-v2" }
   const hardware = { CPU: [{ id: "CPU fixture", name: "CPU fixture", vendor: "Fixture", performance_score: 10, score_version: "manual_v1" }],
     GPU: [{ id: "GPU fixture", name: "GPU fixture", vendor: "Fixture", performance_score: 20, score_version: "manual_v1" }], source: "neo4j", score_version: "manual_v1" }
@@ -67,11 +67,14 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
   }
   const result = () => ({ items: [match()], pending: [], excluded: [], anchors, issues: [], source: "neo4j",
     calculation: { engine_version: "rules_v1", minimum_affinity: 28, score_version: "manual_v1", hardware_sha256: "fixture", curation_sha256: "fixture" } })
-  localStorage.setItem("gamecompass.users.v1", JSON.stringify([user]))
-  localStorage.setItem("gamecompass.session.v1", user.id)
-  const requests: any[] = [], comparisons: any[] = []
+  const requests: any[] = [], comparisons: any[] = [], patches: any[] = []
+  let signedIn = true
   t.mock.method(globalThis, "fetch", async (url, options = {}) => {
     const path = new URL(String(url), "http://localhost").pathname
+    if (path === "/api/auth/me") return signedIn ? Response.json(user) : Response.json({ detail: "Entre." }, { status: 401 })
+    if (path === "/api/auth/login") { signedIn = true; return Response.json(user) }
+    if (path === "/api/auth/logout") { signedIn = false; return Response.json({ status: "ok" }) }
+    if (path === "/api/me/profile") { assert.equal(options.method, "PATCH"); patches.push(JSON.parse(options.body)); return Response.json(user) }
     if (path === "/api/hardware") return Response.json(hardware)
     if (path === "/api/games") return Response.json({ items: anchors, issues: [], source: "neo4j" })
     if (path === "/api/recommendations" || path.endsWith("/comparison")) {
@@ -86,12 +89,15 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
   const root = m.createRoot(document.getElementById("root"))
   unmount = async () => { await act(async () => root.unmount()) }
   await act(async () => root.render(m.React.createElement(m.Harness)))
+  for (let attempt = 0; attempt < 20 && m.probe.session.status !== "ready"; attempt++) await act(async () => { await new Promise((r) => setTimeout(r, 5)) })
+  assert.equal(m.probe.session.user?.id, "qa")
   assert.equal(requests.length, 0)
   let first, second
   await act(async () => { first = m.probe.catalog.discoverGames() })
-  assert.doesNotMatch(JSON.stringify(requests[0].body), /fixture-secret|email|performance_score/)
+  assert.doesNotMatch(JSON.stringify(requests[0].body), /email|password|performance_score/)
   await act(async () => m.probe.session.updateUser({ genres: ["Puzzle", "Indie"] }))
   assert.equal(requests[0].signal.aborted, true)
+  assert.deepEqual(patches.at(-1), { genres: ["Puzzle", "Indie"] })
   await act(async () => { second = m.probe.catalog.discoverGames() })
   await act(async () => { requests[1].resolve(Response.json(result())); await second })
   assert.equal(m.probe.catalog.discovered, true)
@@ -127,7 +133,9 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
   await act(async () => { comparisons[1].resolve(Response.json({ match: match(game("106")), issues: [], calculation: result().calculation })); await Promise.resolve() })
   assert.equal(m.probe.catalog.games.length, 0)
   assert.equal(m.probe.catalog.recommendations, null)
-  await act(async () => { m.probe.session.login(user.email, user.password); m.probe.navigate("/app/recomendacoes") })
+  assert.equal(m.probe.session.user, null)
+  await act(async () => { await m.probe.session.login(user.email, "senha-de-teste-1"); m.probe.navigate("/app/recomendacoes") })
+  assert.equal(m.probe.session.user?.id, "qa")
   let failed
   await act(async () => { failed = m.probe.catalog.discoverGames() })
   await act(async () => { requests[3].resolve(Response.json({ detail: "API fixture indisponível." }, { status: 503 })); await failed })

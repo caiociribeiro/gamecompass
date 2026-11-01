@@ -16,8 +16,8 @@ export function Account() {
     <div className="page narrow">
       <PageHeader
         eyebrow="Conta"
-        title="Sua conta neste navegador"
-        lede="Nome, senha e perfil ficam no localStorage. Trocar de computador ou limpar o navegador apaga tudo."
+        title="Sua conta"
+        lede="Nome, senha e perfil de jogo ficam na sua conta e acompanham você em qualquer navegador."
       />
 
       <form
@@ -47,12 +47,13 @@ export function Account() {
 
       <form
         className="stack card-block"
-        onSubmit={(event) => {
+        onSubmit={async (event) => {
           event.preventDefault()
-          const data = new FormData(event.currentTarget)
-          const message = changePassword(String(data.get("current") ?? ""), String(data.get("next") ?? ""))
-          setPasswordNote(message ?? "Senha alterada neste navegador.")
-          if (!message) event.currentTarget.reset()
+          const form = event.currentTarget
+          const data = new FormData(form)
+          const message = await changePassword(String(data.get("current") ?? ""), String(data.get("next") ?? ""))
+          setPasswordNote(message ?? "Senha alterada. As demais sessões desta conta foram encerradas.")
+          if (!message) form.reset()
         }}
       >
         <h2>Senha</h2>
@@ -62,7 +63,7 @@ export function Account() {
         </label>
         <label>
           Nova senha
-          <input name="next" type="password" autoComplete="new-password" minLength={6} required />
+          <input name="next" type="password" autoComplete="new-password" minLength={8} maxLength={128} required />
         </label>
         {passwordNote && <p className="hint">{passwordNote}</p>}
         <button className="btn" type="submit">
@@ -100,7 +101,7 @@ export function Account() {
         type="button"
         className="btn ghost"
         onClick={() => {
-          logout()
+          void logout()
           navigate("/entrar")
         }}
       >

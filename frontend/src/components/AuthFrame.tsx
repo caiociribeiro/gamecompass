@@ -36,9 +36,17 @@ export function FormError({ message }: { message: string | null }) {
 
 export function useField() {
   const [error, setError] = useState<string | null>(null)
-  function onSubmit(event: FormEvent, action: () => string | null) {
+  const [pending, setPending] = useState(false)
+  async function onSubmit(event: FormEvent, action: () => string | null | Promise<string | null>) {
     event.preventDefault()
-    setError(action())
+    if (pending) return
+    setPending(true)
+    setError(null)
+    try {
+      setError(await action())
+    } finally {
+      setPending(false)
+    }
   }
-  return { error, onSubmit }
+  return { error, pending, onSubmit }
 }

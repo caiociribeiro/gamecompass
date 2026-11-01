@@ -58,7 +58,6 @@ const user: UserProfile = {
   id: "fixture",
   name: "Fixture",
   email: "fixture@example.org",
-  password: "fixture",
   genres: ["RPG"],
   themes: ["Fantasia"],
   anchorIds: ["1", "2", "3"],
@@ -172,6 +171,7 @@ test("temáticas sem classificação não são inventadas a partir de recursos",
 test("migração preserva conta, hardware e âncoras já escolhidas", () => {
   const previous = {
     ...user,
+    password: "senha-antiga",
     catalogVersion: "steam-v1",
     themes: undefined,
     features: ["Um jogador"],
@@ -179,7 +179,8 @@ test("migração preserva conta, hardware e âncoras já escolhidas", () => {
   const next = migrateProfile(previous, ["RPG"], ["Fantasia"])
   assert.equal(next.id, user.id)
   assert.equal(next.email, user.email)
-  assert.equal(next.password, user.password)
+  assert.equal("password" in next, false)
+  assert.doesNotMatch(JSON.stringify(next), /senha-antiga/)
   assert.deepEqual(next.hardware, pc)
   assert.deepEqual(next.anchorIds, ["1", "2", "3"])
   assert.deepEqual(next.genres, ["RPG"])

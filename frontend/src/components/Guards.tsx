@@ -7,15 +7,25 @@ function safeNext(value: string | null) {
   return "/app"
 }
 
+function Checking() {
+  return (
+    <p className="muted" role="status" style={{ padding: "2rem" }}>
+      Verificando sua sessão…
+    </p>
+  )
+}
+
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { user } = useSession()
+  const { user, status } = useSession()
+  if (status === "loading") return <Checking />
   if (!user) return <Navigate to="/entrar" replace />
   return children
 }
 
 export function GuestOnly({ children }: { children: ReactNode }) {
-  const { user } = useSession()
+  const { user, status } = useSession()
   const [params] = useSearchParams()
+  if (status === "loading") return <Checking />
   if (user) return <Navigate to={safeNext(params.get("next"))} replace />
   return children
 }

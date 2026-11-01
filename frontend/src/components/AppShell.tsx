@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom"
 import { useSession } from "../context/SessionContext"
 import { useCatalog } from "../context/CatalogContext"
 import { profileSteps } from "../lib/profile"
+import { LegacyImportNotice } from "./LegacyImportNotice"
 import { Logo } from "./Logo"
 
 const LINKS = [
@@ -16,7 +17,7 @@ const LINKS = [
 ]
 
 export function AppShell() {
-  const { user, logout } = useSession()
+  const { user, logout, saveError, dismissSaveError } = useSession()
   const { games, hardware } = useCatalog()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
@@ -50,7 +51,7 @@ export function AppShell() {
           })}
         </nav>
         <div className="rail-foot">
-          <p className="muted tiny">Catálogo conectado. Conta e perfil salvos neste navegador.</p>
+          <p className="muted tiny">Catálogo conectado. Perfil salvo na sua conta.</p>
           <div className="who">
             <strong>{user?.name}</strong>
             <span>{user?.email}</span>
@@ -60,7 +61,7 @@ export function AppShell() {
             className="btn ghost small"
             onClick={() =>
               closeAnd(() => {
-                logout()
+                void logout()
                 navigate("/entrar")
               })
             }
@@ -77,6 +78,15 @@ export function AppShell() {
           <Logo size={22} />
         </header>
         <main className="workspace-main">
+          {saveError && (
+            <p className="form-error" role="alert">
+              {saveError}{" "}
+              <button type="button" className="btn ghost small" onClick={dismissSaveError}>
+                Fechar
+              </button>
+            </p>
+          )}
+          <LegacyImportNotice />
           <Outlet />
         </main>
       </div>

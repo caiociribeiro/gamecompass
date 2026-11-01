@@ -5,9 +5,11 @@ from neo4j import GraphDatabase
 from neo4j.exceptions import DriverError, Neo4jError
 
 from app.core.config import settings
+from app.auth_routes import router as auth_router
 from app.catalog_routes import router as catalog_router
 from app.recommendation_routes import router as recommendation_router
 from app.services.steam import SteamClient
+from app.services.users import UserStore
 
 
 @asynccontextmanager
@@ -19,6 +21,7 @@ async def lifespan(app: FastAPI):
         connection_timeout=5,
         max_transaction_retry_time=5,
     )
+    app.state.user_store = UserStore(app.state.neo4j_driver, settings.neo4j_database)
     app.state.steam_client = SteamClient()
     try:
         yield
@@ -33,6 +36,7 @@ app = FastAPI(
     version="0.2.0",
     lifespan=lifespan,
 )
+app.include_router(auth_router)
 app.include_router(catalog_router)
 app.include_router(recommendation_router)
 
