@@ -182,3 +182,53 @@ Uma regra pode incluir `query_variants`, lista opcional de até cinco textos com
 Blocos publicados com somente cabeçalho, aviso genérico de 64 bits, rede e observações recebem `requirements_kind: notes_only`. A lista de formatos é explícita; uma linha desconhecida ou um campo parcial de CPU/GPU/RAM/SO impede essa classificação. O texto é preservado no JSON e continua visível no frontend. O validador rejeita um bloco marcado como observações que contenha pontuações de desempenho, RAM, modelos ou SO identificados. A API refaz essa classificação a partir do texto ao ler registros antigos do grafo.
 
 A revisão inclui esses blocos em `not_provided` e os contabiliza separadamente em `notes_only`, por nível. Eles não entram como falha de identificação e não comprovam atendimento. As referências dos mínimos nunca são copiadas para eles. A ficha de recomendados de Spelunky 2 é um exemplo; a RAM parcial publicada para Baba Is You permanece uma pendência de requisitos.
+
+## Revisão de qualidade dos requisitos — 01/11/2026
+
+Objetivo: separar erro de extração ou identificação de informação que a Steam
+realmente não publica, sem inventar requisitos para chegar a 100% de cobertura.
+
+**Pendências dos jogos.** O texto original (`appdetails.json`) dos quatro jogos
+foi comparado com o resultado do parser. Em todos, o dado falta na fonte:
+
+| Jogo | O que a Steam publica | Situação |
+| --- | --- | --- |
+| Unpacking (1135690) | Mínimos sem linha de memória; CPU "SSE2" e GPU "DX10" genéricos. Recomendados só com o aviso de 64 bits. | RAM ausente na fonte. |
+| A Hat in Time (253230) | Mínimos e recomendados com CPU, RAM e DirectX 9.0c, sem linha de GPU. | GPU ausente na fonte. |
+| Baba Is You (736260) | Recomendados só com RAM e disco. | CPU, GPU e SO ausentes na fonte. |
+| Spelunky 2 (418530) | Recomendados só com rede e "Gamepad Recommended". | `notes_only`; não aprova nem herda os mínimos. |
+
+Continuam pendentes e documentados como limitação da fonte. Nenhum valor foi
+completado por referência manual.
+
+**Auditoria do lote de 80.** Nenhum campo com valor no texto original deixou de
+ser extraído. O que mantinha requisitos pendentes eram alternativas que o
+catálogo de hardware não reconhecia (36 no início): requisitos como
+"RTX 2060 SUPER ou RX 5700 XT ou Arc A770" ficam pendentes enquanto uma das
+opções for desconhecida. Foram acrescentados 59 aliases revisados (agora
+1361 no total) para modelos que já existem no catálogo com uma única
+variante: GTX 1650, RX 590, RX Vega 56, RX 470, RX 570, GTX 950, 760, 770, 680 e
+560, GTS 450, 9600 GT, R7 260X, R7 360, HD 7870 e R9 290X. Regra: um alias sem
+memória só pode apontar para um modelo com uma única variante no catálogo
+(`scripts/test_alias_policy.py`).
+
+Efeito no lote: alternativas não identificadas 36 → 20; mínimos resolvidos
+64 → 72 (com alternativa desconhecida 14 → 6); recomendados resolvidos 41 → 46
+(12 → 7). Jogos com base de comparação no Windows: continuam 78 de 80.
+
+**Continuam pendentes, por motivo explícito:**
+
+- Ambíguos por variante: Arc A770 (8GB ou 16GB), RX 480 (4GB ou 8GB), RX 550
+  (2GB ou 4GB) e RTX 2060 (a versão de 12GB tem outra configuração de chip).
+- Genéricos: "R9 series", "shader model 4.0", "GeForce 2xx-Series", "Radeon
+  HD 7800", "Radeon HD 4650 series", "Core 2 Duo" e "HD Graphics 4000 ou
+  melhor com 2 GB de VRAM".
+- Fora do catálogo: Snapdragon X Elite, Adreno X1 e Iris Xe G7.
+- Erro na fonte: Monster Hunter: World cita "Core i3-8350" e "Core i3-9350F",
+  que não existem (o modelo real seria i3-8350K). Não corrigimos por conta
+  própria.
+- Texto com resíduo: Factorio ("DirectX 11 capable GPU with 1GB VRAM - GeForce
+  GTX 750 Ti"), que mistura uma exigência de classe com exemplos.
+
+Para aplicar no banco depois de mudar aliases: reprocessar e carregar
+(`update_catalog.py --snapshot-dir ... --load`); a carga não duplica nós.

@@ -6508,5 +6508,300 @@
     "component_type": "GPU",
     "alias": "Radeon HD 6770",
     "canonical_name": "AMD Radeon HD 6770 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 1650",
+    "canonical_name": "NVIDIA GeForce GTX 1650 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 1650",
+    "canonical_name": "NVIDIA GeForce GTX 1650 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 1650",
+    "canonical_name": "NVIDIA GeForce GTX 1650 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1650",
+    "canonical_name": "NVIDIA GeForce GTX 1650 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 590",
+    "canonical_name": "AMD Radeon RX 590 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 590",
+    "canonical_name": "AMD Radeon RX 590 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 590",
+    "canonical_name": "AMD Radeon RX 590 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 590",
+    "canonical_name": "AMD Radeon RX 590 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX Vega 56",
+    "canonical_name": "AMD Radeon RX Vega 56 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 470",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 470",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 470",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 470",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 570",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 570",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 570",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 570",
+    "canonical_name": "AMD Radeon RX 570 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 950",
+    "canonical_name": "NVIDIA GeForce GTX 950 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 950",
+    "canonical_name": "NVIDIA GeForce GTX 950 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 950",
+    "canonical_name": "NVIDIA GeForce GTX 950 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 950",
+    "canonical_name": "NVIDIA GeForce GTX 950 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 760",
+    "canonical_name": "NVIDIA GeForce GTX 760 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 760",
+    "canonical_name": "NVIDIA GeForce GTX 760 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 760",
+    "canonical_name": "NVIDIA GeForce GTX 760 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 760",
+    "canonical_name": "NVIDIA GeForce GTX 760 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 770",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 770",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 770",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "nVidia 770",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 770",
+    "canonical_name": "NVIDIA GeForce GTX 770 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 680",
+    "canonical_name": "NVIDIA GeForce GTX 680 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 680",
+    "canonical_name": "NVIDIA GeForce GTX 680 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 680",
+    "canonical_name": "NVIDIA GeForce GTX 680 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 680",
+    "canonical_name": "NVIDIA GeForce GTX 680 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 560",
+    "canonical_name": "NVIDIA GeForce GTX 560 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 560",
+    "canonical_name": "NVIDIA GeForce GTX 560 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 560",
+    "canonical_name": "NVIDIA GeForce GTX 560 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 560",
+    "canonical_name": "NVIDIA GeForce GTX 560 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTS 450",
+    "canonical_name": "NVIDIA GeForce GTS 450"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "nVidia 450",
+    "canonical_name": "NVIDIA GeForce GTS 450"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce 9600 GT",
+    "canonical_name": "NVIDIA GeForce 9600 GT 512MB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce 9600 GT",
+    "canonical_name": "NVIDIA GeForce 9600 GT 512MB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "9600 GT",
+    "canonical_name": "NVIDIA GeForce 9600 GT 512MB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R7 360",
+    "canonical_name": "AMD Radeon R7 360 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R7 360",
+    "canonical_name": "AMD Radeon R7 360 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R7 360",
+    "canonical_name": "AMD Radeon R7 360 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD R7 360",
+    "canonical_name": "AMD Radeon R7 360 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "HD 7870",
+    "canonical_name": "AMD Radeon HD 7870 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon HD 7870",
+    "canonical_name": "AMD Radeon HD 7870 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon HD 7870",
+    "canonical_name": "AMD Radeon HD 7870 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD HD 7870",
+    "canonical_name": "AMD Radeon HD 7870 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R9 290X",
+    "canonical_name": "AMD Radeon R9 290X 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R9 290X",
+    "canonical_name": "AMD Radeon R9 290X 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R9 290X",
+    "canonical_name": "AMD Radeon R9 290X 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD R9 290X",
+    "canonical_name": "AMD Radeon R9 290X 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R7 260X",
+    "canonical_name": "AMD Radeon R7 260X 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R7 260X",
+    "canonical_name": "AMD Radeon R7 260X 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R7 260X",
+    "canonical_name": "AMD Radeon R7 260X 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD R7 260X",
+    "canonical_name": "AMD Radeon R7 260X 2GB"
   }
 ]
