@@ -1,23 +1,37 @@
 const BASE = (import.meta.env?.VITE_API_BASE_URL ?? "/api").replace(/\/$/, "")
 const UNAVAILABLE = "Não foi possível acessar a API do GameCompass. Tente novamente em alguns instantes."
 
-async function apiRequest<T>(path: string, signal?: AbortSignal, payload?: unknown): Promise<T> {
+export class ApiError extends Error {
+  status: number
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = "ApiError"
+    this.status = status
+  }
+}
+
+type Method = "GET" | "POST" | "PATCH"
+
+async function apiRequest<T>(path: string, signal?: AbortSignal, payload?: unknown, method?: Method): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     signal,
-    method: payload === undefined ? "GET" : "POST",
+    method: method ?? (payload === undefined ? "GET" : "POST"),
+    // A sessão vai no cookie HttpOnly definido pela API; o JavaScript nunca lê o token.
+    credentials: "same-origin",
     headers: { Accept: "application/json", ...(payload === undefined ? {} : { "Content-Type": "application/json" }) },
     ...(payload === undefined ? {} : { body: JSON.stringify(payload) }),
   })
   const body = await response.json().catch(() => null)
   if (!response.ok)
-    throw new Error(
+    throw new ApiError(
       typeof body?.detail === "string"
         ? body.detail
         : response.status >= 500
           ? UNAVAILABLE
           : "A API não respondeu como esperado.",
+      response.status,
     )
-  if (!body) throw new Error("A API retornou uma resposta vazia.")
+  if (!body) throw new ApiError("A API retornou uma resposta vazia.", response.status)
   return body as T
 }
 export function apiError(error: unknown) {
@@ -33,4 +47,7 @@ export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
 }
 export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   return apiRequest<T>(path, signal, body)
+}
+export function apiPatch<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(path, signal, body, "PATCH")
 }

@@ -1,7 +1,11 @@
 import type { UserProfile } from "../types"
 
+/** Perfil salvo pela versão antiga, que guardava a senha em texto puro no navegador. */
+export type LegacyProfile = Omit<UserProfile, "catalogVersion"> & { password?: string; catalogVersion?: string }
+
+/** Converte um perfil antigo. A senha antiga nunca é copiada. */
 export function migrateProfile(
-  user: UserProfile,
+  user: LegacyProfile,
   genres: readonly string[],
   themes: readonly string[],
 ): UserProfile {
@@ -10,7 +14,6 @@ export function migrateProfile(
     id: user.id,
     name: user.name,
     email: user.email,
-    password: user.password,
     genres: Array.isArray(user.genres) ? user.genres.filter((genre) => genres.includes(genre)) : [],
     themes: Array.isArray(user.themes) ? user.themes.filter((theme) => themes.includes(theme)) : [],
     anchorIds:

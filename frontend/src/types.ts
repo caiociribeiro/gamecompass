@@ -74,11 +74,11 @@ export type UserProfile = {
   id: string
   name: string
   email: string
-  password: string
   genres: string[]
   themes: string[]
   anchorIds: string[]
   hardware: HardwareProfile | null
+  /** Só existe em perfis antigos do navegador; a API não usa este campo. */
   catalogVersion?: "steam-v1" | "steam-v2"
 }
 export type RequirementLevel = "minimum" | "recommended"

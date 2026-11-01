@@ -35,6 +35,11 @@ services:
       NEO4J_PASSWORD: "${NEO4J_PASSWORD:?Defina NEO4J_PASSWORD no arquivo .env}"
       NEO4J_DATABASE: "${NEO4J_DATABASE:-neo4j}"
       GAMECOMPASS_ROOT: "/workspace"
+      ALLOWED_ORIGINS: "${ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}"
+      SESSION_COOKIE_SECURE: "${SESSION_COOKIE_SECURE:-false}"
+      DEMO_NAME: "${DEMO_NAME:-Demo}"
+      DEMO_EMAIL: "${DEMO_EMAIL:-}"
+      DEMO_PASSWORD: "${DEMO_PASSWORD:-}"
     ports:
       - "127.0.0.1:${API_PORT:-8000}:8000"
     volumes:
