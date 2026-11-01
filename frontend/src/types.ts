@@ -11,6 +11,7 @@ export type HardwareAlternative = {
   score_status: "classified" | "pending" | "not_found"
 }
 export type RequirementsBlock = {
+  requirements_kind?: "hardware" | "notes_only"
   text: string
   os_text: string | null
   status: "resolved" | "needs_review"

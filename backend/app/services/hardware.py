@@ -15,7 +15,7 @@ from hardware_catalog import MANUAL_SCORE_VERSION, read_catalog
 from hardware_matcher import normalize_name, read_aliases
 from process_requirements import process_requirements
 from regex_parser import clean_html
-from extract_steam_requirements import extract_os_text, is_empty_requirement_text
+from extract_steam_requirements import extract_os_text, is_empty_requirement_text, is_notes_only_requirement_text
 from requirements_curation import apply_curation, read_curation
 
 
@@ -110,6 +110,7 @@ def requirements_block(html: object, context: dict | None, *, appid: str = "",
         result["status"] = "needs_review"
     # O texto será exibido como texto React, sem injetar HTML da Steam.
     return {**{key: result[key] for key in ("curation", "original_requirements", "original_hardware", "original_issues") if key in result},
+            **({"requirements_kind": "notes_only"} if is_notes_only_requirement_text(text) else {}),
             "text": text, "os_text": os_text, "status": result["status"],
             "requirements": result["requirements"], "issues": result["issues"],
             "hardware": result["hardware"], "score_version": MANUAL_SCORE_VERSION}

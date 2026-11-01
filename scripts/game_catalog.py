@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 from urllib.parse import urlsplit
 
-from extract_steam_requirements import extract_snapshot
+from extract_steam_requirements import extract_snapshot, is_notes_only_requirement_text
 from hardware_catalog import MANUAL_SCORE_VERSION, ROOT, read_catalog
 from hardware_matcher import normalize_name, read_aliases
 from process_requirements import process_requirements
@@ -100,7 +100,10 @@ def build_catalog(snapshot_dir: Path, selection_path: Path, catalog_path: Path, 
                     processed = process_requirements(block["html"], catalog, aliases, catalog_format="manual")
                     processed = apply_curation(processed, row["id"], target_name, level, curation, catalog, aliases)
                     target[level] = {**processed, "os_text": block["os_text"]}
-                    issues.extend(f"{target_name}.{level}: {issue}" for issue in processed["issues"])
+                    if is_notes_only_requirement_text(block["text"]):
+                        target[level]["requirements_kind"] = "notes_only"
+                    else:
+                        issues.extend(f"{target_name}.{level}: {issue}" for issue in processed["issues"])
             platforms[target_name] = target
         price = data.get("price_overview")
         amount = None
@@ -232,6 +235,18 @@ def validate_catalog(data: dict) -> None:
                     or not isinstance(block.get("requirements"), dict) or block.get("score_version") != MANUAL_SCORE_VERSION):
                     raise ValueError("Bloco de requisitos inválido.")
                 if block is not None:
+                    kind = block.get("requirements_kind")
+                    if kind is not None and kind not in ("hardware", "notes_only"):
+                        raise ValueError("Tipo de bloco de requisitos inválido.")
+                    mapping = block.get("hardware", {})
+                    if kind == "notes_only" and (
+                        not is_notes_only_requirement_text(block["text"])
+                        or block.get("os_text") is not None
+                        or any(value is not None for value in block["requirements"].values())
+                        or not isinstance(mapping, dict)
+                        or any(value is not None for value in mapping.values())
+                    ):
+                        raise ValueError("Bloco marcado como observações contém requisitos de hardware.")
                     validate_curated_block(block, hardware_index)
                     for field in ("ram_gb", "cpu_score", "gpu_score"):
                         value = block["requirements"].get(field)

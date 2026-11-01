@@ -2,7 +2,7 @@
 
 ## O que é versionado
 
-`games.json` contém a seleção de 50 AppIDs, o vocabulário de temáticas e
+`games.json` contém a seleção de 80 AppIDs, o vocabulário de temáticas e
 uma justificativa editorial por jogo. Nomes, gêneros gerais, requisitos,
 preços e capas vêm da coleta real de `appdetails`, em português e região BR.
 `editorial_genres` complementa os gêneros com Plataforma, Roguelike, Tiro
@@ -13,7 +13,7 @@ As tags representam a curadoria do GameCompass; não são apresentadas como
 tags da comunidade Steam. Os recursos de `categories` não substituem
 as preferências originais da interface.
 
-Seleção inicial, preservada na ampliação para 50 jogos:
+Seleção inicial, preservada nas ampliações para 50 e 80 jogos:
 
 | AppID | Jogo da seleção inicial |
 | --- | --- |
@@ -59,8 +59,10 @@ Não há jogo escolhido automaticamente para o perfil. Buscar nomes continua
 consultando a Steam; escolher um jogo catalogado aproveita o Neo4j.
 Se o catálogo não tiver candidatos ou estiver indisponível, a API pode
 usar os mais vendidos da Steam e informa essa troca na resposta/interface.
-Os vinte jogos são uma base inicial limitada; o grafo não busca todos os
+Os 80 jogos selecionados formam uma base limitada; o grafo não busca todos os
 similares existentes na loja.
+
+A ampliação para 80 inclui 30 novos AppIDs, com mais Puzzle, Plataforma, Roguelike e cooperativos. `reuse_snapshots.py`, chamado por `update_catalog.py --reuse-snapshot-dir ... --fetch`, verifica e copia as coletas selecionadas para o lote novo, preservando resposta e metadata. O manifesto guarda `reuse_sources` e o SHA-256 do manifesto anterior. O coletor completa somente os jogos ausentes. Nunca atualiza a data de uma resposta reaproveitada como se fosse uma coleta recente.
 
 ## Contrato do grafo
 
@@ -108,7 +110,7 @@ respostas da Steam ou alterações na curadoria. A segunda carga conservou
 as quantidades. Os testes de integração verificam rollback, idempotência,
 atualização de tags, preservação de relações externas e notas antigas.
 
-O lote ampliado de 31/10/2026 contém 50 jogos, 14 gêneros e dez temáticas,
+O lote anterior de 50 jogos, verificado em 31/10/2026, contém 50 jogos, 14 gêneros e dez temáticas,
 usando 98 CPUs e 128 GPUs com faixas aproximadas do TCC1. Foram preservados
 os vinte jogos e os 124 registros anteriores de hardware.
 As quatro categorias adicionais acrescentam 20 relações: a seleção atual
@@ -140,6 +142,10 @@ conserva o histórico da amostra anterior, antes dessa ampliação.
 carga com `--fetch --load`. Sem `--load`, não conecta ao banco. Não gera
 relatórios automaticamente. Os scripts individuais continuam disponíveis.
 
+Na seleção de 80, foram exercitados aqui 70 snapshots reais: 68 oferecem base de comparação no Windows. Unpacking mantém RAM ausente e A Hat in Time mantém GPU ausente. Os dez snapshots restantes precisam ser coletados no ambiente de execução; essas contagens não afirmam a cobertura dos 80. Os modelos e regras conferidos nas páginas públicas do Suporte Steam só serão aplicados se o texto coletado corresponder.
+
+A extração também separa títulos explícitos mínimo/recomendado publicados juntos em `minimum`, quando `recommended` está ausente. A resposta raw não é alterada. Nas fichas antigas em uma linha, somente CPU, RAM explícita, descrição de GPU e Windows publicados são lidos; capacidade de GPU ou armazenamento não é usada como RAM.
+
 ## Limites atuais da validação
 
 O extrator reconhece OS, SO, Operating System, Sistema Operacional e
@@ -164,3 +170,15 @@ para cima: 2.5 GB resulta em 3 GB, sem confundir RAM com VRAM.
 `data/raw/steam_games_*` e `data/processed/` continuam locais e ignorados
 pelo Git. Para reproduzir, execute os comandos do README. Para consultar
 o grafo, use [games_queries.cypher](games_queries.cypher) no Neo4j Browser.
+
+
+A revisão de requisitos legados aceita RAM com `of RAM`, rótulos editoriais de CPU/GPU e qualificadores finais de desempenho. Não remove capacidades de memória, sufixos ou famílias desconhecidas. A curadoria de FTL e Psychonauts foi conferida nas páginas públicas do Suporte Steam; sua aplicação depende do texto do snapshot local. Essas páginas não substituem os bytes e metadados de uma coleta real.
+
+Uma regra pode incluir `query_variants`, lista opcional de até cinco textos completos alternativos, como traduções revisadas. O AppID, plataforma, nível e componente continuam obrigatórios. Nenhuma correspondência aproximada de frases é aplicada. O resultado preserva em `original_query` o texto efetivamente coletado, e o hash da curadoria inclui todas as variantes.
+
+`review_game_requirements.py --input ...` imprime o resumo e os campos bloqueantes sem salvar um relatório. Com `--output ...`, preserva a saída em arquivo como antes. Ausência de dados não se transforma em nota zero ou recomendação de troca. As mensagens da comparação distinguem campo ausente na Steam de texto ainda não interpretado.
+
+
+Blocos publicados com somente cabeçalho, aviso genérico de 64 bits, rede e observações recebem `requirements_kind: notes_only`. A lista de formatos é explícita; uma linha desconhecida ou um campo parcial de CPU/GPU/RAM/SO impede essa classificação. O texto é preservado no JSON e continua visível no frontend. O validador rejeita um bloco marcado como observações que contenha pontuações de desempenho, RAM, modelos ou SO identificados. A API refaz essa classificação a partir do texto ao ler registros antigos do grafo.
+
+A revisão inclui esses blocos em `not_provided` e os contabiliza separadamente em `notes_only`, por nível. Eles não entram como falha de identificação e não comprovam atendimento. As referências dos mínimos nunca são copiadas para eles. A ficha de recomendados de Spelunky 2 é um exemplo; a RAM parcial publicada para Baba Is You permanece uma pendência de requisitos.

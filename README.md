@@ -442,14 +442,14 @@ classificações pendentes e preservação dos dados já escolhidos.
 
 ## Jogos, gêneros e tags no Neo4j
 
-A seleção está em `data/catalog/games.json`: 50 jogos reais,
+A seleção está em `data/catalog/games.json`: 80 jogos reais,
 incluindo Cyberpunk, RDR2, The Witcher 3, Elden Ring, BG3, Skyrim,
 Fallout 4, Monster Hunter, Factorio, Valheim, Forza Horizon 5 e jogos indie.
 As informações vêm da Steam; as tags seguem a curadoria do projeto.
 Detalhes dos scripts, esquema e limites: [GAMES.md](data/catalog/GAMES.md).
 
 Na raiz do projeto, valide e atualize primeiro o hardware. A revisão
-atual tem 98 CPUs e 128 GPUs, todas com classificação manual aproximada
+atual tem 115 CPUs e 147 GPUs, todas com classificação manual aproximada
 para o TCC1. O lote mais recente adiciona modelos citados pelos requisitos.
 As justificativas estão em
 [REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md)
@@ -463,9 +463,13 @@ são baixados novamente. Uma atualização da Steam requer outra pasta nova.
 
 ```bash
 docker compose up -d neo4j
-docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote50_20261031 --fetch --load
+docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote80_20261031 --reuse-snapshot-dir data/raw/steam_games_lote50_20261031 --fetch --load
 docker compose up -d --build --wait api
 ```
+
+A seleção ampliada reforça Puzzle e Plataforma: Portal, The Witness, The Talos Principle 2, Ori, LIMBO, INSIDE, Shovel Knight e outros. `--reuse-snapshot-dir` copia os snapshots selecionados do lote anterior depois de verificar identidade, região, idioma e hashes. Preserva os bytes e a data de coleta, registra a origem no manifesto novo e baixa somente os AppIDs que faltam. As pastas devem ser separadas; o comando não altera as respostas anteriores. Se seu lote de 50 tiver outro nome, ajuste somente esse argumento.
+
+Fichas antigas que publicam mínimos e recomendados juntos passam a ser separadas pelos títulos explícitos. RAM/GPU ausentes continuam pendentes: Unpacking não publica RAM nessa coleta e A Hat in Time não publica GPU. DirectX ou espaço em disco não preenchem esses campos. A cobertura dos 80 deve ser conferida após a coleta local; os testes offline não equivalem a uma coleta completa da Steam.
 
 Sem `--fetch`, usa apenas os snapshots existentes. Sem `--load`, processa
 e valida sem conectar ao Neo4j. As cargas de hardware e jogos são etapas
@@ -482,7 +486,7 @@ pelo desenvolvedor. Se o texto mudar ou a peça não estiver classificada no
 Neo4j atual, a regra não preenche a nota. Não há alias global de “2 GHz”,
 “Intel i5+” ou escolha automática da memória de uma Arc A770.
 
-Na coleta de 31/10/2026, os 50 jogos têm base para comparar os mínimos no
+No lote anterior de 31/10/2026, os 50 jogos têm base para comparar os mínimos no
 Windows; 40 publicam recomendados com base de comparação e dez não os
 informam. Parte dos campos usa alternativas identificadas ou referências
 manuais. Isso descreve cobertura de dados, sem certificar execução ou FPS.
@@ -507,7 +511,31 @@ Teste offline do novo fluxo:
 
 ```bash
 docker compose run --rm --no-deps data python scripts/test_catalog_batch.py
+docker compose run --rm --no-deps data python scripts/test_catalog_expansion.py
 ```
+
+A revisão de grafias reconhece rótulos como `Nvidia GPU GeForce GTX 660`, sem trocar o modelo ou descartar a memória. Também aceita `256 MB of RAM` no campo de memória e qualificadores finais como `and higher`. Psychonauts e FTL receberam referências manuais para descrições antigas; a curadoria pode registrar `query_variants` com traduções exatas previamente revisadas. Uma tradução diferente continua pendente.
+
+Na interface, `XP` isolado no campo Windows e listas antigas com XP são interpretados como versões Windows. `64-bit only` é compatível com a arquitetura já escolhida no perfil; restrições a uma versão específica, a Windows Server, a ARM ou a 32 bits continuam exigindo conferência. Isso permanece uma heurística do TCC1.
+
+Depois de aplicar essas correções, reprocesse o lote de 80 existente, sem nova coleta:
+
+```bash
+docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote80_20261031 --load
+docker compose up -d --build --wait api
+```
+
+Para conferir as pendências dos seus próprios snapshots no terminal, sem gerar outro arquivo:
+
+```bash
+docker compose run --rm --no-deps data python scripts/review_game_requirements.py --input data/processed/games_manual_v1.json
+```
+
+O resumo separa mínimos/recomendados e lista o campo que bloqueia cada nível. `not_provided` identifica campo ausente; `unparsed`, texto que não foi interpretado; `unidentified`, peça não identificada; `unclassified`, peça conhecida sem nota. Um nível recomendado inteiramente ausente é contabilizado à parte. `--output caminho.json` continua disponível quando for necessário salvar essa análise.
+
+Blocos com apenas rede e observações, como os recomendados de Spelunky 2, recebem `requirements_kind: notes_only`. O texto publicado continua visível nos detalhes. Esse bloco é contabilizado como requisito de hardware não informado (`not_provided`), com a contagem auxiliar `notes_only`, e nunca aprova os recomendados nem herda as notas dos mínimos. Um campo real parcial, como a RAM publicada nos recomendados de Baba Is You, continua pendente. Texto desconhecido também continua pendente.
+
+A descrição antiga de GPU dos recomendados de Left 4 Dead 2 usa agora uma referência manual limitada ao texto revisado. A comparação continua marcada como estimativa. Campos ausentes em Unpacking e A Hat in Time permanecem sem preenchimento automático.
 
 Os comandos individuais continuam disponíveis:
 

@@ -22,14 +22,18 @@ export function windowsCheck(
   if (version !== "10" && version !== "11")
     return pending("Informe e salve a versão do Windows na página de hardware.")
   if (!text) return pending(`Windows ${target} não informado pela Steam.`)
-  if (/\b(?:server|phone|arm64|arm|only|somente|apenas|earlier|older|lower|not\s+supported)\b/i.test(text))
+  // O perfil Windows já é de 64 bits. "64-bit only" não restringe a versão.
+  const restrictions = text.replace(/\b(?:64[- ]?bits?|x64)\s+only\b/gi, "64-bit")
+  if (/\b(?:server|phone|arm64|arm|only|somente|apenas|earlier|older|lower|not\s+supported)\b/i.test(restrictions))
     return pending(`O requisito possui restrições específicas: ${text}. Confira antes de jogar.`)
   const normalized = text.replace(/[®™]/g, "")
     .replace(/windows(?=\d)/gi, "Windows ")
     .replace(/(?<=\d)x(?:64|86)\b/gi, "")
   const versions: string[] = []
-  let windows = false
+  // A função é chamada para o campo SO da plataforma Windows.
+  let windows = /^(?:xp|vista)$/i.test(normalized.trim())
   for (const part of normalized.split(/\s*(?:[,;/]|\b(?:or|ou|and|e)\b)\s*/i)) {
+    if (/\bwindows\b/i.test(part)) windows = true
     const explicit = part.match(/\bwindows\s*(xp|vista|7|8(?:\.1)?|10|11)\b/i)
     const abbreviated = windows ? part.match(/^(xp|vista|7|8(?:\.1)?|10|11)\b/i) : null
     if (explicit) windows = true
@@ -72,7 +76,9 @@ export function hardwareChecks(
 ): Check[] {
   if (!profile) return []
   const platform = game.platforms[profile.os]
-  const block = platform?.[level]
+  const published = platform?.[level]
+  const notesOnly = published?.requirements_kind === "notes_only"
+  const block = notesOnly ? null : published
   const target = level === "minimum" ? "mínimo" : "recomendado"
   function partCheck(label: string, kind: "CPU" | "GPU", parts: Part[], id: string, required: number | null | undefined): Check {
     const part = parts.find((item) => item.id === id)
@@ -99,10 +105,13 @@ export function hardwareChecks(
       const proof = known.find((alternative) => part.performance_score! >= alternative.performance_score!)
       const query = block.hardware?.[kind]?.query?.trim()
       const reference = query && (query.length > 160 ? query.slice(0, 157) + "…" : query)
+      const missing = block.issues.includes(`${kind}: campo ausente.`) && !block.hardware?.[kind]
       return proof
         ? { label, ok: true, detail: `${part.name} atende ao requisito ${target} usando a alternativa ${proof.name}.` }
         : { label, ok: null, detail: known.length
           ? `${part.name}: as alternativas identificadas não confirmam atendimento; outras opções ainda precisam de avaliação.`
+          : missing
+            ? `${part.name}: a Steam não informou ${kind === "CPU" ? "um processador" : "uma placa de vídeo"} no requisito ${target}.`
           : reference
             ? `${part.name}: referência da Steam ainda sem comparação (${reference}).`
             : `${part.name}: comparação com o requisito ${target} pendente.` }
@@ -131,7 +140,7 @@ export function hardwareChecks(
     }
   }
   const ram = block?.requirements.ram_gb
-  return [
+  const checks: Check[] = [
     partCheck(
       "Processador", "CPU",
       catalog.CPU, profile.cpuId, block?.requirements.cpu_score,
@@ -145,6 +154,8 @@ export function hardwareChecks(
       ok: positive(ram) && positive(profile.ramGb) ? profile.ramGb >= ram : null,
       detail: positive(ram)
         ? `${profile.ramGb} GB informados; ${target} de ${ram} GB.`
+        : block?.issues.includes("RAM: campo ausente.")
+          ? `A Steam não informou a quantidade de RAM do requisito ${target}.`
         : `Quantidade de RAM do requisito ${target} ainda não identificada.`,
       ...(positive(ram) && positive(profile.ramGb) && profile.ramGb < ram ? {
         suggestion: { name: `${ram} GB de RAM no total`, detail: `Capacidade total para atender ao requisito ${target}. Confira os módulos aceitos pelo computador.` },
@@ -163,6 +174,10 @@ export function hardwareChecks(
               detail: `Suporte nativo a ${profile.os}. Confira a versão exigida: ${block?.os_text || "não informada"}. A versão ainda exige conferência.`,
             },
   ]
+  return notesOnly ? checks.map((check) => check.ok === false ? check : {
+    ...check,
+    detail: "A Steam publicou apenas observações neste nível; não informou uma especificação de hardware.",
+  }) : checks
 }
 
 function checksCompatibility(checks: Check[]): Compatibility {
@@ -176,7 +191,8 @@ export function assessHardware(
 ): HardwareAssessment {
   const checks = hardwareChecks(game, profile, catalog, level)
   return {
-    available: Boolean(profile && game.platforms[profile.os]?.[level]),
+    available: Boolean(profile && game.platforms[profile.os]?.[level]
+      && game.platforms[profile.os][level]?.requirements_kind !== "notes_only"),
     checks,
     compatibility: checksCompatibility(checks),
   }

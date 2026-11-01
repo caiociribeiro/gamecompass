@@ -76,6 +76,88 @@ class FakeDriver:
 
 
 class CatalogTests(unittest.TestCase):
+    def test_notes_only_recommended_stays_visible_without_scores_in_steam_and_old_graph_data(self):
+        data = fixture_data("418530")
+        data["pc_requirements"]["recommended"] = (
+            "Recommended:<br>Requires a 64-bit processor and operating system"
+            "<br>Network: Broadband Internet connection<br>Additional Notes: Gamepad Recommended")
+        self.responses["418530"] = (200, {"418530": {"success": True, "data": data}})
+        response = self.client.get("/api/games/418530")
+        self.assertEqual(response.status_code, 200)
+        game = response.json()
+        block = game["platforms"]["Windows"]["recommended"]
+        self.assertEqual(block["requirements_kind"], "notes_only")
+        self.assertIn("Gamepad Recommended", block["text"])
+        self.assertTrue(all(value is None for value in block["requirements"].values()))
+        del block["requirements_kind"]
+        self.driver.graph_rows = [{"id": "418530", "catalog_json": json.dumps(game),
+                                   "genres": ["Plataforma"], "tags": ["Exploração"], "shared": []}]
+        refreshed = self.client.get("/api/games/418530").json()
+        self.assertEqual(refreshed["catalog_source"], "neo4j")
+        self.assertEqual(refreshed["platforms"]["Windows"]["recommended"]["requirements_kind"], "notes_only")
+        self.assertIsNone(refreshed["rec_gpu_score"])
+        self.assertEqual(refreshed["min_gpu_score"], 555)
+
+    def test_l4d2_recommended_generic_gpu_uses_current_database_reference_score(self):
+        data = fixture_data("550")
+        data["pc_requirements"]["recommended"] = (
+            "OS: Windows 7<br>Processor: Intel core 2 duo 2.4GHz<br>Memory: 2 GB RAM"
+            "<br>Graphics: Video Card Shader model 3.0. NVidia 7600, ATI X1600 or better")
+        self.driver.rows.extend({"component_type": kind, "name": name, "performance_score": score,
+                                 "score_version": "manual_v1"} for kind, name, score in [
+            ("CPU", "Intel Core 2 Duo E6600", 5), ("GPU", "NVIDIA GeForce 7600 256MB", 987)])
+        self.responses["550"] = (200, {"550": {"success": True, "data": data}})
+        response = self.client.get("/api/games/550")
+        self.assertEqual(response.status_code, 200)
+        block = response.json()["platforms"]["Windows"]["recommended"]
+        self.assertEqual(block["status"], "resolved")
+        self.assertEqual(block["requirements"]["gpu_score"], 987)
+        self.assertEqual(block["hardware"]["GPU"]["method"], "manual_reference")
+
+    def test_little_nightmares_gpu_spelling_uses_current_database_in_steam_and_graph(self):
+        data = fixture_data("424840")
+        data["pc_requirements"] = {level: (
+            f"OS: Windows 7, 64-bit<br>Processor: {cpu}<br>Memory: {ram} GB RAM<br>Graphics: {gpu}")
+            for level, cpu, ram, gpu in [
+                ("minimum", "Intel CPU Core i3", 4, "Nvidia GTX 460"),
+                ("recommended", "Intel CPU Core i7", 8, "Nvidia GPU GeForce GTX 660")]}
+        self.driver.rows.extend({"component_type": kind, "name": name, "performance_score": score,
+                                 "score_version": "manual_v1"} for kind, name, score in [
+            ("CPU", "Intel Core i3-4130", 30), ("CPU", "Intel Core i7-3770", 60),
+            ("GPU", "NVIDIA GeForce GTX 460", 8), ("GPU", "NVIDIA GeForce GTX 660", 987)])
+        self.responses["424840"] = (200, {"424840": {"success": True, "data": data}})
+        response = self.client.get("/api/games/424840")
+        self.assertEqual(response.status_code, 200)
+        game = response.json()
+        self.assertEqual(game["platforms"]["Windows"]["recommended"]["requirements"]["gpu_score"], 987)
+        self.driver.graph_rows = [{"id": "424840", "catalog_json": json.dumps(game),
+                                   "genres": ["Plataforma"], "tags": ["Terror"], "shared": []}]
+        gpu = next(row for row in self.driver.rows if row["name"] == "NVIDIA GeForce GTX 660")
+        for score in (654, None):
+            gpu["performance_score"] = score
+            response = self.client.get("/api/games/424840")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["catalog_source"], "neo4j")
+            block = response.json()["platforms"]["Windows"]["recommended"]
+            self.assertEqual(block["requirements"]["gpu_score"], score)
+            if score is None:
+                self.assertEqual(block["status"], "needs_review")
+
+    def test_live_steam_legacy_levels_are_split_without_inheriting_recommended(self):
+        data = fixture_data("400")
+        data["pc_requirements"] = {"minimum": (
+            "<b>Mínimo:</b> Processador a 1.7 GHz, 512MB de RAM, placa gráfica DirectX 8.1, Windows 7/Vista/XP"
+            "<br><b>Recomendado:</b> Processador Pentium 4, 2GB de RAM, placa gráfica DirectX 9, Windows 10")}
+        self.responses["400"] = (200, {"400": {"success": True, "data": data}})
+        response = self.client.get("/api/games/400")
+        self.assertEqual(response.status_code, 200)
+        platform = response.json()["platforms"]["Windows"]
+        self.assertEqual(platform["minimum"]["requirements"]["ram_gb"], 1)
+        self.assertEqual(platform["recommended"]["requirements"]["ram_gb"], 2)
+        self.assertEqual(platform["recommended"]["os_text"], "Windows 10")
+        self.assertNotIn("Recomendado:", platform["minimum"]["text"])
+        self.assertIsNone(platform["minimum"]["requirements"]["gpu_score"])
+
     def graph_fixture(self, appid="1091500"):
         game = normalize_game(Snapshot(fixture_data(appid), {"source_url": "https://example.org/fixture"}), matching_context(read_hardware(self.driver, "neo4j")))
         self.driver.graph_rows = [{"id": appid, "catalog_json": json.dumps(game),

@@ -822,6 +822,909 @@
       "source_url": "https://store.steampowered.com/app/1551360/",
       "reviewed_at": "2026-10-31T12:31:21.762767+00:00",
       "notes": "Referência revisada do GameCompass para as identidades publicadas. As variantes de memória escolhidas são referências manuais do protótipo quando a fonte omite a configuração; não são uma configuração oficial certificada nem garantia de FPS."
+    },
+    {
+      "id": "400",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Processador a 1.7 GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/400/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "400",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "placa gráfica com suporte para DirectX® 8.1 (é requer suporte para SSE)",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/400/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "400",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "Processador Pentium 4 (3.0GHz ou superior)",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/400/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "400",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "placa gráfica com de para DirectX® 9",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/400/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "239430",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2.0+ GHz (Dual Core Recommended)",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/239430/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "239430",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA 8000 Series or higher (Shader Model 3 Compatible & 128MB or more memory)",
+      "reference_models": [
+        "NVIDIA GeForce 9600 GT 512MB"
+      ],
+      "source_url": "https://store.steampowered.com/app/239430/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "210970",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "1.8GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/210970/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "210970",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "2.4GHz",
+      "reference_models": [
+        "Intel Core i3-3240"
+      ],
+      "source_url": "https://store.steampowered.com/app/210970/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "835960",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "4 core CPU @ 2.5 GHz (AMD Ryzen 5, Intel core i3/i5)",
+      "reference_models": [
+        "Intel Core i5-4460"
+      ],
+      "source_url": "https://store.steampowered.com/app/835960/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "835960",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "4 GB VRAM; Radeon RX 470, GeForce GTX 970, Intel Arc A580",
+      "reference_models": [
+        "NVIDIA GeForce GTX 970"
+      ],
+      "source_url": "https://store.steampowered.com/app/835960/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "835960",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "6 or 8 core CPU @ 3.0 GHz (AMD Ryzen 7, Intel core i5/i7)",
+      "reference_models": [
+        "AMD Ryzen 5 3600"
+      ],
+      "source_url": "https://store.steampowered.com/app/835960/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "835960",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "8+ GB VRAM; Radeon RX 6800, GeForce RTX 3070, Intel Arc B580",
+      "reference_models": [
+        "NVIDIA GeForce RTX 3070 8GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/835960/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "736260",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2.0 GHz+, 32-bit",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/736260/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "736260",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "ATI Radeon X1300/NVIDIA GeForce 6600 GT/Intel HD 3000 or better",
+      "reference_models": [
+        "Intel HD Graphics 3000"
+      ],
+      "source_url": "https://store.steampowered.com/app/736260/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "653530",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2 GHz Intel i5 or better",
+      "reference_models": [
+        "Intel Core i5-2400"
+      ],
+      "source_url": "https://store.steampowered.com/app/653530/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "653530",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Discrete GPU",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/653530/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1677770",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "1.7 GHz Dual Core",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/1677770/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "288160",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2.0 GHz Dual Core Processor",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/288160/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "288160",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Video card with 512MB of VRAM",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/288160/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "425580",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2.0 GHz Dual Core Processor",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/425580/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "425580",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Video card with 512MB of VRAM",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/425580/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "456750",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2.8 GHz Dual Core Processor",
+      "reference_models": [
+        "Intel Core 2 Duo E8400"
+      ],
+      "source_url": "https://store.steampowered.com/app/456750/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "456750",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Video card with 1024MB of VRAM",
+      "reference_models": [
+        "NVIDIA GeForce GTX 550 Ti 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/456750/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1135690",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "SSE2 instruction set support",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/1135690/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1135690",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Graphics card with DX10 (shader model 4.0) capabilities.",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/1135690/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1049410",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2.0GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/1049410/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1049410",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "2.4GHz",
+      "reference_models": [
+        "Intel Core i3-3240"
+      ],
+      "source_url": "https://store.steampowered.com/app/1049410/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1057090",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "AMD Athlon X4 | Intel Core i5 4460",
+      "reference_models": [
+        "Intel Core i5-4460"
+      ],
+      "source_url": "https://store.steampowered.com/app/1057090/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1057090",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Nvidia GTX 950 | AMD R7 370",
+      "reference_models": [
+        "NVIDIA GeForce GTX 950 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1057090/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1057090",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "AMD Ryzen 3 | Intel i5 Skylake",
+      "reference_models": [
+        "Intel Core i5-6400"
+      ],
+      "source_url": "https://store.steampowered.com/app/1057090/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "1057090",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "Nvidia GTX 970 | AMD RX 570",
+      "reference_models": [
+        "NVIDIA GeForce GTX 970"
+      ],
+      "source_url": "https://store.steampowered.com/app/1057090/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "48000",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2 GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/48000/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "48000",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "5 anos ou mais recente. Placas gráficas integradas e placas de baixo orçamento podem não funcionar. É necessário o Shader Model 3.0.",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/48000/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "304430",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel Core 2 Quad Q6600 @ 2.4 GHz, AMD FX 8120 @ 3.1 GHz",
+      "reference_models": [
+        "Intel Core 2 Quad Q6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/304430/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "304430",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GT 630 / 650m, AMD Radeon HD6570 or equivalent",
+      "reference_models": [
+        "NVIDIA GeForce GT 630"
+      ],
+      "source_url": "https://store.steampowered.com/app/304430/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "304430",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "Intel i7 920 @ 2.7 GHz, AMD Phenom II 945 @ 3.0 GHz",
+      "reference_models": [
+        "Intel Core i7-920"
+      ],
+      "source_url": "https://store.steampowered.com/app/304430/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "304430",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GTX 660, Radeon R9-270",
+      "reference_models": [
+        "NVIDIA GeForce GTX 660"
+      ],
+      "source_url": "https://store.steampowered.com/app/304430/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "40800",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "1.4GHz or faster",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/40800/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "40800",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Graphics Card made within the last 4 years (Pixel Shader 3.0, Vertex Shader 3.0)",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/40800/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "250760",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel Core 2 Duo 2.1 ghz or equivalent",
+      "reference_models": [
+        "Intel Core 2 Duo E4500"
+      ],
+      "source_url": "https://store.steampowered.com/app/250760/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "250760",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "2nd Generation Intel Core HD Graphics (2000/3000), 512MB",
+      "reference_models": [
+        "Intel HD Graphics 3000"
+      ],
+      "source_url": "https://store.steampowered.com/app/250760/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "584400",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Core 2 Duo",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/584400/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "584400",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "DirectX 9.0c compliant video card 256MB",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/584400/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "253230",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "3.0 GHz processor",
+      "reference_models": [
+        "Intel Core i3-3240"
+      ],
+      "source_url": "https://store.steampowered.com/app/253230/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "253230",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "3.5 GHz processor",
+      "reference_models": [
+        "Intel Core i5-4460"
+      ],
+      "source_url": "https://store.steampowered.com/app/253230/",
+      "reviewed_at": "2026-10-31T17:00:27.644863+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1, limitada a este jogo, nível e texto. Descrição genérica ou lista não totalmente identificada: usa-se um modelo publicado ou um representante de demonstração. Não certifica SKU mínimo, recursos gráficos nem FPS. Ausência de RAM ou de GPU continua pendente."
+    },
+    {
+      "id": "387290",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "GeForce GTX 550 Ti or Radeon HD 6770",
+      "reference_models": [
+        "NVIDIA GeForce GTX 550 Ti 2GB"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=387290",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "311690",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel Core 2 Duo E6320 (2*1866) or equivalent",
+      "reference_models": [
+        "Intel Core 2 Duo E6320"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=311690",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "311690",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "GeForce 7600 GS (512 MB) or equivalent",
+      "reference_models": [
+        "NVIDIA GeForce 7600 GS 512MB"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=311690",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "250900",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Core 2 Duo",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=250900",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "250900",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Discreet video card",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=250900",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "250900",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "2.4 GHz Quad Core 2.0 (or higher)",
+      "reference_models": [
+        "Intel Core 2 Quad Q6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=250900",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "590380",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "1.7+ GHz or better",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=590380",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "590380",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Must support OpenGL 2.1 or higher. Intel HD 3000 or better.",
+      "reference_models": [
+        "Intel HD Graphics 3000"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=590380",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "418530",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Quad Core 2.6 GHz",
+      "reference_models": [
+        "Intel Core i5-2400"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=418530",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "548430",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel i5, 3rd gen (or equivalent)",
+      "reference_models": [
+        "Intel Core i5-3470"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=548430",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "548430",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "Intel i5, 7th gen (or equivalent)",
+      "reference_models": [
+        "Intel Core i5-7500"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=548430",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "548430",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA 970 / AMD Radeon 290",
+      "reference_models": [
+        "NVIDIA GeForce GTX 970"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=548430",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "424840",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel CPU Core i3",
+      "reference_models": [
+        "Intel Core i3-4130"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=424840",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "424840",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "Intel CPU Core i7",
+      "reference_models": [
+        "Intel Core i7-3770"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=424840",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "550",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Pentium 4 3.0GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=550",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "550",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Video card with 128 MB, Shader model 2.0. ATI X800, NVidia 6600 or better",
+      "reference_models": [
+        "ATI Radeon X800"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=550",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "550",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "Intel core 2 duo 2.4GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=550",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "212680",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "2 GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=212680",
+      "reviewed_at": "2026-10-31T17:02:13.314941+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da descrição pública Steam. Válida somente para este jogo, nível e texto; não é certificação do desenvolvedor, nota de benchmark ou garantia de FPS. Aplicação depende da correspondência com a coleta local."
+    },
+    {
+      "id": "3830",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "1.0 GHz Pentium(R) III and AMD Athlon(tm)",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=3830",
+      "reviewed_at": "2026-10-31T17:43:14.619522+00:00",
+      "notes": "Referência aproximada própria do GameCompass para o TCC1. O texto genérico não certifica estes modelos; a escolha permite uma comparação estimada e preserva a descrição original. Não garante FPS, recursos de API gráfica ou execução. Válida apenas para este jogo, plataforma, nível e texto revisado."
+    },
+    {
+      "id": "3830",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "CPU",
+      "expected_query": "2.0 GHz Pentium(R) IV and AMD Athlon(tm)",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=3830",
+      "reviewed_at": "2026-10-31T17:43:14.619522+00:00",
+      "notes": "Referência aproximada própria do GameCompass para o TCC1. O texto genérico não certifica estes modelos; a escolha permite uma comparação estimada e preserva a descrição original. Não garante FPS, recursos de API gráfica ou execução. Válida apenas para este jogo, plataforma, nível e texto revisado."
+    },
+    {
+      "id": "3830",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "64 MB GeForce (tm) 3 or higher or ATI(R) Radeon 8500 or higher (except GeForce 4 MX and Go series)",
+      "reference_models": [
+        "NVIDIA GeForce 7600 GS 512MB"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=3830",
+      "reviewed_at": "2026-10-31T17:43:14.619522+00:00",
+      "notes": "Referência aproximada própria do GameCompass para o TCC1. O texto genérico não certifica estes modelos; a escolha permite uma comparação estimada e preserva a descrição original. Não garante FPS, recursos de API gráfica ou execução. Válida apenas para este jogo, plataforma, nível e texto revisado."
+    },
+    {
+      "id": "3830",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": ", 128 MB GeForce FX 5600 or higher or ATI(R) Radeon 9600 or higher",
+      "reference_models": [
+        "ATI Radeon X800"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=3830",
+      "reviewed_at": "2026-10-31T17:43:14.619522+00:00",
+      "notes": "Referência aproximada própria do GameCompass para o TCC1. O texto genérico não certifica estes modelos; a escolha permite uma comparação estimada e preserva a descrição original. Não garante FPS, recursos de API gráfica ou execução. Válida apenas para este jogo, plataforma, nível e texto revisado.",
+      "query_variants": [
+        "128 MB GeForce FX 5600 or higher or ATI(R) Radeon 9600 or higher"
+      ]
+    },
+    {
+      "id": "212680",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "1280x720 minimum resolution, OpenGL 2.0 Support, and recommended dedicated graphics card with 128 MB of RAM",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://help.steampowered.com/pt-br/wizard/HelpWithGameTechnicalIssue?appid=212680",
+      "reviewed_at": "2026-10-31T17:43:14.619522+00:00",
+      "notes": "Referência aproximada própria do GameCompass para o TCC1. O texto genérico não certifica estes modelos; a escolha permite uma comparação estimada e preserva a descrição original. Não garante FPS, recursos de API gráfica ou execução. Válida apenas para este jogo, plataforma, nível e texto revisado.",
+      "query_variants": [
+        "resolução mínima de 1280x720, suporte a OpenGL 2.0 e recomendamos uma placa de vídeo com 128 MB de RAM dedicada"
+      ]
+    },
+    {
+      "id": "550",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "Video Card Shader model 3.0. NVidia 7600, ATI X1600 or better",
+      "reference_models": [
+        "NVIDIA GeForce 7600 256MB"
+      ],
+      "source_url": "https://help.steampowered.com/en/wizard/HelpWithGameTechnicalIssue?appid=550",
+      "reviewed_at": "2026-10-31T19:10:10.412315+00:00",
+      "notes": "Referência aproximada do GameCompass para TCC1 a partir da família GeForce 7600 publicada. A memória não foi especificada na descrição; o modelo do catálogo é usado para demonstrar a comparação estimada. Não certifica variante, FPS ou recursos gráficos. A regra se limita a este jogo, nível e texto."
     }
   ]
 }

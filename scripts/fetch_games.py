@@ -24,6 +24,7 @@ def main(argv=None):
         digest = sha256(args.selection)
         appids = [row["id"] for row in selection["games"]]
         original_digest = digest
+        reuse_sources = []
         if args.output_dir.exists():
             if not args.resume or not manifest.is_file():
                 raise ValueError("Pasta já existe; use outra ou --resume para um lote iniciado por este script.")
@@ -31,6 +32,9 @@ def main(argv=None):
             if not isinstance(previous, dict):
                 raise ValueError("Manifesto de coleta inválido.")
             original_digest = previous.get("collection_selection_sha256", previous.get("selection_sha256"))
+            reuse_sources = previous.get("reuse_sources", [])
+            if not isinstance(reuse_sources, list):
+                raise ValueError("Histórico de reutilização inválido no manifesto.")
             if any(not isinstance(value, str) or not re.fullmatch(r"[a-f0-9]{64}", value)
                    for value in (previous.get("selection_sha256"), original_digest)):
                 raise ValueError("Hash da seleção no manifesto inválido.")
@@ -68,6 +72,8 @@ def main(argv=None):
             time.sleep(0.4)
         result = {"selection_sha256": digest, "collection_selection_sha256": original_digest,
             "appids": appids, "status": "partial" if issues else "ok", "games": len(selection["games"]), "issues": issues}
+        if reuse_sources:
+            result["reuse_sources"] = reuse_sources
         write_json_atomic(manifest, result)
         print(json.dumps(result, ensure_ascii=False))
         return 2 if issues else 0

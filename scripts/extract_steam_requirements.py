@@ -2,13 +2,14 @@
 
 import argparse
 import hashlib
+from html import escape
 import json
 from pathlib import Path
 import re
 import sys
 
 from process_requirements import write_json_atomic
-from regex_parser import clean_html
+from regex_parser import clean_html, legacy_inline_fields
 
 
 PLATFORMS = {
@@ -33,13 +34,35 @@ def is_empty_requirement_text(text: str) -> bool:
     """Cabeçalho e aviso genérico de 64 bits não são uma ficha de requisitos."""
     boilerplate = re.compile(
         r"(?:Requires a 64-bit processor and operating system|"
-        r"Requer um sistema operativo e processador de 64 bits)\.?",
+        r"Requer um sistema operativo e processador de 64 bits|"
+        r"Requer um processador e sistema operacional de 64 bits)\.?",
         re.IGNORECASE,
     )
     return not text.strip() or all(
         LEVEL_HEADING.fullmatch(line.strip()) or boilerplate.fullmatch(line.strip())
         for line in text.splitlines() if line.strip()
     )
+
+
+def is_notes_only_requirement_text(text: str) -> bool:
+    """Reconhece apenas cabeçalhos, aviso de arquitetura e notas/rede.
+
+    Campos parciais de RAM, CPU, GPU ou SO permanecem requisitos pendentes.
+    Texto desconhecido também permanece pendente, sem ser descartado.
+    """
+    supplementary = re.compile(
+        r"(?:Network|Rede|Additional\s+Notes|Notas\s+adicionais|Outras\s+observa[cç][oõ]es)\s*:\s*.+",
+        re.IGNORECASE,
+    )
+    found_note = False
+    for line in text.splitlines():
+        line = line.strip()
+        if is_empty_requirement_text(line):
+            continue
+        if supplementary.fullmatch(line) is None:
+            return False
+        found_note = True
+    return found_note
 
 
 def extract_os_text(text: str) -> str | None:
@@ -51,11 +74,32 @@ def extract_os_text(text: str) -> str | None:
             fields.append(match.group(1).strip())
 
     if not fields:
-        return None
+        return legacy_inline_fields(text).get("OS")
     if len(fields) > 1 or not fields[0]:
         raise ValueError("Campo de SO vazio ou repetido no mesmo bloco.")
 
     return fields[0]
+
+
+def separate_legacy_levels(requirements: dict) -> dict:
+    """Separa níveis explicitamente publicados juntos no campo minimum.
+
+    Só atua quando recommended está ausente e os dois títulos iniciam linhas.
+    O snapshot bruto permanece intacto; os blocos derivados contêm texto escapado.
+    """
+    minimum = requirements.get("minimum")
+    if not isinstance(minimum, str) or requirements.get("recommended"):
+        return requirements
+    text = clean_html(minimum)
+    pattern = re.compile(r"(?im)^(minimum|m[ií]nimos?|recommended|recomendados?)\s*:\s*")
+    headings = list(pattern.finditer(text))
+    if (len(headings) != 2 or headings[0].start() != 0
+        or not re.fullmatch(r"minimum|m[ií]nimos?", headings[0][1], re.I)
+        or not re.fullmatch(r"recommended|recomendados?", headings[1][1], re.I)):
+        return requirements
+    return {**requirements,
+        "minimum": escape(text[:headings[1].start()].strip()).replace("\n", "<br>"),
+        "recommended": escape(text[headings[1].start():].strip()).replace("\n", "<br>")}
 
 
 def extract_snapshot(input_dir: Path) -> dict:
@@ -127,6 +171,7 @@ def extract_snapshot(input_dir: Path) -> dict:
             )
             requirements = {}
 
+        requirements = separate_legacy_levels(requirements)
         blocks = {"native_support": native}
 
         for level in LEVELS:
@@ -160,7 +205,7 @@ def extract_snapshot(input_dir: Path) -> dict:
             os_text = None
             try:
                 os_text = extract_os_text(text)
-                if os_text is None:
+                if os_text is None and not is_notes_only_requirement_text(text):
                     issues.append(
                         f"{platform}.{level}: campo de SO ausente."
                     )

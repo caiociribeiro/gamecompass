@@ -14,6 +14,7 @@ from urllib.parse import urlencode, urlsplit
 import httpx
 
 from .hardware import requirements_block, clean_html
+from extract_steam_requirements import separate_legacy_levels
 
 
 class SteamError(Exception):
@@ -215,6 +216,7 @@ def normalize_game(snapshot: Snapshot, context: dict | None) -> dict:
         requirements = data.get(field)
         if not isinstance(requirements, dict):
             requirements = {}
+        requirements = separate_legacy_levels(requirements)
         native = flags.get(flag)
         platforms[name] = {
             "native_support": native if type(native) is bool else None,

@@ -88,7 +88,7 @@ export function GameDetail() {
               {match.meets === "minimum" && match.assessments.recommended.compatibility === "needs_review" && (
                 <> {match.assessments.recommended.available
                   ? "A validação dos recomendados está pendente."
-                  : "A Steam não informou requisitos recomendados para esta plataforma."}</>
+                  : "A Steam não informou requisitos recomendados de hardware para esta plataforma."}</>
               )}
             </p>
           )}
@@ -124,6 +124,9 @@ export function GameDetail() {
                 <h3>{label}</h3>
                 {block ? (
                   <>
+                    {block.requirements_kind === "notes_only" && (
+                      <p className="hint">A Steam publicou apenas observações neste nível, sem especificar CPU, GPU, RAM ou sistema operacional.</p>
+                    )}
                     <pre className="requirements-text">{block.text}</pre>
                     {Boolean(block.curation?.length) && (
                       <details>
@@ -138,7 +141,7 @@ export function GameDetail() {
                         </ul>
                       </details>
                     )}
-                    {block.issues.length > 0 && (
+                    {block.requirements_kind !== "notes_only" && block.issues.length > 0 && (
                       <details>
                         <summary>Pendências de identificação</summary>
                         <ul>

@@ -24,7 +24,18 @@ def normalize_name(name: str) -> str:
 def identity_text(name: str, component_type: str) -> str:
     """Retira apenas formatação: preserva o modelo, sufixo e memória publicados."""
     text = "".join(c for c in name if c not in "®™" and unicodedata.category(c) != "Cf")
-    text = unicodedata.normalize("NFKC", text).rstrip(" ,;.")
+    text = unicodedata.normalize("NFKC", text).strip().rstrip(" ,;.")
+    text = re.sub(r"\((?:R|TM)\)", "", text, flags=re.IGNORECASE)
+    # Rótulos editoriais não pertencem ao modelo. Não retira sufixos ou VRAM.
+    label, family = (
+        (r"CPU|processor", r"Core|Ryzen|Athlon|Phenom|FX|Pentium|Celeron")
+        if component_type == "CPU"
+        else (r"GPU|graphics\s+card", r"GeForce|Radeon|Arc|HD|UHD|GTX|RTX|GT|RX")
+    )
+    text = re.sub(
+        rf"^(Intel|AMD|NVIDIA|ATI)\s+(?:{label})\s+(?=(?:{family})\b)",
+        r"\1 ", text, flags=re.IGNORECASE,
+    )
     text = re.sub(r"(\d)\s+(GB|MB)\b", r"\1\2", text, flags=re.IGNORECASE)
     text = re.sub(r"\(\s*(?:VRAM\s*)?(\d+(?:\.\d+)?(?:GB|MB))(?:\s*VRAM)?\s*\)",
                   r" \1", text, flags=re.IGNORECASE)
@@ -168,7 +179,7 @@ def split_alternatives(text: str) -> list[str]:
         index += 1
     parts.append(text[start:])
     parts = [re.sub(
-        r"\s*(?:\(\s*)?\b(?:or|ou)\s+(?:better|greater|higher|newer|similar|superior|equivalent)\s*\)?\s*[,;]?\s*$",
+        r"\s*(?:\(\s*)?\b(?:or|ou|and|e)\s+(?:better|greater|higher|newer|similar|superior|equivalent|up)\s*\)?\s*[,;]?\s*$",
         "", part, flags=re.IGNORECASE,
     ).strip() for part in parts]
 

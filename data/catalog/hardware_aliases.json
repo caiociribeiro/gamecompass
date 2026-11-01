@@ -6048,5 +6048,465 @@
     "component_type": "GPU",
     "alias": "amd radeon r7 260x with 2gb video ram",
     "canonical_name": "AMD Radeon R7 260X 2GB"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core 2 Duo E4500",
+    "canonical_name": "Intel Core 2 Duo E4500"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "2 Duo E4500",
+    "canonical_name": "Intel Core 2 Duo E4500"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel 2 Duo E4500",
+    "canonical_name": "Intel Core 2 Duo E4500"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core 2 Quad Q6600",
+    "canonical_name": "Intel Core 2 Quad Q6600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "2 Quad Q6600",
+    "canonical_name": "Intel Core 2 Quad Q6600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel 2 Quad Q6600",
+    "canonical_name": "Intel Core 2 Quad Q6600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i7-920",
+    "canonical_name": "Intel Core i7-920"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i7-920",
+    "canonical_name": "Intel Core i7-920"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i7-920",
+    "canonical_name": "Intel Core i7-920"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "FX-6120",
+    "canonical_name": "AMD FX-6120"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "FX-8120",
+    "canonical_name": "AMD FX-8120"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i3-10100",
+    "canonical_name": "Intel Core i3-10100"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i3-10100",
+    "canonical_name": "Intel Core i3-10100"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i3-10100",
+    "canonical_name": "Intel Core i3-10100"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i3-10100F",
+    "canonical_name": "Intel Core i3-10100F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i3-10100F",
+    "canonical_name": "Intel Core i3-10100F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i3-10100F",
+    "canonical_name": "Intel Core i3-10100F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-10400",
+    "canonical_name": "Intel Core i5-10400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-10400",
+    "canonical_name": "Intel Core i5-10400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i5-10400",
+    "canonical_name": "Intel Core i5-10400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-10400F",
+    "canonical_name": "Intel Core i5-10400F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i5-10400F",
+    "canonical_name": "Intel Core i5-10400F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-10400F",
+    "canonical_name": "Intel Core i5-10400F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "i5-11400F",
+    "canonical_name": "Intel Core i5-11400F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Core i5-11400F",
+    "canonical_name": "Intel Core i5-11400F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i5-11400F",
+    "canonical_name": "Intel Core i5-11400F"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 1600 AF",
+    "canonical_name": "AMD Ryzen 5 1600 AF"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 5 4500",
+    "canonical_name": "AMD Ryzen 5 4500"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Ryzen 3 3100",
+    "canonical_name": "AMD Ryzen 3 3100"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "HD Graphics 3000",
+    "canonical_name": "Intel HD Graphics 3000"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GT 240 1GB",
+    "canonical_name": "NVIDIA GeForce GT 240 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GT 240 1GB",
+    "canonical_name": "NVIDIA GeForce GT 240 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GT 240 1GB",
+    "canonical_name": "NVIDIA GeForce GT 240 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "HD 6570 1GB",
+    "canonical_name": "AMD Radeon HD 6570 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon HD 6570 1GB",
+    "canonical_name": "AMD Radeon HD 6570 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD HD 6570 1GB",
+    "canonical_name": "AMD Radeon HD 6570 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon HD 6770 1GB",
+    "canonical_name": "AMD Radeon HD 6770 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "HD 6770 1GB",
+    "canonical_name": "AMD Radeon HD 6770 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD HD 6770 1GB",
+    "canonical_name": "AMD Radeon HD 6770 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GT 630",
+    "canonical_name": "NVIDIA GeForce GT 630"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GT 630",
+    "canonical_name": "NVIDIA GeForce GT 630"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GT 630",
+    "canonical_name": "NVIDIA GeForce GT 630"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GT 650M",
+    "canonical_name": "NVIDIA GeForce GT 650M"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GT 650M",
+    "canonical_name": "NVIDIA GeForce GT 650M"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GT 650M",
+    "canonical_name": "NVIDIA GeForce GT 650M"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD R9 270 2GB",
+    "canonical_name": "AMD Radeon R9 270 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R9 270 2GB",
+    "canonical_name": "AMD Radeon R9 270 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R9 270 2GB",
+    "canonical_name": "AMD Radeon R9 270 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "R7 370 2GB",
+    "canonical_name": "AMD Radeon R7 370 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R7 370 2GB",
+    "canonical_name": "AMD Radeon R7 370 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD R7 370 2GB",
+    "canonical_name": "AMD Radeon R7 370 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 750 1GB",
+    "canonical_name": "NVIDIA GeForce GTX 750 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 750 1GB",
+    "canonical_name": "NVIDIA GeForce GTX 750 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 750 1GB",
+    "canonical_name": "NVIDIA GeForce GTX 750 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GTX 960 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX 960 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 960 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 960 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 550 4GB",
+    "canonical_name": "AMD Radeon RX 550 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 550 4GB",
+    "canonical_name": "AMD Radeon RX 550 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 550 4GB",
+    "canonical_name": "AMD Radeon RX 550 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 560 2GB",
+    "canonical_name": "AMD Radeon RX 560 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 560 2GB",
+    "canonical_name": "AMD Radeon RX 560 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 560 2GB",
+    "canonical_name": "AMD Radeon RX 560 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 6400 4GB",
+    "canonical_name": "AMD Radeon RX 6400 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 6400 4GB",
+    "canonical_name": "AMD Radeon RX 6400 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 6400 4GB",
+    "canonical_name": "AMD Radeon RX 6400 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon RX 5600 XT 6GB",
+    "canonical_name": "AMD Radeon RX 5600 XT 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 5600 XT 6GB",
+    "canonical_name": "AMD Radeon RX 5600 XT 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 5600 XT 6GB",
+    "canonical_name": "AMD Radeon RX 5600 XT 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce GT 1030 GDDR5 2GB",
+    "canonical_name": "NVIDIA GeForce GT 1030 GDDR5 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GT 1030 GDDR5 2GB",
+    "canonical_name": "NVIDIA GeForce GT 1030 GDDR5 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GT 1030 GDDR5 2GB",
+    "canonical_name": "NVIDIA GeForce GT 1030 GDDR5 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA RTX 3050 6GB",
+    "canonical_name": "NVIDIA GeForce RTX 3050 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RTX 3050 6GB",
+    "canonical_name": "NVIDIA GeForce RTX 3050 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce RTX 3050 6GB",
+    "canonical_name": "NVIDIA GeForce RTX 3050 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA RTX 3050 8GB",
+    "canonical_name": "NVIDIA GeForce RTX 3050 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce RTX 3050 8GB",
+    "canonical_name": "NVIDIA GeForce RTX 3050 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RTX 3050 8GB",
+    "canonical_name": "NVIDIA GeForce RTX 3050 8GB"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core 2 Duo E4500 @ 2.2GHz",
+    "canonical_name": "Intel Core 2 Duo E4500"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD Athlon 64 X2 5600+ @ 2.8 GHz",
+    "canonical_name": "AMD Athlon 64 X2 5600+"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD FX6120",
+    "canonical_name": "AMD FX-6120"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce 240 GT",
+    "canonical_name": "NVIDIA GeForce GT 240 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon HD 6570 – 1024 MB (1 gig)",
+    "canonical_name": "AMD Radeon HD 6570 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel HD 4000 series",
+    "canonical_name": "Intel HD Graphics 4000"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVidia GTX 750",
+    "canonical_name": "NVIDIA GeForce GTX 750 1GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel HD 3000 or better",
+    "canonical_name": "Intel HD Graphics 3000"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i5 3570K",
+    "canonical_name": "Intel Core i5-3570K"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i3 2100T",
+    "canonical_name": "Intel Core i3-2100T"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Nvidia GeForce GTX 980",
+    "canonical_name": "NVIDIA GeForce GTX 980 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GeForce 780",
+    "canonical_name": "NVIDIA GeForce GTX 780 3GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Nvidia GTX 1070",
+    "canonical_name": "NVIDIA GeForce GTX 1070 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon HD 6770",
+    "canonical_name": "AMD Radeon HD 6770 1GB"
   }
 ]

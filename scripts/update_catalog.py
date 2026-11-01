@@ -20,6 +20,7 @@ from load_hardware import main as load_hardware_main
 from process_requirements import write_json_atomic
 from requirements_curation import read_curation
 from review_game_requirements import review_catalog
+from reuse_snapshots import reuse_snapshots
 
 
 def require_success(stage: str, code: int) -> None:
@@ -31,6 +32,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--snapshot-dir", type=Path, required=True)
     parser.add_argument("--fetch", action="store_true", help="Coleta ou retoma o lote Steam antes de processar.")
+    parser.add_argument("--reuse-snapshot-dir", type=Path,
+                        help="Com --fetch, copia coletas verificadas de um lote anterior para a pasta nova.")
     parser.add_argument("--load", action="store_true", help="Carrega hardware e jogos no Neo4j após validar os dois.")
     parser.add_argument("--attempts", type=int, choices=range(1, 6), default=3,
                         help="Número máximo de tentativas para concluir uma coleta parcial.")
@@ -45,14 +48,23 @@ def main(argv=None):
         games_output = args.processed_dir / "games_manual_v1.json"
         inputs = {p.resolve() for p in (args.selection, args.catalog, args.aliases, args.curation)}
         snapshot = args.snapshot_dir.resolve()
+        protected_snapshots = [snapshot]
+        if args.reuse_snapshot_dir is not None:
+            protected_snapshots.append(args.reuse_snapshot_dir.resolve())
         for output in (hardware_output, games_output):
-            if output.resolve() in inputs or output.resolve() == snapshot or snapshot in output.resolve().parents:
+            if output.resolve() in inputs or any(output.resolve() == root or root in output.resolve().parents
+                                                  for root in protected_snapshots):
                 raise ValueError("As saídas devem ser diferentes das entradas e ficar fora dos snapshots.")
         read_selection(args.selection)
         records = read_catalog(args.catalog, catalog_format="manual")
         index = {(r["component_type"], normalize_name(r["name"])): r for r in records}
         read_aliases(args.aliases, index)
         read_curation(args.curation, index)
+        if args.reuse_snapshot_dir is not None:
+            if not args.fetch:
+                raise ValueError("Use --fetch junto de --reuse-snapshot-dir para completar o novo lote.")
+            reused = reuse_snapshots(args.reuse_snapshot_dir, args.snapshot_dir, args.selection)
+            print(json.dumps({"status": "ok", "stage": "reuse", "snapshots_reused": reused}, ensure_ascii=False), flush=True)
         if args.fetch:
             for attempt in range(args.attempts):
                 code = fetch_main(["--selection", str(args.selection), "--output-dir", str(args.snapshot_dir), "--resume"])

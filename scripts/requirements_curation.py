@@ -28,7 +28,8 @@ def read_curation(path: Path, catalog: dict) -> dict:
                 "reference_models", "source_url", "reviewed_at", "notes"}
     result = {}
     for row in data["rules"]:
-        if not isinstance(row, dict) or set(row) != expected:
+        if (not isinstance(row, dict) or not expected.issubset(row)
+            or set(row) - expected - {"query_variants"}):
             raise ValueError("Campos da referência manual inválidos.")
         if (not isinstance(row["id"], str) or not re.fullmatch(r"[1-9][0-9]{0,9}", row["id"])
             or row["platform"] not in PLATFORMS or row["level"] not in ("minimum", "recommended")
@@ -36,6 +37,13 @@ def read_curation(path: Path, catalog: dict) -> dict:
             or any(not isinstance(row[k], str) or not row[k].strip()
                    for k in ("expected_query", "source_url", "reviewed_at", "notes"))):
             raise ValueError("Identificação ou justificativa da referência manual inválida.")
+        variants = row.get("query_variants", [])
+        if (not isinstance(variants, list) or len(variants) > 5
+            or any(not isinstance(value, str) or not value.strip() for value in variants)):
+            raise ValueError("Variações do texto esperado devem ser uma lista de até cinco textos.")
+        queries = [normalize_name(value) for value in [row["expected_query"], *variants]]
+        if len(queries) != len(set(queries)):
+            raise ValueError("Variação do texto esperado repetida.")
         source = urlsplit(row["source_url"])
         if (source.scheme != "https" or not source.hostname or source.username or source.password
             or source.port not in (None, 443) or any(c.isspace() for c in row["source_url"])):
@@ -70,7 +78,8 @@ def apply_curation(block: dict, appid: str, platform: str, level: str,
             query = extract_hardware_text(result["text"], kind)
         except ValueError:
             query = None
-        if query is None or normalize_name(query) != normalize_name(rule["expected_query"]):
+        expected_queries = [rule["expected_query"], *rule.get("query_variants", [])]
+        if query is None or normalize_name(query) not in {normalize_name(value) for value in expected_queries}:
             result["issues"].append(f"{kind}: texto mudou; referência manual precisa de revisão.")
             result["status"] = "needs_review"
             continue

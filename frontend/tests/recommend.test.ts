@@ -548,3 +548,77 @@ test("falha em referência manual mantém a sugestão e identifica a estimativa"
   assert.equal(compatibilityLabel(match), "Não atende aos mínimos (estimativa)")
   assert.equal(match.checks[0].suggestion?.name, "CPU suficiente fixture")
 })
+
+test("abreviação XP e listas antigas são interpretadas somente no campo Windows", () => {
+  for (const text of ["XP", "Vista", "Windows 98 SE/2000/XP", "Windows 2000/XP"])
+    assert.equal(windowsCheck(text, "11").ok, true, text)
+  for (const text of ["Windows 2000", "macOS 10.8", "XP compatibility layer", "Windows Server / XP"])
+    assert.equal(windowsCheck(text, "11").ok, null, text)
+})
+
+test("64-bit only confirma a arquitetura do perfil sem descartar a versão Windows", () => {
+  for (const text of ["Windows 10 64-bit only", "Windows 10 x64 only", "Windows 7 / Windows 10 64-bit only"])
+    assert.equal(windowsCheck(text, "11").ok, true, text)
+  assert.equal(windowsCheck("Windows 11 64-bit only", "10").ok, false)
+  for (const text of ["Windows 7 only", "Windows 10 32-bit only", "Windows ARM64 only"])
+    assert.equal(windowsCheck(text, "11").ok, null, text)
+})
+
+test("campo omitido pela Steam tem explicação própria e não vira aprovação ou sugestão", () => {
+  const game = fixture()
+  const block = game.platforms.Windows.minimum!
+  block.requirements.ram_gb = null
+  block.requirements.gpu_score = null
+  block.issues = ["RAM: campo ausente.", "GPU: campo ausente."]
+  const checks = hardwareChecks(game, pc, hardware)
+  for (const label of ["Memória RAM", "Placa de vídeo"]) {
+    const check = checks.find((item) => item.label === label)!
+    assert.equal(check.ok, null)
+    assert.match(check.detail, /Steam não informou/)
+    assert.equal(check.suggestion, undefined)
+  }
+  assert.equal(describeMatch(user, game, [game], hardware).compatibility, "needs_review")
+})
+
+test("erro de interpretação de RAM não é apresentado como ausência na fonte", () => {
+  const game = fixture()
+  game.platforms.Windows.minimum!.requirements.ram_gb = null
+  game.platforms.Windows.minimum!.issues = ["RAM: RAM inválida."]
+  const check = hardwareChecks(game, pc, hardware).find((item) => item.label === "Memória RAM")!
+  assert.equal(check.ok, null)
+  assert.match(check.detail, /ainda não identificada/)
+  assert.doesNotMatch(check.detail, /Steam não informou/)
+})
+
+test("recomendados com somente observações não herdam notas nem recebem aprovação", () => {
+  const game = fixture()
+  game.platforms.Windows.recommended = {
+    text: "Network: Broadband Internet connection\nAdditional Notes: Gamepad Recommended",
+    requirements_kind: "notes_only", os_text: null, status: "needs_review",
+    requirements: { ram_gb: null, cpu_score: null, gpu_score: null },
+    hardware: { CPU: null, GPU: null },
+    issues: ["CPU: campo ausente.", "GPU: campo ausente.", "RAM: campo ausente."],
+    score_version: "manual_v1",
+  }
+  const match = describeMatch(user, game, [game], hardware)
+  assert.equal(match.meets, "minimum")
+  assert.equal(match.assessments.recommended.available, false)
+  assert.equal(match.assessments.recommended.compatibility, "needs_review")
+  assert(match.assessments.recommended.checks.every((check) => check.ok === null && !check.suggestion))
+  assert(match.assessments.recommended.checks.every((check) => check.detail.includes("apenas observações")))
+  game.platforms.Windows.minimum!.requirements.gpu_score = 99999
+  assert.equal(describeMatch(user, game, [game], hardware).compatibility, "incompatible")
+})
+
+test("RAM parcial nos recomendados continua pendente e observações não escondem falta de suporte nativo", () => {
+  const game = fixture()
+  game.platforms.Windows.recommended = {
+    ...structuredClone(game.platforms.Windows.minimum!),
+    requirements: { ram_gb: 1, cpu_score: null, gpu_score: null },
+    issues: ["CPU: campo ausente.", "GPU: campo ausente."],
+  }
+  assert.equal(describeMatch(user, game, [game], hardware).assessments.recommended.available, true)
+  game.platforms.Windows.minimum!.requirements_kind = "notes_only"
+  game.platforms.Windows.native_support = false
+  assert.equal(describeMatch(user, game, [game], hardware).compatibility, "incompatible")
+})
