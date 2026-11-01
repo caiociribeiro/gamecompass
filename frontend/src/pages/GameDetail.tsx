@@ -8,8 +8,8 @@ import { useSession } from "../context/SessionContext"
 import { OPERATING_SYSTEMS } from "../data/hardware"
 import { apiError } from "../lib/api"
 import { gameReturnTarget } from "../lib/navigation"
-import { compatibilityLabel, describeMatch } from "../lib/recommend"
-import type { OperatingSystem } from "../types"
+import { compatibilityLabel } from "../lib/recommend"
+import type { GameMatch, OperatingSystem } from "../types"
 
 export function GameDetail() {
   const { id } = useParams()
@@ -22,29 +22,31 @@ export function GameDetail() {
     }
   }
   const { user } = useSession()
-  const { games, hardware, loadGame } = useCatalog()
-  const game = games.find((item) => item.id === id)
+  const { hardware, compareGame, recommendations, calculationKey } = useCatalog()
+  const cached = recommendations && [...recommendations.items, ...recommendations.pending, ...recommendations.excluded].find((item) => item.game.id === id)
+  const [computed, setComputed] = useState<{ key: string; match: GameMatch } | null>(null)
+  const matchKey = JSON.stringify([id, calculationKey])
+  const match = cached || (computed?.key === matchKey ? computed.match : null)
+  const game = match?.game
   const [error, setError] = useState<string | null>(null)
   const [revision, setRevision] = useState(0)
   const [system, setSystem] = useState<OperatingSystem>(user?.hardware?.os ?? "Windows")
   useTitle(game?.title ?? "Jogo")
   useEffect(() => {
-    if (game || !id) return
-    let active = true
+    if (cached || !id || !user) return
+    const controller = new AbortController()
     setError(null)
-    loadGame(id).catch((error) => {
-      if (active) setError(apiError(error))
-    })
-    return () => {
-      active = false
-    }
-  }, [id, game, loadGame, revision])
+    compareGame(id, controller.signal)
+      .then((result) => { if (!controller.signal.aborted) setComputed({ key: matchKey, match: result }) })
+      .catch((error) => { if (!controller.signal.aborted) setError(apiError(error)) })
+    return () => controller.abort()
+  }, [id, cached, user?.id, compareGame, matchKey, revision])
   if (!user) return null
-  if (!game)
+  if (!game || !match)
     return (
       <div className="page narrow">
         <p className="empty" role={error ? "alert" : "status"}>
-          {error || "Consultando os detalhes na Steam…"}
+          {error || "Consultando os detalhes e a comparação…"}
         </p>
         {error && (
           <button type="button" className="btn ghost small" onClick={() => setRevision((value) => value + 1)}>
@@ -54,7 +56,6 @@ export function GameDetail() {
         <Link to={back.to} replace onClick={goBack}>{back.label}</Link>
       </div>
     )
-  const match = describeMatch(user, game, games, hardware)
   const platform = game.platforms[system]
   return (
     <div className="page">

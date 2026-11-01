@@ -116,3 +116,23 @@ export type GameMatch = {
   anchor: boolean
 }
 export type ProfileStep = { id: string; label: string; hint: string; done: boolean; to: string }
+
+export type RecommendationGroups = { items: GameMatch[]; pending: GameMatch[]; excluded: GameMatch[] }
+export type CalculationMetadata = {
+  engine_version: string
+  minimum_affinity: number
+  score_version: string
+  hardware_sha256: string | null
+  curation_sha256: string | null
+}
+export type RecommendationResult = RecommendationGroups & {
+  anchors: Game[]
+  issues: { appid: string; message: string }[]
+  source: string
+  calculation: CalculationMetadata
+}
+export type ComparisonResult = {
+  match: GameMatch
+  issues: { appid: string; message: string }[]
+  calculation: CalculationMetadata
+}

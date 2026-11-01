@@ -1,4 +1,5 @@
-import type { Part } from "../types"
+// Referência congelada da etapa27, usada apenas pelos testes de paridade.
+import type { Part } from "../../src/types.ts"
 
 const positive = (value: number | null): value is number =>
   typeof value === "number" && Number.isFinite(value) && value > 0

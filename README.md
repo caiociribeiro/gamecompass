@@ -185,7 +185,7 @@ docker compose down
 
 ## Interface conectada: busca por nome e hardware
 
-Use Node.js 22.18+ ou Node.js 24. Docker Desktop precisa estar iniciado no Windows.
+Use Node.js 22.22.2+ ou Node.js 24.15+ (os testes React usam jsdom). Docker Desktop precisa estar iniciado no Windows.
 Na raiz do projeto, inicie a API:
 
 ```text
@@ -294,12 +294,12 @@ As temáticas são salvas no perfil. Os jogos do catálogo versionado recebem
 tags editoriais do GameCompass, ligadas por `HAS_TAG`; essas temáticas
 participam da afinidade. Consultas fora do catálogo podem retornar
 `themes: []` e `themes_status: pending`. Recursos de `categories` não são
-usados como temáticas. A ordenação permanece no navegador; informações
+usados como temáticas. A ordenação e a comparação são calculadas pela FastAPI; informações
 ausentes não são tratadas como desinteresse.
 
 As preferências originais foram preservadas. Quatro delas precisavam de
 classificação complementar porque o campo de gêneros da Steam é mais
-geral: `Plataforma`, `Roguelike`, `Tiro` e `Puzzle`. Dezoito jogos receberam
+geral: `Plataforma`, `Roguelike`, `Tiro` e `Puzzle`. Os jogos classificados receberam
 essas categorias, também ligadas por `HAS_GENRE`. `genre_source` mantém
 separados os gêneros Steam e os editoriais. Roguelike é usado aqui como
 categoria ampla da família roguelike/roguelite.
@@ -322,7 +322,9 @@ a lista se aproxima pelas âncoras e temáticas.
 Mudar gêneros, temáticas ou âncoras invalida os candidatos anteriores e
 cancela consultas pendentes. O usuário solicita a nova busca pelo botão;
 uma resposta antiga não substitui o novo perfil. Reordenar escolhas ou
-trocar apenas a RAM/peças não exige buscar os mesmos candidatos novamente.
+trocar apenas a RAM/peças refaz automaticamente o cálculo na API quando já
+houver uma busca solicitada. Resultados do hardware anterior ficam ocultos
+até a nova resposta. Reordenar preferências mantém o resultado.
 
 Quando uma peça fica abaixo de um requisito identificado, a sugestão
 prioriza modelos reconhecidos naquele requisito e pode listar até três
@@ -333,7 +335,33 @@ Campos pendentes continuam sem gerar uma necessidade de troca automática.
 
 Mais vendidos são apenas uma fonte de candidatos, não uma recomendação
 personalizada pronta. A análise de afinidade e de requisitos é aplicada
-a esses candidatos pelo protótipo, após a solicitação do cliente.
+a esses candidatos pela API, após a solicitação do cliente.
+
+### Cálculo na API
+
+`POST /api/recommendations` recebe três `anchorIds` distintos, `genres`, `themes` e `hardware` com `cpuId`, `gpuId`, `ramGb`, `os` e, em Windows, `windowsVersion`. A API consulta uma única referência de hardware do Neo4j por requisição e reutiliza esse contexto para as âncoras, os candidatos e a comparação. Não aceita pontuações, requisitos de jogos ou dados de conta no corpo.
+
+A resposta contém `items`, `pending`, `excluded`, `anchors`, `issues`, `source` e `calculation`. Cada resultado contém afinidade, justificativas, verificações separadas de mínimos/recomendados e sugestões de substituição. `calculation` informa `engine_version: rules_v1`, versão do índice, limiar e hashes de hardware/curadoria. As sugestões continuam sendo referências de desempenho, sem cotação ou validação de encaixe físico.
+
+`POST /api/games/{appid}/comparison` recebe as mesmas preferências e até três âncoras; aceita `hardware: null` para consultar afinidade antes de cadastrar o computador. Devolve `match`, `issues` e `calculation`. Um detalhe aberto pela lista reutiliza a resposta atual do servidor; outros jogos usam esse endpoint. Trocar perfil cancela a comparação anterior.
+
+Um componente removido do catálogo retorna 422 e pede nova seleção. Hardware sem classificação permanece pendente. Indisponibilidade do banco retorna 503 para o cálculo com hardware; não usa notas do CSV ou um cálculo alternativo no navegador. Os jogos ainda podem vir da Steam quando faltam no grafo, com a origem informada.
+
+Os pesos, Jaccard, corte 28, alternativas OR e regras de mínimos/recomendados foram preservados. A soma sequencial e o arredondamento em meio ponto também foram preservados. O desempate textual em Python usa normalização de acentos e caixa, título e AppID, sem depender do locale instalado no contêiner. A implementação anterior fica congelada apenas em `frontend/tests/reference/`; não entra no bundle da aplicação. `backend/tests/fixtures/engine_parity.json` guarda os casos extraídos dessa referência. Para regenerar a fixture de desenvolvimento: `node backend/tests/generate_engine_parity.mjs`.
+
+Ao atualizar este bloco, execute:
+
+```bash
+docker compose up -d --build --wait api
+docker compose run --rm --no-deps api python -m unittest discover -s tests -v
+cd frontend
+npm ci
+npm test
+npm run build
+npm run dev
+```
+
+O catálogo de 80 jogos e o CSV de hardware já carregados continuam sendo usados. Contas e perfis permanecem locais nesta etapa; a API recebe somente os dados necessários ao cálculo.
 
 ### Rotas de leitura
 
@@ -385,7 +413,7 @@ validados e os recomendados falharam ou continuam pendentes. Recomendados
 ausentes não são preenchidos com os mínimos. Uma falha nos mínimos continua
 excluindo o jogo da lista de requisitos atendidos.
 
-Para uma CPU ou GPU abaixo de um requisito identificado, o frontend sugere
+Para uma CPU ou GPU abaixo de um requisito identificado, a API sugere
 um modelo do catálogo do mesmo tipo, com a mesma versão do índice e a menor
 faixa que atenda ao requisito. Desempates usam o nome do modelo; a escolha
 não considera preço. Sem uma opção identificada suficiente ou com versão
@@ -410,7 +438,7 @@ para comprovar o atendimento à CPU ou GPU. Exemplo: em Hogwarts, atender
 mesmo que a Arc A770 ainda não tenha VRAM especificada. Abaixo das opções
 conhecidas a comparação continua pendente, pois a alternativa desconhecida
 poderia ser menos exigente. O processamento preserva esse desconhecido e
-o limite global nulo; o frontend usa as alternativas e a versão do índice
+o limite global nulo; a API usa as alternativas e a versão do índice
 para comprovar o caso do computador. Detalhes e fontes em
 [REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md).
 
@@ -571,8 +599,8 @@ macOS/Linux permanecem separados no JSON preservado. Ausências continuam
 nulas. Alterar CSV, aliases ou referências manuais exige reprocessamento antes de carregar jogos.
 
 No frontend, atualize o catálogo de hardware e clique em Buscar sugestões.
-A API usa `HAS_GENRE`/`HAS_TAG` para escolher candidatos; o frontend aplica
-a afinidade e mostra pendências e restrições. Os jogos não são escolhidos
+A API usa `HAS_GENRE`/`HAS_TAG` para escolher candidatos, calcula a afinidade
+e compara o hardware; o frontend apresenta pendências e restrições. Os jogos não são escolhidos
 automaticamente para as âncoras. As preferências originais foram mantidas.
 
 Teste a resposta no Linux:

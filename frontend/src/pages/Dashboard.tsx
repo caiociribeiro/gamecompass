@@ -6,7 +6,7 @@ import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { hardwareSummary } from "../lib/hardware"
 import { profileSteps } from "../lib/profile"
-import { buildRecommendations, compatibilityLabel, profileReady } from "../lib/recommend"
+import { compatibilityLabel, profileReady } from "../lib/recommend"
 
 export function Dashboard() {
   const { user } = useSession()
@@ -15,7 +15,7 @@ export function Dashboard() {
   const { games, hardware } = catalog
   const steps = profileSteps(user, games, hardware)
   const ready = profileReady(user, games, hardware)
-  const result = buildRecommendations(user, games, hardware)
+  const result = catalog.recommendations ?? { items: [], pending: [], excluded: [] }
   const summary = hardwareSummary(user.hardware, hardware)
   return (
     <div className="page">

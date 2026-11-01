@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { buildRecommendations, compatibilityLabel, describeMatch, hardwareChecks, hardwareProfileReady, profileReady, replacementPart, windowsCheck } from "../src/lib/recommend.ts"
+import { buildRecommendations, compatibilityLabel, describeMatch, hardwareChecks, hardwareProfileReady, profileReady, replacementPart, windowsCheck } from "./reference/recommend.ts"
 import { hardwareSummary } from "../src/lib/hardware.ts"
 import type { Game, HardwareCatalog, HardwareProfile, UserProfile } from "../src/types.ts"
 import { migrateProfile } from "../src/lib/migrateProfile.ts"

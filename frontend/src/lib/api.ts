@@ -1,10 +1,12 @@
 const BASE = (import.meta.env?.VITE_API_BASE_URL ?? "/api").replace(/\/$/, "")
 const UNAVAILABLE = "Não foi possível acessar a API do GameCompass. Tente novamente em alguns instantes."
 
-export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
+async function apiRequest<T>(path: string, signal?: AbortSignal, payload?: unknown): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     signal,
-    headers: { Accept: "application/json" },
+    method: payload === undefined ? "GET" : "POST",
+    headers: { Accept: "application/json", ...(payload === undefined ? {} : { "Content-Type": "application/json" }) },
+    ...(payload === undefined ? {} : { body: JSON.stringify(payload) }),
   })
   const body = await response.json().catch(() => null)
   if (!response.ok)
@@ -24,4 +26,11 @@ export function apiError(error: unknown) {
     : error instanceof Error
       ? error.message
       : "Falha ao consultar os dados."
+}
+
+export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(path, signal)
+}
+export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(path, signal, body)
 }

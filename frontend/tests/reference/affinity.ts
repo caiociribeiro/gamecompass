@@ -1,5 +1,6 @@
-import type { Game, UserProfile } from "../types"
-import { fold } from "./text.ts"
+// Referência congelada da etapa27, usada apenas pelos testes de paridade.
+import type { Game, UserProfile } from "../../src/types.ts"
+import { fold } from "../../src/lib/text.ts"
 
 const key = (value: string) => fold(value.trim().replace(/\s+/g, " "))
 const unique = (values: string[]) => [...new Map(values.map((value) => [key(value), value.trim()])).values()]

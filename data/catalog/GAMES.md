@@ -52,8 +52,8 @@ Seleção inicial, preservada nas ampliações para 50 e 80 jogos:
 4. A API lê os jogos do grafo; para cada resposta, refaz o matching do
    texto preservado contra as notas atuais do hardware do Neo4j.
 5. O botão de sugestões consulta candidatos por relações comuns com as
-   âncoras e pelas preferências. A afinidade e a separação de restrições
-   continuam no navegador; as temáticas classificadas agora participam.
+   âncoras e pelas preferências. A FastAPI calcula afinidade e comparação de hardware;
+   o navegador apresenta a resposta e mantém os filtros de exibição.
 
 Não há jogo escolhido automaticamente para o perfil. Buscar nomes continua
 consultando a Steam; escolher um jogo catalogado aproveita o Neo4j.

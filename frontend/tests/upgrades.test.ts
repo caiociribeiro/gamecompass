@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { replacementOptions } from "../src/lib/upgrades.ts"
+import { replacementOptions } from "./reference/upgrades.ts"
 import type { Part } from "../src/types.ts"
 
 const part = (id: string, score: number | null, vendor: string, name = id): Part =>

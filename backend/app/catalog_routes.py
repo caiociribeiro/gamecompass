@@ -11,6 +11,7 @@ from .services.steam import SteamError, game_preview, normalize_game
 from .services.game_graph import read_graph_games, refresh_requirements
 
 router = APIRouter(prefix="/api", tags=["Catálogo"])
+_UNSET = object()
 
 
 @router.get("/hardware")
@@ -38,8 +39,9 @@ def games(request: Request, appids: str = ""):
     return game_collection(request, list(dict.fromkeys(identifiers)))
 
 
-def game_collection(request, appids):
-    context = context_or_pending(request)
+def game_collection(request, appids, *, context=_UNSET):
+    if context is _UNSET:
+        context = context_or_pending(request)
     try:
         stored = []
         issues = []
@@ -107,12 +109,17 @@ def discover_games(request: Request, anchor_ids: str = Query(default="", max_len
     if len(anchors) > 3 or any(not re.fullmatch(r"[1-9][0-9]{0,9}", appid) for appid in anchors):
         raise HTTPException(422, "Informe até três âncoras válidas.")
     genre_names, tag_names = named_filters(genres), named_filters(tags)
+    return discover_collection(request, anchors, genre_names, tag_names)
+
+
+def discover_collection(request, anchors, genre_names, tag_names, *, context=_UNSET):
     graph_issue = None
     try:
         stored = read_graph_games(request.app.state.neo4j_driver, settings.neo4j_database,
             anchors=anchors, genres=genre_names, tags=tag_names, related=bool(anchors or genre_names or tag_names))
         if stored:
-            context = context_or_pending(request)
+            if context is _UNSET:
+                context = context_or_pending(request)
             return {"items": [refresh_requirements(game, context) for game in stored], "issues": [],
                 "source": "neo4j", "hardware_available": context is not None,
                 "candidate_source": {"type": "neo4j", "relationships": ["HAS_GENRE", "HAS_TAG"]}}
@@ -123,7 +130,7 @@ def discover_games(request: Request, anchor_ids: str = Query(default="", max_len
         featured = request.app.state.steam_client.featured()
         if not featured["appids"]:
             return {"items": [], "issues": [], "source": "steam", "hardware_available": None}
-        result = game_collection(request, featured["appids"])
+        result = game_collection(request, featured["appids"], context=context)
         result["candidate_source"] = featured["source"]
         result["issues"].append({"appid": "", "message": graph_issue})
         return result
@@ -133,16 +140,22 @@ def discover_games(request: Request, anchor_ids: str = Query(default="", max_len
 
 @router.get("/games/{appid}")
 def game(appid: str, request: Request):
+    return load_game(request, appid)
+
+
+def load_game(request, appid, *, context=_UNSET):
     if not re.fullmatch(r"[1-9][0-9]{0,9}", appid):
         raise HTTPException(422, "Identificador de jogo inválido.")
+    if context is _UNSET:
+        context = context_or_pending(request)
     try:
         try:
             stored = read_graph_games(request.app.state.neo4j_driver, settings.neo4j_database, ids=[appid])
         except (DriverError, Neo4jError, OSError, ValueError):
             stored = []
         if stored:
-            return refresh_requirements(stored[0], context_or_pending(request))
+            return refresh_requirements(stored[0], context)
         snapshot = request.app.state.steam_client.get(appid)
-        return normalize_game(snapshot, context_or_pending(request))
+        return normalize_game(snapshot, context)
     except SteamError as exc:
         raise HTTPException(exc.status_code, str(exc)) from exc

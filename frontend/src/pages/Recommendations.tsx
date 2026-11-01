@@ -5,14 +5,14 @@ import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { profileSteps } from "../lib/profile"
-import { buildRecommendations, compatibilityLabel, profileReady } from "../lib/recommend"
+import { compatibilityLabel, profileReady } from "../lib/recommend"
 import { fold } from "../lib/text"
 
 export function Recommendations() {
   const { user } = useSession()
   const location = useLocation()
   const [params, setParams] = useSearchParams()
-  const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues } = useCatalog()
+  const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues, recommendations } = useCatalog()
   const query = params.get("q") ?? ""
   const status = params.get("status") ?? "all"
   const filter = ["recommended", "minimum", "pending", "incompatible"].includes(status) ? status : "all"
@@ -24,7 +24,7 @@ export function Recommendations() {
   }
   if (!user) return null
   const ready = profileReady(user, games, hardware)
-  const result = buildRecommendations(user, games, hardware)
+  const result = recommendations ?? { items: [], pending: [], excluded: [] }
   const matches = (title: string) => fold(title).includes(fold(query.trim()))
   const items = result.items.filter((match) => matches(match.game.title) && (filter === "all" || match.meets === filter))
   const pending = filter === "all" || filter === "pending" ? result.pending.filter((match) => matches(match.game.title)) : []

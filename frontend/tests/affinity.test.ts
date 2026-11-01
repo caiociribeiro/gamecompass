@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { contentAffinity, facetSimilarity } from "../src/lib/affinity.ts"
+import { contentAffinity, facetSimilarity } from "./reference/affinity.ts"
 import type { Game } from "../src/types.ts"
 
 function game(id: string, genres: string[], themes: string[]): Game {
@@ -72,4 +72,10 @@ test("o gênero escolhido prevalece sobre uma coincidência temática genérica"
   assert(rogue.affinity > fantasy.affinity)
   assert.deepEqual(rogue.preferredGenres, ["Roguelike"])
   assert.deepEqual(fantasy.preferredGenres, [])
+})
+
+
+test("o arredondamento em meio ponto preserva a soma sequencial das regras anteriores", () => {
+  const args = [{"genres": ["RPG", "Aventura"], "themes": ["Fantasia", "Mundo aberto"]}, {"id": "2050650", "title": "Resident Evil 4", "genres": ["Aventura", "Ação", "Tiro"], "themes": ["Terror", "Narrativa"], "themes_status": "classified", "developer": "CAPCOM Co., Ltd."}, [{"id": "1091500", "title": "Cyberpunk 2077", "genres": ["RPG", "Tiro"], "themes": ["Ficção científica", "Mundo aberto", "Narrativa"], "themes_status": "classified", "developer": "CD PROJEKT RED"}, {"id": "292030", "title": "The Witcher 3: Wild Hunt — Remastered", "genres": ["RPG"], "themes": ["Fantasia", "Mundo aberto", "Narrativa"], "themes_status": "classified", "developer": "CD PROJEKT RED"}, {"id": "1245620", "title": "ELDEN RING", "genres": ["Ação", "RPG"], "themes": ["Fantasia", "Mundo aberto", "Exploração"], "themes_status": "classified", "developer": "FromSoftware, Inc."}]]
+  assert.equal(contentAffinity(args[0] as any, args[1] as Game, args[2] as Game[]).affinity, 28)
 })
