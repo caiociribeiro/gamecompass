@@ -501,6 +501,26 @@ A verificação cobre âncoras inicialmente vazias, sugestões editoriais,
 busca por nome, cache, falhas totais e parciais, migração do perfil,
 classificações pendentes e preservação dos dados já escolhidos.
 
+### Avaliação offline do `rules_v1`
+
+`backend/app/evaluate_rules.py` roda o motor sobre o catálogo e o hardware
+carregados no Neo4j (somente leitura, mesmo cálculo da API) e relata a
+contagem de `items`/`pending`/`excluded`, a distribuição de afinidade, o
+top-N e a cobertura do catálogo:
+
+```text
+docker compose run --rm --no-deps api python -m app.evaluate_rules --auto 30 --top 5
+```
+
+Sem `--scenarios`, os perfis são **simulados** de forma determinística
+(`--seed`): três âncoras sorteadas do catálogo, gêneros e temáticas iguais à
+união das âncoras e hardware de três faixas (percentis 20/50/85 das peças com
+nota, com 8/16/32 GB de RAM). São simulações, não usuários reais. Para perfis
+próprios, passe `--scenarios arquivo.json` com `{"scenarios": [{"anchorIds":
+[...], "genres": [...], "themes": [...], "hardware": {...}}]}` (mesmo contrato
+da API). `--json` troca o texto por JSON. O resultado depende do catálogo
+carregado no banco da máquina em uso.
+
 ## Jogos, gêneros e tags no Neo4j
 
 A seleção está em `data/catalog/games.json`: 80 jogos reais,
