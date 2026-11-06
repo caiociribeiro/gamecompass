@@ -73,12 +73,53 @@ class AliasPolicyTests(unittest.TestCase):
                 self.assertEqual((alternative["status"], alternative["name"]), ("matched", canonical))
                 self.assertEqual(alternative["score_status"], "classified")
 
+    def test_names_from_the_120_game_batch_resolve_to_the_single_catalog_model(self):
+        expected = {
+            ("AMD Ryzen 1600x", "CPU"): "AMD Ryzen 5 1600X",
+            ("Intel Core i5 3470 a 3.2 GHZ (4 CPUs)", "CPU"): "Intel Core i5-3470",
+            ("Intel® iCore™ i5-3570K", "CPU"): "Intel Core i5-3570K",
+            ("AMD Radeon RX 5500 XT", "GPU"): "AMD Radeon RX 5500 XT 8GB",
+            ("AMD RX 5600-XT", "GPU"): "AMD Radeon RX 5600 XT 6GB",
+            ("Radeon RX 6700 XT", "GPU"): "AMD Radeon RX 6700 XT 12GB",
+            ("Intel Arc A750", "GPU"): "Intel Arc A750 8GB",
+            ("Core i5 8600", "CPU"): "Intel Core i5-8600",
+            ("Intel Core i5 8600K", "CPU"): "Intel Core i5-8600K",
+            ("Intel i3-8100", "CPU"): "Intel Core i3-8100",
+            ("Core i5 11600K", "CPU"): "Intel Core i5-11600K",
+            ("AMD® Ryzen™ 5 2400G", "CPU"): "AMD Ryzen 5 2400G",
+            ("AMD: Phenom II X4 955 - 4 Core, 3.2 GHz", "CPU"): "AMD Phenom II X4 955",
+            ("RX Vega 64", "GPU"): "AMD Radeon RX Vega 64 8GB",
+            ("Intel Arc A310", "GPU"): "Intel Arc A310 4GB",
+            ("AMD R7 250x", "GPU"): "AMD Radeon R7 250X 1GB",
+            ("AMD Radeon R9 285 (2 GB of VRAM, Shader Model 5.0)", "GPU"): "AMD Radeon R9 285 2GB",
+            ("AMD® ATI Radeon™ HD 5870 (1GB VRAM)", "GPU"): "AMD Radeon HD 5870",
+            ("AMD FX4300", "CPU"): "AMD FX-4300",
+            ("AMD X8 FX-8350 a 4 GHZ (8 CPUs)", "CPU"): "AMD FX-8350",
+            ("AMD HD7750", "GPU"): "AMD Radeon HD 7750 1GB",
+            ("AMD Radeon RX 6600XT", "GPU"): "AMD Radeon RX 6600 XT 8GB",
+            ("NVIDIA GTX650Ti", "GPU"): "NVIDIA GeForce GTX 650 Ti 2GB",
+            ("AMD Radeon RX 480 (4 GB of VRAM, Shader Model 5.1)", "GPU"): "AMD Radeon RX 480 4GB",
+            ("GeForce 970", "GPU"): "NVIDIA GeForce GTX 970",
+            ("NVIDIA GeForce 760", "GPU"): "NVIDIA GeForce GTX 760 2GB",
+            ("Geforce RTX 2070", "GPU"): "NVIDIA GeForce RTX 2070 8GB",
+            ("NVIDIA GeForce RTX 2070 Super", "GPU"): "NVIDIA GeForce RTX 2070 SUPER 8GB",
+            ("NVIDIA GeForce GTX 1050 Ti", "GPU"): "NVIDIA GeForce GTX 1050 Ti 4GB",
+        }
+        for (steam_name, kind), canonical in expected.items():
+            with self.subTest(steam_name):
+                alternative = self.resolve(steam_name, kind)["alternatives"][0]
+                self.assertEqual((alternative["status"], alternative["name"]), ("matched", canonical))
+                self.assertEqual(alternative["score_status"], "classified")
+
     def test_ambiguous_generic_and_misspelled_names_stay_pending(self):
         for steam_name, kind in [
             ("Arc A770", "GPU"),            # 8GB ou 16GB: o alias adivinharia a variante
             ("AMD Radeon RX 480", "GPU"),   # 4GB ou 8GB
             ("AMD Radeon RX 550", "GPU"),   # 2GB ou 4GB
             ("GeForce RTX 2060", "GPU"),    # a versão de 12GB tem outra configuração de chip
+            ("NVIDIA GeForce RTX 2060", "GPU"),
+            ("NVIDIA GeForce GTX 1060", "GPU"),  # 3GB ou 6GB
+            ("AMD GPU Radeon RX 580", "GPU"),    # 4GB ou 8GB
             ("ATI Radeon R9 series", "GPU"),
             ("other shader model 4.0", "GPU"),
             ("Nvidia GeForce 2xx-Series", "GPU"),

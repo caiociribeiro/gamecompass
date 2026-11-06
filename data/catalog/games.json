@@ -871,6 +871,366 @@
         "Puzzle"
       ],
       "genre_curation_notes": "Curadoria de jogabilidade do GameCompass: Campanha para dois jogadores com desafios de plataforma e enigmas cooperativos."
+    },
+    {
+      "id": "690790",
+      "tags": [
+        "Competitivo"
+      ],
+      "curation_notes": "Corridas de rali com eventos e rankings competitivos online."
+    },
+    {
+      "id": "244210",
+      "tags": [
+        "Competitivo"
+      ],
+      "curation_notes": "Simulação de corridas com modos online e disputas contra outros pilotos."
+    },
+    {
+      "id": "252950",
+      "tags": [
+        "Competitivo"
+      ],
+      "curation_notes": "Partidas competitivas de futebol com carros, com modos online."
+    },
+    {
+      "id": "1293830",
+      "tags": [
+        "Mundo aberto",
+        "Competitivo",
+        "Exploração"
+      ],
+      "curation_notes": "Corridas e exploração da Grã-Bretanha em mundo aberto com modos competitivos."
+    },
+    {
+      "id": "730",
+      "tags": [
+        "Competitivo"
+      ],
+      "curation_notes": "Partidas competitivas por equipes baseadas em objetivos.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "359550",
+      "tags": [
+        "Competitivo"
+      ],
+      "curation_notes": "Partidas competitivas táticas entre equipes, com operadores e objetivos.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "570",
+      "tags": [
+        "Competitivo",
+        "Fantasia"
+      ],
+      "curation_notes": "Partidas competitivas entre equipes de heróis em ambientação de fantasia."
+    },
+    {
+      "id": "1055540",
+      "tags": [
+        "Relaxante",
+        "Exploração"
+      ],
+      "curation_notes": "Exploração tranquila de uma ilha montanhosa, com escalada e conversas."
+    },
+    {
+      "id": "1455840",
+      "tags": [
+        "Relaxante"
+      ],
+      "curation_notes": "Posicionamento de peças para formar paisagens em partidas descontraídas."
+    },
+    {
+      "id": "638230",
+      "tags": [
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Travessia de um deserto com narrativa sem palavras."
+    },
+    {
+      "id": "972660",
+      "tags": [
+        "Gestão",
+        "Narrativa",
+        "Exploração"
+      ],
+      "curation_notes": "Gestão de um barco e cuidado com espíritos, com exploração e narrativa."
+    },
+    {
+      "id": "914800",
+      "tags": [
+        "Relaxante",
+        "Narrativa",
+        "Fantasia"
+      ],
+      "curation_notes": "Conversas com clientes em um café noturno, com preparo de bebidas e seres de fantasia."
+    },
+    {
+      "id": "1290000",
+      "tags": [
+        "Relaxante",
+        "Cooperativo"
+      ],
+      "curation_notes": "Limpeza de locais com lavadora de pressão em partidas descontraídas; modo cooperativo."
+    },
+    {
+      "id": "1142710",
+      "tags": [
+        "Fantasia",
+        "Gestão"
+      ],
+      "curation_notes": "Campanhas e batalhas de estratégia em um mundo de fantasia, com gestão de facções."
+    },
+    {
+      "id": "323190",
+      "tags": [
+        "Gestão",
+        "Narrativa"
+      ],
+      "curation_notes": "Gestão de recursos e decisões morais para sobreviver em uma cidade em clima gelado."
+    },
+    {
+      "id": "703080",
+      "tags": [
+        "Gestão",
+        "Relaxante"
+      ],
+      "curation_notes": "Construção e gestão de zoológicos com cuidado de animais."
+    },
+    {
+      "id": "916440",
+      "tags": [
+        "Gestão"
+      ],
+      "curation_notes": "Construção de cidades e cadeias de produção, com comércio, na era industrial."
+    },
+    {
+      "id": "281990",
+      "tags": [
+        "Ficção científica",
+        "Gestão",
+        "Exploração"
+      ],
+      "curation_notes": "Estratégia espacial com exploração da galáxia e gestão de impérios."
+    },
+    {
+      "id": "535930",
+      "tags": [
+        "Gestão"
+      ],
+      "curation_notes": "Construção e gestão de hospitais com doenças fictícias e tom humorístico."
+    },
+    {
+      "id": "220200",
+      "tags": [
+        "Ficção científica",
+        "Exploração"
+      ],
+      "curation_notes": "Construção de foguetes e missões de exploração espacial."
+    },
+    {
+      "id": "1158310",
+      "tags": [
+        "Gestão",
+        "Narrativa"
+      ],
+      "curation_notes": "Gestão de uma dinastia medieval, com intrigas e eventos narrativos."
+    },
+    {
+      "id": "883710",
+      "tags": [
+        "Terror",
+        "Narrativa"
+      ],
+      "curation_notes": "Campanha narrativa de sobrevivência e terror.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "214490",
+      "tags": [
+        "Terror",
+        "Ficção científica"
+      ],
+      "curation_notes": "Sobrevivência e furtividade contra uma criatura em uma estação espacial."
+    },
+    {
+      "id": "57300",
+      "tags": [
+        "Terror",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Exploração de um castelo sombrio, sem combate, com sobrevivência e narrativa."
+    },
+    {
+      "id": "1693980",
+      "tags": [
+        "Terror",
+        "Ficção científica"
+      ],
+      "curation_notes": "Sobrevivência e terror em uma nave espacial, com combate contra criaturas.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "1151640",
+      "tags": [
+        "Ficção científica",
+        "Mundo aberto",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Exploração de um mundo aberto pós-apocalíptico habitado por máquinas, com narrativa."
+    },
+    {
+      "id": "2215430",
+      "tags": [
+        "Mundo aberto",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Exploração da ilha de Tsushima em mundo aberto durante uma invasão, com narrativa."
+    },
+    {
+      "id": "271590",
+      "tags": [
+        "Mundo aberto",
+        "Narrativa"
+      ],
+      "curation_notes": "Campanha narrativa com três protagonistas em um mundo aberto urbano.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
+    },
+    {
+      "id": "379430",
+      "tags": [
+        "Mundo aberto",
+        "Narrativa",
+        "Exploração"
+      ],
+      "curation_notes": "RPG medieval realista em mundo aberto, com narrativa e exploração."
+    },
+    {
+      "id": "2054970",
+      "tags": [
+        "Fantasia",
+        "Mundo aberto",
+        "Exploração"
+      ],
+      "curation_notes": "RPG de ação em mundo aberto de fantasia, com exploração."
+    },
+    {
+      "id": "553850",
+      "tags": [
+        "Cooperativo",
+        "Ficção científica"
+      ],
+      "curation_notes": "Missões cooperativas de tiro contra inimigos alienígenas.",
+      "editorial_genres": [
+        "Tiro"
+      ],
+      "genre_curation_notes": "Curadoria de jogabilidade do GameCompass: Missões cooperativas de tiro contra inimigos alienígenas."
+    },
+    {
+      "id": "728880",
+      "tags": [
+        "Cooperativo"
+      ],
+      "curation_notes": "Cozinha cooperativa com tarefas cronometradas em fases."
+    },
+    {
+      "id": "322330",
+      "tags": [
+        "Cooperativo",
+        "Exploração",
+        "Fantasia"
+      ],
+      "curation_notes": "Sobrevivência cooperativa e exploração em um mundo sombrio e estranho."
+    },
+    {
+      "id": "648800",
+      "tags": [
+        "Cooperativo",
+        "Exploração"
+      ],
+      "curation_notes": "Sobrevivência em uma jangada pelo oceano, com coleta de recursos e modo cooperativo."
+    },
+    {
+      "id": "242550",
+      "tags": [
+        "Fantasia",
+        "Cooperativo"
+      ],
+      "curation_notes": "Plataforma em mundos de fantasia animada, com modo cooperativo.",
+      "editorial_genres": [
+        "Plataforma"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Progressão centrada em movimentação, saltos ou travessia de cenários."
+    },
+    {
+      "id": "460950",
+      "tags": [
+        "Narrativa",
+        "Ficção científica"
+      ],
+      "curation_notes": "Combate rápido e narrativa em ambientação neo-noir com manipulação do tempo."
+    },
+    {
+      "id": "553420",
+      "tags": [
+        "Fantasia",
+        "Exploração"
+      ],
+      "curation_notes": "Exploração de um mundo de fantasia com segredos e combate."
+    },
+    {
+      "id": "383870",
+      "tags": [
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Exploração de uma floresta com narrativa conduzida por conversas por rádio."
+    },
+    {
+      "id": "683320",
+      "tags": [
+        "Fantasia",
+        "Exploração",
+        "Narrativa"
+      ],
+      "curation_notes": "Plataforma contemplativa com exploração e narrativa visual.",
+      "editorial_genres": [
+        "Plataforma"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Progressão centrada em movimentação, saltos ou travessia de cenários."
+    },
+    {
+      "id": "1313140",
+      "tags": [
+        "Fantasia",
+        "Gestão",
+        "Exploração"
+      ],
+      "curation_notes": "Gestão de uma comunidade de seguidores e exploração de masmorras em fantasia sombria.",
+      "editorial_genres": [
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
     }
   ]
 }
