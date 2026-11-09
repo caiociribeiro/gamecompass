@@ -1,0 +1,74 @@
+name: CI
+
+# Roda os testes da API, dos scripts de dados e do frontend em todo pull request
+# e em todo push para o master. Nenhum job usa Neo4j, Steam ou segredos: os testes
+# trabalham com fixtures e com os arquivos versionados em data/catalog.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GAMECOMPASS_ROOT: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - name: Instalar dependências
+        run: pip install -r backend/requirements.txt
+      - name: Rodar os testes da API
+        working-directory: backend
+        run: python -m unittest discover -s tests -v
+
+  scripts:
+    name: Scripts de dados (Python 3.12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+      - name: Instalar dependências
+        run: pip install -r scripts/requirements.txt
+      - name: Rodar os testes dos scripts
+        run: python -m unittest discover -s scripts -p "test_*.py" -v
+
+  frontend:
+    name: Frontend (Node 24)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Instalar dependências
+        run: npm ci
+      - name: Rodar os testes
+        run: npm test
+      - name: Checar tipos e gerar o build
+        run: npm run build
