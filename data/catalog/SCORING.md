@@ -6,8 +6,10 @@ O índice é uma classificação preliminar do TCC1, preenchida por curadoria.
 As medições pertencem aos autores das referências. O GameCompass registra
 sua própria classe, a referência consultada e a justificativa.
 
-Na revisão atual, as 53 CPUs e 71 GPUs cadastradas estão classificadas
-por curadoria aproximada para o TCC1: 124 peças, sem notas pendentes.
+O índice atual tem 312 peças (145 CPUs e 167 GPUs), todas classificadas
+por curadoria aproximada para o TCC1, sem notas pendentes. A revisão mais
+recente está em [HARDWARE_REVIEW_2026_11.md](HARDWARE_REVIEW_2026_11.md); as
+53 CPUs e 71 GPUs da primeira revisão (124 peças) seguem descritas abaixo.
 As últimas 43 inclusões e os limites de comparação dos jogos estão em
 [REQUIREMENTS_REVIEW_2026_10.md](REQUIREMENTS_REVIEW_2026_10.md).
 As últimas 18 classificações e o critério simplificado estão em
