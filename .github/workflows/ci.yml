@@ -72,3 +72,17 @@ jobs:
         run: npm test
       - name: Checar tipos e gerar o build
         run: npm run build
+
+  docker:
+    name: Imagens Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Valor fictício: o compose exige a variável para validar, mas nada sobe nem conecta ao banco.
+      NEO4J_PASSWORD: ci-somente-para-validar
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar o docker-compose.yml
+        run: docker compose config --quiet
+      - name: Construir as imagens da API e do frontend
+        run: docker compose build api frontend

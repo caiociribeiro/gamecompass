@@ -66,6 +66,7 @@ Aguarde o serviço `neo4j` aparecer como `healthy`. Os endereços locais são:
 | Swagger | http://localhost:8000/docs |
 | Saúde da API | http://localhost:8000/health |
 | Conexão API → Neo4j | http://localhost:8000/health/neo4j |
+| Site (serviço `frontend`) | http://localhost:5173 |
 | Neo4j Browser | http://localhost:7474 |
 | Bolt, no computador | bolt://localhost:7687 |
 
@@ -73,6 +74,32 @@ Se mudar uma porta publicada em `.env`, ajuste o endereço local correspondente.
 Por exemplo, `NEO4J_BOLT_PORT=7688` exige `NEO4J_URI=bolt://localhost:7688`
 para scripts executados diretamente no computador. Nos contêineres, a porta
 interna continua sendo 7687. As portas publicadas estão restritas ao computador local.
+
+### Subir tudo com um comando
+
+```bash
+docker compose up --build -d
+```
+
+Sobe o Neo4j, a API e o site, na ordem certa: o site só inicia depois que a API passa no
+healthcheck. O site é o build do frontend servido pelo `vite preview`, que repassa `/api` para a
+API, então não precisa de Node no computador só para usar. O serviço `data` não sobe junto (só
+sob demanda). Depois de mudar o código do frontend, refaça a imagem:
+
+```bash
+docker compose up -d --build frontend
+```
+
+O site e o `npm run dev` usam a mesma porta (5173), então não rodam juntos. Para trabalhar no
+frontend com recarga automática, pare o contêiner primeiro e use o Vite:
+
+```bash
+docker compose stop frontend
+```
+
+Para publicar o site em outra porta, defina `FRONTEND_PORT` no `.env`. A API só aceita escrita
+(cadastro, perfil) de origens conhecidas, então inclua a nova em `ALLOWED_ORIGINS`, por exemplo
+`ALLOWED_ORIGINS=http://localhost:5180,http://127.0.0.1:5180`.
 
 No PowerShell, verifique as respostas:
 
@@ -234,7 +261,8 @@ npm ci
 npm run dev
 ```
 
-Abra http://localhost:5173. O Vite encaminha `/api` para a porta `API_PORT`
+Abra http://localhost:5173 (se o serviço `frontend` do Compose estiver rodando, pare-o antes com
+`docker compose stop frontend`: os dois usam essa porta). O Vite encaminha `/api` para a porta `API_PORT`
 do `.env` da raiz, usando 8000 por padrão. O proxy também funciona no preview.
 O Swagger permanece em http://localhost:8000/docs.
 

@@ -13,7 +13,8 @@ O teste cria uma conta descartável (e-mail e senha aleatórios, a senha nunca �
 a remove no final pelo contêiner do Neo4j. Se o Docker não estiver disponível, imprime a
 consulta Cypher para apagar a conta à mão.
 
-Variáveis opcionais: GAMECOMPASS_API (padrão http://127.0.0.1:8000) e
+Variáveis opcionais: GAMECOMPASS_API (padrão http://127.0.0.1:8000; também aceita o endereço do
+site, por exemplo http://127.0.0.1:5173, e então o fluxo passa pelo proxy do frontend) e
 GAMECOMPASS_NEO4J_CONTAINER (padrão gamecompass-neo4j).
 """
 
@@ -56,12 +57,13 @@ class ApiFlowTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        # /api/hardware existe tanto na API direta quanto atrás do proxy do frontend (que só repassa /api).
         try:
-            status, _ = cls.call("GET", "/health")
-        except OSError as exc:
+            status, _ = cls.call("GET", "/api/hardware")
+        except (OSError, ValueError) as exc:
             raise unittest.SkipTest(f"API indisponível em {API}: {exc}") from exc
         if status != 200:
-            raise unittest.SkipTest(f"API em {API} respondeu {status} em /health.")
+            raise unittest.SkipTest(f"API em {API} respondeu {status} em /api/hardware.")
         cls.email = f"e2e-{secrets.token_hex(5)}@exemplo.test"
         cls.password = secrets.token_urlsafe(24)
 

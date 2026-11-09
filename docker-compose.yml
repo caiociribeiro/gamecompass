@@ -59,6 +59,31 @@ services:
       neo4j:
         condition: service_healthy
 
+  # Site (build do frontend servido pelo vite preview, com /api repassado para a API).
+  # Para trabalhar no código com recarga automática, pare este serviço e use npm run dev.
+  frontend:
+    build:
+      context: ./frontend
+    container_name: gamecompass-frontend
+    restart: unless-stopped
+    environment:
+      API_PROXY_TARGET: "http://api:8000"
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-5173}:5173"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:5173/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+    depends_on:
+      api:
+        condition: service_healthy
+
   # Executado sob demanda: docker compose run --rm data
   data:
     profiles: ["data"]
