@@ -2,6 +2,8 @@ import { useState } from "react"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { PageHeader } from "../components/PageHeader"
 import { SearchSelect } from "../components/SearchSelect"
+import { StepFooter } from "../components/StepFooter"
+import { StepNav } from "../components/StepNav"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { OPERATING_SYSTEMS, RAM_OPTIONS, WINDOWS_VERSIONS } from "../data/hardware"
@@ -24,8 +26,16 @@ export function Hardware() {
   const cpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.CPU.length
   const gpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.GPU.length
   const summary = hardwareSummary(user.hardware, hardware)
+  const stored = user.hardware
+  // Este formulário só grava ao clicar em Salvar; o rodapé não deve liberar a próxima etapa
+  // enquanto o que está na tela for diferente do que está salvo.
+  const dirty = stored
+    ? cpuId !== stored.cpuId || gpuId !== stored.gpuId || Number(ramGb) !== stored.ramGb || os !== stored.os ||
+      (os === "Windows" && windowsVersion !== (stored.windowsVersion ?? ""))
+    : Boolean(cpuId || gpuId || ramGb || os)
   return (
     <div className="page narrow">
+      <StepNav current="hardware" />
       <PageHeader
         eyebrow="Hardware"
         title="O computador em que você joga"
@@ -170,7 +180,7 @@ export function Hardware() {
         )}
         {saved && (
           <p className="hint" role="status">
-            Computador salvo neste navegador.
+            Computador salvo na sua conta.
           </p>
         )}
         <button className="btn" type="submit" disabled={cpuUnavailable || gpuUnavailable}>
@@ -183,6 +193,10 @@ export function Hardware() {
           <p>{summary.text}</p>
         </section>
       )}
+      <StepFooter
+        id="hardware"
+        pending={dirty ? "Há alterações que ainda não foram salvas. Clique em Salvar computador para continuar." : undefined}
+      />
     </div>
   )
 }

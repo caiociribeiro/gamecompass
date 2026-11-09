@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Cover } from "../components/GameCard"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { PageHeader } from "../components/PageHeader"
+import { StepFooter } from "../components/StepFooter"
+import { StepNav } from "../components/StepNav"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { apiError, apiGet } from "../lib/api"
@@ -97,10 +99,11 @@ export function Anchors() {
 
   return (
     <div className="page narrow">
+      <StepNav current="anchors" />
       <PageHeader
         eyebrow="Jogos âncora"
         title="Três jogos que representam você"
-        lede="Pesquise pelo nome ou escolha entre as sugestões abaixo. Selecione três jogos que você gosta para encontrar títulos parecidos."
+        lede="Pesquise pelo nome ou escolha entre as sugestões abaixo. Selecione três jogos que você gosta para encontrar títulos parecidos. Cada escolha é salva na sua conta na hora."
       />
       <CatalogStatus />
       <ol className="slots">
@@ -266,6 +269,7 @@ export function Anchors() {
           </ul>
         </section>
       )}
+      <StepFooter id="anchors" />
     </div>
   )
 }
