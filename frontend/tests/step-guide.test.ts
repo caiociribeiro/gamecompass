@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { stepGuide } from "../src/lib/profile.ts"
+import { nextPendingStep, profileSteps, stepGuide } from "../src/lib/profile.ts"
 import type { Game, HardwareCatalog, Part, UserProfile } from "../src/types.ts"
 
 const part = (id: string): Part => ({ id, name: id, vendor: "Outro", performance_score: 10, score_version: "manual_v1" })
@@ -53,4 +53,15 @@ test("computador: só conta como pronto depois de salvo e com peças do catálog
   assert.equal(guide.done, true)
   assert.deepEqual(guide.next, { to: "/app/recomendacoes", label: "Ver recomendações" })
   assert.equal(stepGuide(user({ hardware: { ...saved, cpuId: "removida" } }), games, hardware, "hardware").done, false)
+})
+
+test("próxima etapa pendente: segue a ordem do perfil e some quando tudo está pronto", () => {
+  const steps = (patch: Partial<UserProfile>) => profileSteps(user(patch), games, hardware)
+  assert.equal(nextPendingStep(steps({}))?.id, "prefs")
+  assert.equal(nextPendingStep(steps({ genres: ["RPG"], themes: ["Fantasia"] }))?.id, "anchors")
+  const saved = { cpuId: "cpu", gpuId: "gpu", ramGb: 16, os: "Linux" as const }
+  assert.equal(nextPendingStep(steps({ genres: ["RPG"], themes: ["Fantasia"], anchorIds: ["1", "2", "3"] }))?.id, "hardware")
+  assert.equal(nextPendingStep(steps({ genres: ["RPG"], themes: ["Fantasia"], anchorIds: ["1", "2", "3"], hardware: saved })), null)
+  // a primeira pendente vem antes, mesmo que uma etapa posterior já esteja pronta
+  assert.equal(nextPendingStep(steps({ hardware: saved }))?.id, "prefs")
 })

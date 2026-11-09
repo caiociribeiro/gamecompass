@@ -534,3 +534,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   .step-footer { transition: none; }
 }
+
+/* Painel: marca a etapa que a pessoa deve fazer agora. */
+.next-tag { display: inline-block; margin-left: 8px; padding: 2px 10px; border-radius: 999px; background: rgba(224, 164, 90, 0.16); color: var(--brass); font-size: 0.78rem; font-weight: 600; }
+.next-cta { justify-self: start; }

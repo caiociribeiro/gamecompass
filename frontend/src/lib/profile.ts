@@ -27,6 +27,11 @@ export function profileSteps(user: UserProfile, games: Game[], hardware: Hardwar
   ]
 }
 
+/** Primeira etapa ainda incompleta, ou null quando o perfil está todo preenchido. */
+export function nextPendingStep(steps: ProfileStep[]): ProfileStep | null {
+  return steps.find((step) => !step.done) ?? null
+}
+
 export type StepId = "prefs" | "anchors" | "hardware"
 
 export type StepGuide = {

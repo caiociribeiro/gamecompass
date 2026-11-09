@@ -5,7 +5,7 @@ import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { hardwareSummary } from "../lib/hardware"
-import { profileSteps } from "../lib/profile"
+import { nextPendingStep, profileSteps } from "../lib/profile"
 import { compatibilityLabel, profileReady } from "../lib/recommend"
 
 export function Dashboard() {
@@ -14,6 +14,7 @@ export function Dashboard() {
   if (!user) return null
   const { games, hardware } = catalog
   const steps = profileSteps(user, games, hardware)
+  const next = nextPendingStep(steps)
   const ready = profileReady(user, games, hardware)
   const result = catalog.recommendations ?? { items: [], pending: [], excluded: [] }
   const summary = hardwareSummary(user.hardware, hardware)
@@ -40,14 +41,20 @@ export function Dashboard() {
             <li key={step.id}>
               <div>
                 <strong>{step.label}</strong>
+                {step.id === next?.id && <span className="next-tag">Próxima etapa</span>}
                 <p>{step.hint}</p>
               </div>
-              <Link className={step.done ? "btn ghost small" : "btn small"} to={step.to}>
-                {step.done ? "Rever" : "Preencher"}
+              <Link className={step.id === next?.id ? "btn small" : "btn ghost small"} to={step.to}>
+                {step.done ? "Rever" : step.id === next?.id ? "Continuar" : "Preencher"}
               </Link>
             </li>
           ))}
         </ol>
+        {!next && (
+          <Link className="btn" to="/app/recomendacoes">
+            Ver recomendações
+          </Link>
+        )}
       </section>
       {summary && (
         <section className="summary-line">
