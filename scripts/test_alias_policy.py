@@ -94,6 +94,8 @@ class AliasPolicyTests(unittest.TestCase):
             ("AMD Radeon R9 285 (2 GB of VRAM, Shader Model 5.0)", "GPU"): "AMD Radeon R9 285 2GB",
             ("AMD® ATI Radeon™ HD 5870 (1GB VRAM)", "GPU"): "AMD Radeon HD 5870",
             ("AMD FX4300", "CPU"): "AMD FX-4300",
+            ("NVidia 650TI", "GPU"): "NVIDIA GeForce GTX 650 Ti 2GB",
+            ("nVidia GeForce 9600GT", "GPU"): "NVIDIA GeForce 9600 GT 512MB",
             ("AMD X8 FX-8350 a 4 GHZ (8 CPUs)", "CPU"): "AMD FX-8350",
             ("AMD HD7750", "GPU"): "AMD Radeon HD 7750 1GB",
             ("AMD Radeon RX 6600XT", "GPU"): "AMD Radeon RX 6600 XT 8GB",

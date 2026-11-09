@@ -102,3 +102,69 @@ Efeito: o Dragon's Dogma 2 pede RTX 2070 SUPER ou RX 6600 XT nos recomendados; o
 Verificações com dados de jogos, sem alteração: **RX 560 (15)** fica igual à GTX 1050 em 30 jogos do [TechSpot](https://www.techspot.com/review/1430-radeon-rx-560-vs-geforce-gtx-1050/page8.html) e a RX 460 fica 18% abaixo; **Arc A750 (300)** empata com a RTX 3060 no Tom's Hardware e fica 13% acima da RX 6600 a 1440p no TechPowerUp, enquanto o PassMark subestima as Arc; **GTX 780 (30)** e **GTX 960/R9 380/GTX 1050 Ti**: as comparações em jogos são só de agregadores e divergem, sem base para mover.
 
 **GTX 970 (40):** foi subida para 50 e depois revertida. A evidência da GTX 1650 mostrou que a 970 fica de 7% a 12% abaixo da GTX 1060 3GB (classe 50) e praticamente empata com a GTX 1650 (classe 40): a 970 é só 1% a 3% mais rápida segundo a [PC Gamer](https://www.pcgamer.com/nvidia-geforce-gtx-1650-review), e a 1650 fica 9% a 15% atrás da 1060 3GB segundo o [TechSpot](https://www.techspot.com/review/1835-nvidia-geforce-gtx-1650/). A classificação original (970, GTX 1650, RX 470 e RX 6400 em 40; 1060 3GB, RX 480 e RX 570 em 50) se sustenta. A margem exata é incerta, porque os percentuais vieram de resumos e as duas versões do TechSpot divergem.
+
+## Variantes de VRAM
+
+Oito modelos tinham variantes de memória diferentes na mesma classe. Cada par foi comparado em jogos antes de decidir se separar:
+
+| Modelo | O que as fontes mostram | Decisão |
+| --- | --- | --- |
+| RX 480 4GB e 8GB | ~5% a 1080p ([LegitReviews](https://legitreviews.com/amd-radeon-rx-480-4gb-versus-radeon-rx-480-8gb_183576/4)); a diferença vem da velocidade da memória (7 e 8 Gbps), não da capacidade. | Mesma classe (50) |
+| RX 580 4GB e 8GB | ~10% só no agregador [CheckFPS](https://checkfps.io/en/compare/rx-580-4gb-vs-rx-580-8gb), sem outra fonte. | Mesma classe (100); evidência fraca |
+| RX 550 e RX 560, 2GB e 4GB | Sem comparação confiável encontrada. | Mesma classe; sem base para separar |
+| GTX 960 2GB e 4GB | Média de 5% a 7% e até ~14% em jogos novos ([GamersNexus](https://gamersnexus.net/guides/1888-evga-supersc-4gb-960-benchmark-vs-2gb)); o [TechSpot](https://www.techspot.com/review/1114-vram-comparison-test/) não achou diferença em vários jogos. | Mesma classe (20) |
+| **GTX 1050 2GB** e 4GB | Estouro de VRAM documentado: a versão de 3GB rende 65% mais no Wolfenstein ([TechSpot](https://www.techspot.com/review/1675-nvidia-geforce-gtx-1050-3gb/)) e a de 2GB tem picos de tempo de quadro ([Tom's Hardware](https://www.tomshardware.com/reviews/geforce-gtx-1050-3gb-benchmarks,5654.html)). | **2GB passa de 15 para 10**; 4GB continua em 15 |
+| Arc A770 8GB e 16GB | A Intel diz que rendem o mesmo; uma revista aponta o dobro a 1440p, sem como conferir. | Mesma classe (350) |
+| RTX 4060 Ti 8GB e 16GB | Rasterização 0% a 5% ([Tom's Hardware](https://www.tomshardware.com/reviews/nvidia-geforce-rtx-4060-ti-16gb-review/7)); 18% a 34% só com ray tracing e texturas máximas. | Mesma classe (400) |
+
+A regra resultante está em `SCORING.md` (item 5). Dúvida aberta: o catálogo tem uma "GTX 1050 4GB", mas a NVIDIA vendeu a GTX 1050 só com 2GB e 3GB (os 4GB são a 1050 Ti, outro chip); vale conferir se o nome está certo.
+
+
+## Curadoria dos textos genéricos de requisito
+
+Das 45 combinações (jogo, nível e campo) em que a Steam publica um texto genérico, **34 receberam uma referência manual** em `requirements_curation.json` (164 regras no total, eram 130). Cada regra vale para um único jogo, nível e texto exato; se o texto da Steam mudar, ela deixa de valer. A nota é o **menor** valor entre os modelos de referência. Na tela, a comparação aparece como **estimativa**, e o texto original é preservado.
+
+**Critério.** Curei quando o texto fixa um piso nomeado ("HD 4000 or better"), uma geração de API (DirectX 10 ou 11), um clock com número de núcleos, ou lista alternativas em que o modelo nomeado domina. Deixei pendente quando o texto só cita memória ("512 MB display memory"), uma família que atravessa gerações ("Core i5", "Ryzen 5 series", "Six-Core CPU") ou nada útil ("Intel"). Alternativas em ARM (Snapdragon X Elite, Adreno X1) ficam fora porque o perfil do GameCompass é x64, e isso está dito na justificativa de cada regra.
+
+| Jogo | Nível | Campo | Texto da Steam | Referência | Nota |
+| --- | --- | --- | --- | --- | ---: |
+| Baldur's Gate 3 | mín. | CPU | Intel I5 4690 / AMD FX 8350 / Snapdragon X Elite | Intel Core i5-4690, AMD FX-8350 | 50 |
+| Baldur's Gate 3 | mín. | GPU | Nvidia GTX 970 / RX 480 / Intel Arc A380 / Qualcomm Adreno X1 (4GB+ of | NVIDIA GeForce GTX 970, AMD Radeon RX 480 4GB, AMD Radeon RX 480 8GB, Intel Arc A380 6GB | 40 |
+| Age of Empires II: Definitive Edit | mín. | CPU | Intel Core 2 Duo or AMD Athlon 64x2 5600+ | Intel Core 2 Duo E4500, AMD Athlon 64 X2 5600+ | 5 |
+| Age of Empires II: Definitive Edit | mín. | GPU | NVIDIA® GeForce® GT 420 or ATI™ Radeon™ HD 6850 or Intel® HD Graphics  | NVIDIA GeForce GT 420, AMD Radeon HD 6850, Intel HD Graphics 4000 | 1 |
+| DARK SOULS™ III | rec. | GPU | NVIDIA® GeForce GTX 970 / ATI Radeon R9 series | NVIDIA GeForce GTX 970, AMD Radeon R9 290X 4GB | 40 |
+| RimWorld | mín. | GPU | Intel HD Graphics 4000 or other shader model 4.0 | Intel HD Graphics 4000 | 1 |
+| Cities: Skylines | mín. | GPU | Nvidia® GeForce™ GTS 450 (1 GB) / AMD® R7 250 (2 GB) / Intel Iris Xe G | NVIDIA GeForce GTS 450, AMD Radeon R7 250 2GB | 3 |
+| The Binding of Isaac: Rebirth | rec. | GPU | Intel HD Graphics 4000 and higher, ATI Radeon HD-Series 4650 and highe | Intel HD Graphics 4000 | 1 |
+| Assetto Corsa | mín. | CPU | AMD Athlon X2 2.8 GHZ, Intel Core 2 Duo 2.4 GHZ | AMD Athlon 64 X2 5600+, Intel Core 2 Duo E6600 | 5 |
+| Rocket League® | mín. | CPU | 2.5 GHz Dual core | Intel Core 2 Duo E6750 | 5 |
+| Rocket League® | rec. | CPU | 3.0+ GHz Quad core | Intel Core 2 Quad Q9650 | 15 |
+| Counter-Strike 2 | mín. | GPU | A placa gráfica deve ter, no mínimo, 1 GB e ser compatível com DirectX | AMD Radeon HD 5450 | 1 |
+| Dota 2 | mín. | CPU | Dual core da Intel ou da AMD com 2,8 GHz | AMD Athlon 64 X2 5600+ | 5 |
+| Dota 2 | mín. | GPU | NVIDIA GeForce 8600/9600GT, ATI/AMD Radeon HD2600/3600 | NVIDIA GeForce 9600 GT 512MB | 2 |
+| A Short Hike | mín. | CPU | Intel or AMD Dual Core at 2 GHz or better | Intel Core 2 Duo E4400 | 5 |
+| Dorfromantik | mín. | CPU | 2 GHz Dual Core (Intel / AMD) | Intel Core 2 Duo E4400 | 5 |
+| Dorfromantik | mín. | GPU | Nvidia GT550M / AMD Radeon R7/HD 5650 / Intel HD 520 | NVIDIA GeForce GT 550M, AMD Radeon HD 5650, Intel HD Graphics 520 | 2 |
+| Dorfromantik | rec. | CPU | 2.5 GHz Dual Core (Intel / AMD) | Intel Core 2 Duo E6750 | 5 |
+| Dorfromantik | rec. | GPU | Nvidia GT740M / AMD Radeon R8 / Intel HD 630 | NVIDIA GeForce GT 740M, Intel HD Graphics 630 | 2 |
+| Spiritfarer®: Edição Farewell | mín. | CPU | Dual Core 3.0 GHz Processor | Intel Core 2 Duo E8400 | 8 |
+| Spiritfarer®: Edição Farewell | mín. | GPU | DirectX 10-compatible graphics card with at least 1GB of video memory | AMD Radeon HD 5450 | 1 |
+| Coffee Talk | mín. | CPU | 2.4 GHz or faster processor | Intel Core 2 Duo E6600 | 5 |
+| PowerWash Simulator | mín. | CPU | Intel i5-760 (4*2800), AMD Phenom II | Intel Core i5-760, AMD Phenom II X4 945 | 20 |
+| Frostpunk | mín. | CPU | 3.2 GHz Dual Core Processor | Intel Core 2 Duo E8500 | 8 |
+| Frostpunk | rec. | CPU | 3.2 GHz Quad Core Processor | AMD Phenom II X4 955 | 20 |
+| Kerbal Space Program | mín. | CPU | Core 2 Duo 2.0 Ghz | Intel Core 2 Duo E4400 | 5 |
+| Kerbal Space Program | mín. | GPU | DX10 (SM 4.0) capable, 512MB VRAM | AMD Radeon HD 5450 | 1 |
+| Kerbal Space Program | rec. | GPU | DX10 (SM 4.0) capable, 1GB VRAM | AMD Radeon HD 5450 | 1 |
+| Crusader Kings III | mín. | GPU | NVIDIA GeForce GTX 660 / AMD Radeon HD 7870 / Intel Arc A310 / Intel I | NVIDIA GeForce GTX 660, AMD Radeon HD 7870 2GB, Intel Arc A310 4GB, AMD Radeon RX Vega 11 | 3 |
+| Amnesia: The Dark Descent | mín. | CPU | 2.0Ghz - Low budget CPUs such as Celeron or Duron needs to be at about | Intel Core 2 Duo E4400 | 5 |
+| Amnesia: The Dark Descent | mín. | GPU | Radeon X1000/GF 6 - Integrated graphics and very low budget cards migh | ATI Radeon X1950 Pro 256MB, NVIDIA GeForce 6800 GT | 1 |
+| Don't Starve Together | mín. | CPU | 1.7+ GHz or better | AMD Athlon 64 3000+ | 5 |
+| Rayman® Legends | mín. | CPU | Intel Pentium IV @ 3.0 GHz or AMD Athlon64 3000 + @ 1.8 GHz | AMD Athlon 64 3000+ | 5 |
+| Rayman® Legends | rec. | GPU | nVidia GeForce 9600GT or higher, AMD Radeon HD3850 or higher (512MB VR | NVIDIA GeForce 9600 GT 512MB, ATI Radeon HD 3850 512MB | 2 |
+
+**Ficaram pendentes de propósito (11):** Assetto Corsa recomendado ("Six-Core CPU, Quad-Core CPU"), Coffee Talk GPU ("512 MB display memory"), Total War: WARHAMMER III (CPU "i3/Ryzen 3 series", GPU "GTX 900/RX 400 series" e CPU recomendada "i5/Ryzen 5 series"), Kerbal Space Program recomendado ("Core i5"), Raft ("Core i5 2.6GHz or similar"), TUNIC ("i5 Quad-Core") e Firewatch ("Core i3 2.00 GHz or AMD equivalent"). Faltam gerações para limitar a classe.
+
+**Efeito.** Blocos do mínimo em revisão: 36 para 21. Jogos com base de comparação no Windows: 99 para 108 de 120. Na avaliação offline (60 perfis simulados), os jogos `pending` por perfil caíram de 10,5 para 7,0 e os `items` subiram de 36,6 para 39,9.
+
+**O que ainda impede os 21 jogos do mínimo.** Quase todos têm uma única pendência de GPU: variantes de memória sem a capacidade no texto (RX 550, GTX 960, GeForce 7600 GT e outras, que continuam pendentes pela política dos aliases), textos compostos ou com "or equivalent" (Factorio, Rainbow Six Siege, Frostpunk, Alien: Isolation, Don't Starve Together), peças ainda fora do índice (GeForce GTX 630 e "GTX 700 series", entre outras) e dois campos que a Steam não publicou (RAM do Unpacking, GPU do A Hat in Time).
