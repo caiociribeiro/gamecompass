@@ -362,7 +362,7 @@ npm run build
 npm run dev
 ```
 
-O catálogo de 80 jogos e o CSV de hardware já carregados continuam sendo usados. O cálculo continua recebendo apenas os dados necessários no corpo da requisição; ele não lê a conta.
+O catálogo de 120 jogos e o CSV de hardware já carregados continuam sendo usados. O cálculo continua recebendo apenas os dados necessários no corpo da requisição; ele não lê a conta.
 
 ### Contas e perfil
 
@@ -501,19 +501,40 @@ A verificação cobre âncoras inicialmente vazias, sugestões editoriais,
 busca por nome, cache, falhas totais e parciais, migração do perfil,
 classificações pendentes e preservação dos dados já escolhidos.
 
+### Avaliação offline do `rules_v1`
+
+`backend/app/evaluate_rules.py` roda o motor sobre o catálogo e o hardware
+carregados no Neo4j (somente leitura, mesmo cálculo da API) e relata a
+contagem de `items`/`pending`/`excluded`, a distribuição de afinidade, o
+top-N e a cobertura do catálogo:
+
+```text
+docker compose run --rm --no-deps api python -m app.evaluate_rules --auto 30 --top 5
+```
+
+Sem `--scenarios`, os perfis são **simulados** de forma determinística
+(`--seed`): três âncoras sorteadas do catálogo, gêneros e temáticas iguais à
+união das âncoras e hardware de três faixas (percentis 20/50/85 das peças com
+nota, com 8/16/32 GB de RAM). São simulações, não usuários reais. Para perfis
+próprios, passe `--scenarios arquivo.json` com `{"scenarios": [{"anchorIds":
+[...], "genres": [...], "themes": [...], "hardware": {...}}]}` (mesmo contrato
+da API). `--json` troca o texto por JSON. O resultado depende do catálogo
+carregado no banco da máquina em uso.
+
 ## Jogos, gêneros e tags no Neo4j
 
-A seleção está em `data/catalog/games.json`: 80 jogos reais,
+A seleção está em `data/catalog/games.json`: 120 jogos reais,
 incluindo Cyberpunk, RDR2, The Witcher 3, Elden Ring, BG3, Skyrim,
-Fallout 4, Monster Hunter, Factorio, Valheim, Forza Horizon 5 e jogos indie.
+Fallout 4, Monster Hunter, Factorio, Valheim, Forza Horizon 4 e 5, Rocket League, Frostpunk, Helldivers 2 e jogos indie.
 As informações vêm da Steam; as tags seguem a curadoria do projeto.
 Detalhes dos scripts, esquema e limites: [GAMES.md](data/catalog/GAMES.md).
 
 Na raiz do projeto, valide e atualize primeiro o hardware. A revisão
-atual tem 115 CPUs e 147 GPUs, todas com classificação manual aproximada
+atual tem 145 CPUs e 167 GPUs (312 peças), todas com classificação manual aproximada
 para o TCC1. O lote mais recente adiciona modelos citados pelos requisitos.
 As justificativas estão em
-[REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md)
+[REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md),
+[HARDWARE_REVIEW_2026_11.md](data/catalog/HARDWARE_REVIEW_2026_11.md)
 e o critério simplificado em [TCC1_REVIEW_2026_10.md](data/catalog/TCC1_REVIEW_2026_10.md).
 
 Para atualizar o lote inteiro, o comando abaixo coleta os jogos que faltam,
@@ -529,6 +550,8 @@ docker compose up -d --build --wait api
 ```
 
 A seleção ampliada reforça Puzzle e Plataforma: Portal, The Witness, The Talos Principle 2, Ori, LIMBO, INSIDE, Shovel Knight e outros. `--reuse-snapshot-dir` copia os snapshots selecionados do lote anterior depois de verificar identidade, região, idioma e hashes. Preserva os bytes e a data de coleta, registra a origem no manifesto novo e baixa somente os AppIDs que faltam. As pastas devem ser separadas; o comando não altera as respostas anteriores. Se seu lote de 50 tiver outro nome, ajuste somente esse argumento.
+
+A ampliação para 120 jogos (40 novos, escolhidos para cobrir corridas, esporte, casual, competitivo, relaxante, terror, estratégia e simulação) usa o mesmo fluxo, reaproveitando o lote de 80 e baixando só os jogos que faltam. O comando e os números verificados estão em [GAMES.md](data/catalog/GAMES.md).
 
 Fichas antigas que publicam mínimos e recomendados juntos passam a ser separadas pelos títulos explícitos. RAM/GPU ausentes continuam pendentes: Unpacking não publica RAM nessa coleta e A Hat in Time não publica GPU. DirectX ou espaço em disco não preenchem esses campos. A cobertura dos 80 deve ser conferida após a coleta local; os testes offline não equivalem a uma coleta completa da Steam.
 

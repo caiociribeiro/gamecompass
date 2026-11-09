@@ -2,7 +2,7 @@
 
 ## O que é versionado
 
-`games.json` contém a seleção de 80 AppIDs, o vocabulário de temáticas e
+`games.json` contém a seleção de 120 AppIDs, o vocabulário de temáticas e
 uma justificativa editorial por jogo. Nomes, gêneros gerais, requisitos,
 preços e capas vêm da coleta real de `appdetails`, em português e região BR.
 `editorial_genres` complementa os gêneros com Plataforma, Roguelike, Tiro
@@ -13,7 +13,7 @@ As tags representam a curadoria do GameCompass; não são apresentadas como
 tags da comunidade Steam. Os recursos de `categories` não substituem
 as preferências originais da interface.
 
-Seleção inicial, preservada nas ampliações para 50 e 80 jogos:
+Seleção inicial, preservada nas ampliações para 50, 80 e 120 jogos:
 
 | AppID | Jogo da seleção inicial |
 | --- | --- |
@@ -59,10 +59,18 @@ Não há jogo escolhido automaticamente para o perfil. Buscar nomes continua
 consultando a Steam; escolher um jogo catalogado aproveita o Neo4j.
 Se o catálogo não tiver candidatos ou estiver indisponível, a API pode
 usar os mais vendidos da Steam e informa essa troca na resposta/interface.
-Os 80 jogos selecionados formam uma base limitada; o grafo não busca todos os
+Os 120 jogos selecionados formam uma base limitada; o grafo não busca todos os
 similares existentes na loja.
 
 A ampliação para 80 inclui 30 novos AppIDs, com mais Puzzle, Plataforma, Roguelike e cooperativos. `reuse_snapshots.py`, chamado por `update_catalog.py --reuse-snapshot-dir ... --fetch`, verifica e copia as coletas selecionadas para o lote novo, preservando resposta e metadata. O manifesto guarda `reuse_sources` e o SHA-256 do manifesto anterior. O coletor completa somente os jogos ausentes. Nunca atualiza a data de uma resposta reaproveitada como se fosse uma coleta recente.
+
+A ampliação para 120 (06/11/2026) inclui 40 novos AppIDs escolhidos para cobrir lacunas do catálogo: corridas, esporte, casual, competitivo, relaxante, terror, estratégia e simulação. Cada AppID foi verificado em `appdetails` (jogo base, requisitos mínimos publicados, Windows); jogos em acesso antecipado ficaram de fora para não acrescentar esse gênero. As tags saem do mesmo vocabulário de dez temáticas e cada jogo tem uma justificativa em `curation_notes`; Tiro, Plataforma e Roguelike seguem as frases-padrão já usadas. A classificação editorial dos 40 jogos novos é do GameCompass e deve ser revisada por quem mantém o projeto. Com a ampliação o grafo tem 120 jogos, 15 gêneros, 10 temáticas e 601 relações (340 `HAS_GENRE` e 261 `HAS_TAG`). No Windows, 99 jogos têm base de comparação de hardware e 21 ainda exigem curadoria de requisitos; os pendentes vêm sobretudo de CPUs e GPUs que o índice não identifica (ver [HARDWARE_REVIEW_2026_11.md](HARDWARE_REVIEW_2026_11.md)). Para repetir a coleta em outra máquina, reaproveite o lote anterior e baixe só os 40 novos:
+
+```bash
+docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote120_<data> --reuse-snapshot-dir data/raw/steam_games_lote80_20261031 --fetch --load
+```
+
+Os snapshots não vão para o git. Preços e requisitos coletados em dias diferentes podem divergir entre máquinas; para resultados idênticos, copie a mesma pasta de snapshots.
 
 ## Contrato do grafo
 

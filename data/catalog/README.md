@@ -22,7 +22,7 @@ ambiente. Edite o CSV desta pasta e gere novamente a saída processada.
 
 ## Conteúdo do catálogo
 
-São 115 CPUs Intel/AMD e 147 GPUs NVIDIA/AMD/Intel/ATI.
+São 145 CPUs Intel/AMD e 167 GPUs NVIDIA/AMD/Intel/ATI.
 O conjunto inicial foi selecionado a partir dos requisitos Windows de
 Cyberpunk 2077, Elden Ring, Baldur's Gate 3, Red Dead Redemption 2 e
 Hogwarts Legacy, além de páginas oficiais dos fabricantes e comparações
@@ -37,7 +37,7 @@ condições de notebooks podem alterar bastante o resultado. Apple Silicon e
 outras CPUs ARM continuam exigindo critérios próprios. Os textos dessas
 plataformas permanecem nos snapshots da Steam.
 
-As 262 peças têm faixas aproximadas do TCC1. Os grupos iniciais foram preservados:
+As 312 peças têm faixas aproximadas do TCC1. Os grupos iniciais foram preservados:
 
 | Tipo | Classe | Modelos |
 | --- | ---: | --- |
@@ -220,3 +220,5 @@ O contrato de `Game`, `Genre`, `Tag` e seus relacionamentos permanece sob
 o acordo de integração do projeto; este catálogo cadastra apenas hardware.
 
 A ampliação para 80 jogos acrescenta 17 CPUs e 19 GPUs às 226 peças anteriores, sem mudar suas notas. Inclui Core i3-10100/F, Core i5-10400/F, Ryzen 3 3100, Ryzen 5 4500, GT 1030 GDDR5, RTX 3050 6GB/8GB e modelos legados citados nos requisitos. As variantes DDR4/GDDR5 da GT 1030 e 6GB/8GB da RTX 3050 são distintas. As fontes e datas de cada encaixe estão no CSV; as faixas continuam sendo ordinais próprias do TCC1. As análises [Core i3-10100](https://www.techspot.com/review/2033-intel-core-i3-10100/), [Core i5-11400F](https://www.techspot.com/review/2232-intel-core-i5-11400f/) e [RTX 3050 6GB](https://www.techspot.com/review/2816-nvidia-geforce-rtx-3050-6gb/) orientam o encaixe aproximado, sem copiar suas pontuações.
+
+A ampliação para 120 jogos acrescenta 30 CPUs e 20 GPUs às 262 peças anteriores (312 no total) e 78 aliases de nomes publicados pela Steam (1439 no total), todos para modelos únicos do catálogo. As classes novas vêm de comparações de jogos ou de um modelo irmão já classificado; a confiança de cada uma está nas `notes` do CSV e em [HARDWARE_REVIEW_2026_11.md](HARDWARE_REVIEW_2026_11.md), que também registra as correções posteriores (RX 6600 XT de 350 para 300 e RTX 4070 de 450 para 500) e as candidatas avaliadas sem mudança. Variantes ambíguas de memória (RX 480, GTX 1060, RTX 2060, Arc A770 e outras) e textos genéricos continuam pendentes de propósito.
