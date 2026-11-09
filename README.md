@@ -501,6 +501,39 @@ A verificação cobre âncoras inicialmente vazias, sugestões editoriais,
 busca por nome, cache, falhas totais e parciais, migração do perfil,
 classificações pendentes e preservação dos dados já escolhidos.
 
+### Testes de ponta a ponta
+
+Percorrem o caminho de uma pessoa nova: cadastro, preferências, jogos âncora, computador e
+recomendações. Rodam só na sua máquina, contra a pilha no ar, e **não fazem parte do CI**: dependem
+do Neo4j com o catálogo carregado, e esse catálogo vem de coletas da Steam que não vão para o git.
+Cada teste cria uma conta descartável (e-mail e senha aleatórios) e a apaga no final pelo
+contêiner do Neo4j.
+
+```bash
+docker compose up -d neo4j api
+```
+
+Pela API, só com a biblioteca padrão do Python (sem instalar nada). No PowerShell, use
+`$env:GAMECOMPASS_E2E=1` antes do comando:
+
+```bash
+GAMECOMPASS_E2E=1 python3 tests/e2e/test_api_flow.py
+```
+
+Pelo navegador, com Playwright. Com o site no ar em `http://127.0.0.1:5173` (`npm run dev`), na pasta
+`frontend/`. A primeira vez baixa o Chromium (algumas centenas de MB, fora do repositório):
+
+```bash
+npm install
+npx playwright install chromium
+npm run e2e
+```
+
+O teste do navegador segue só os botões da tela, sem o menu lateral, e confere o rodapé de cada
+etapa do perfil. As sugestões de âncoras da Steam são simuladas para ele não depender da internet;
+os dados dos jogos vêm do banco de verdade. Se uma etapa falhar, o Playwright guarda um print em
+`frontend/test-results/`.
+
 ### Avaliação offline do `rules_v1`
 
 `backend/app/evaluate_rules.py` roda o motor sobre o catálogo e o hardware
