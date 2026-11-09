@@ -4,7 +4,7 @@ import { GameCard } from "../components/GameCard"
 import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
-import { profileSteps } from "../lib/profile"
+import { nextPendingStep, profileSteps } from "../lib/profile"
 import { compatibilityLabel, profileReady } from "../lib/recommend"
 import { fold } from "../lib/text"
 
@@ -40,21 +40,34 @@ export function Recommendations() {
       />
       <CatalogStatus />
       <CatalogStatus scope="hardware" />
-      {!ready && (
-        <section className="stack">
-          <p className="empty">Complete o perfil com os dados do catálogo carregado.</p>
-          <ul className="plain-list">
-            {profileSteps(user, games, hardware)
-              .filter((step) => !step.done)
-              .map((step) => (
-                <li key={step.id}>
-                  <Link to={step.to}>{step.label}</Link>
-                  <span>{step.hint}</span>
-                </li>
-              ))}
-          </ul>
-        </section>
-      )}
+      {!ready && (() => {
+        const steps = profileSteps(user, games, hardware)
+        const next = nextPendingStep(steps)
+        return (
+          <section className="stack">
+            <h2>Falta pouco para as suas recomendações</h2>
+            <p className="hint">
+              {steps.filter((step) => step.done).length} de {steps.length} etapas concluídas. Termine as que faltam
+              para ver os jogos que combinam com você e funcionam no seu computador.
+            </p>
+            <ul className="plain-list">
+              {steps
+                .filter((step) => !step.done)
+                .map((step) => (
+                  <li key={step.id}>
+                    <Link to={step.to}>{step.label}</Link>
+                    <span>{step.hint}</span>
+                  </li>
+                ))}
+            </ul>
+            {next && (
+              <Link className="btn next-cta" to={next.to}>
+                Continuar: {next.label}
+              </Link>
+            )}
+          </section>
+        )
+      })()}
       {ready && (
         <div className="stack">
           <button type="button" className="btn" disabled={gamesLoading} onClick={() => void discoverGames()}>

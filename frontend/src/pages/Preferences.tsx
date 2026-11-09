@@ -1,4 +1,6 @@
 import { PageHeader } from "../components/PageHeader"
+import { StepFooter } from "../components/StepFooter"
+import { StepNav } from "../components/StepNav"
 import { useSession } from "../context/SessionContext"
 import { GENRES, THEMES } from "../data/preferences"
 
@@ -11,10 +13,11 @@ export function Preferences() {
   if (!user) return null
   return (
     <div className="page narrow">
+      <StepNav current="prefs" />
       <PageHeader
         eyebrow="Preferências"
         title="O que você procura em um jogo"
-        lede="Escolha pelo menos um gênero e uma temática. A escolha é salva na hora, neste navegador."
+        lede="Escolha pelo menos um gênero e uma temática. Cada clique é salvo na sua conta na hora, sem precisar de botão de salvar."
       />
       <section className="stack">
         <h2>Gêneros</h2>
@@ -45,14 +48,12 @@ export function Preferences() {
             </button>
           ))}
         </div>
-        <p className="hint" aria-live="polite">
-          {user.genres.length} gêneros · {user.themes.length} temáticas.
-        </p>
         <p className="hint">
           As temáticas dos jogos catalogados são classificadas pelo GameCompass e participam da
           afinidade. Jogos consultados fora desse catálogo podem ter essa classificação pendente.
         </p>
       </section>
+      <StepFooter id="prefs" />
     </div>
   )
 }

@@ -19,6 +19,8 @@ type SessionContextValue = {
   error: string | null
   /** Falha ao gravar o perfil no servidor. */
   saveError: string | null
+  /** Verdadeiro enquanto há alterações do perfil ainda a caminho do servidor. */
+  saving: boolean
   dismissSaveError: () => void
   login: (email: string, password: string) => Promise<string | null>
   register: (input: RegisterInput) => Promise<string | null>
@@ -34,6 +36,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<"loading" | "ready">("loading")
   const [error, setError] = useState<string | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
   // Todas as operações que dependem do cookie correm em fila: uma edição feita antes de
   // sair é enviada ainda com a sessão antiga, e nunca chega à conta seguinte.
   const chain = useRef<Promise<unknown>>(Promise.resolve())
@@ -86,6 +89,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       status,
       error,
       saveError,
+      saving,
       dismissSaveError: () => setSaveError(null),
       login: (email, password) => enter("/auth/login", { email: email.trim().toLowerCase(), password }),
       register: (input) =>
@@ -107,6 +111,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         // Atualização otimista; o servidor confirma em seguida.
         setUser((current) => (current ? { ...current, ...patch } : current))
         pendingSaves.current += 1
+        setSaving(true)
         void enqueue(async () => {
           try {
             await apiPatch("/me/profile", patch)
@@ -128,6 +133,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             }
           } finally {
             pendingSaves.current -= 1
+            if (pendingSaves.current === 0) setSaving(false)
           }
         })
       },
@@ -145,7 +151,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           }
         }),
     }
-  }, [user, status, error, saveError, enqueue])
+  }, [user, status, error, saveError, saving, enqueue])
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }
