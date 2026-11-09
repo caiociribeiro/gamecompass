@@ -79,3 +79,26 @@ docker compose run --rm data python scripts/update_catalog.py --snapshot-dir dat
 ```
 
 O hash do catálogo de hardware muda; é preciso reprocessar os jogos para que os novos modelos sejam resolvidos.
+
+## Correções posteriores
+
+Regra adotada: peças com diferença de até cerca de 10% em médias de jogos (rasterização nativa) tendem a ficar na mesma classe. Ela é aproximada: o agrupamento não é transitivo, então cada caso foi conferido contra comparações diretas.
+
+| Peça | Antes | Depois | Evidência |
+| --- | ---: | ---: | --- |
+| AMD Radeon RX 6600 XT 8GB | 350 | 300 | [TechSpot, 50 jogos (2022)](https://www.techspot.com/review/2525-geforce-gtx-1080-ti-revisit/): GTX 1080 Ti 3% à frente da RTX 3060 a 1080p e 3% atrás da RX 5700 XT; a 6600 XT tem desempenho comparável ao da 3060. [TechSpot, 33 jogos](https://www.techspot.com/review/2508-radeon-5700-xt-revisit/): 5700 XT 6% à frente da 3060 a 1440p; a 6600 XT entrega desempenho de 5700 XT. Todas essas estão na classe 300. |
+| NVIDIA GeForce RTX 4070 12GB | 450 | 500 | [Tom's Hardware](https://www.tomshardware.com/reviews/nvidia-geforce-rtx-4070-review/5): menos de 2% de diferença para a RTX 3080 a 1440p e 26% acima da RTX 3070 Ti. [TechSpot](https://www.techspot.com/review/2663-nvidia-geforce-rtx-4070/): entre -3% e +4% da 3080 em vários jogos. Confiança alta. |
+
+Efeito: o Dragon's Dogma 2 pede RTX 2070 SUPER ou RX 6600 XT nos recomendados; o menor valor entre as alternativas passou de 350 para 300, e a RTX 3060 12GB passa a atender esse nível.
+
+### Candidatas avaliadas e não alteradas
+
+- **RX Vega 64 (250):** o PassMark (usado só como apoio) a coloca cerca de 14% abaixo da RX 5700 XT (300); a classe 250 parece razoável.
+- **RX 5700 8GB (250) contra RTX 2060 SUPER (300):** confirmar a distância em jogos.
+- **RX 6650 XT (350) e RX 7600 (350) contra RTX 3060 12GB (300):** as fontes divergem entre 2% e 18% de diferença.
+- **RTX 2070 SUPER (350):** fica 7% a 13% acima da 3060 e da 5700 XT, na fronteira entre 300 e 350.
+- **GTX 1050 Ti (25) e GTX 780 (30):** TechSpot e Technical City apontam a 780 cerca de 8% à frente em jogos; a distância de cinco classes parece grande.
+
+Verificações com dados de jogos, sem alteração: **RX 560 (15)** fica igual à GTX 1050 em 30 jogos do [TechSpot](https://www.techspot.com/review/1430-radeon-rx-560-vs-geforce-gtx-1050/page8.html) e a RX 460 fica 18% abaixo; **Arc A750 (300)** empata com a RTX 3060 no Tom's Hardware e fica 13% acima da RX 6600 a 1440p no TechPowerUp, enquanto o PassMark subestima as Arc; **GTX 780 (30)** e **GTX 960/R9 380/GTX 1050 Ti**: as comparações em jogos são só de agregadores e divergem, sem base para mover.
+
+**GTX 970 (40):** foi subida para 50 e depois revertida. A evidência da GTX 1650 mostrou que a 970 fica de 7% a 12% abaixo da GTX 1060 3GB (classe 50) e praticamente empata com a GTX 1650 (classe 40): a 970 é só 1% a 3% mais rápida segundo a [PC Gamer](https://www.pcgamer.com/nvidia-geforce-gtx-1650-review), e a 1650 fica 9% a 15% atrás da 1060 3GB segundo o [TechSpot](https://www.techspot.com/review/1835-nvidia-geforce-gtx-1650/). A classificação original (970, GTX 1650, RX 470 e RX 6400 em 40; 1060 3GB, RX 480 e RX 570 em 50) se sustenta. A margem exata é incerta, porque os percentuais vieram de resumos e as duas versões do TechSpot divergem.
