@@ -4,6 +4,7 @@ import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { apiError, apiGet } from "../lib/api"
+import { ThumbIcon } from "../components/ReactionButtons"
 import type { Interaction } from "../types"
 
 export function Account() {
@@ -128,7 +129,11 @@ export function Account() {
           <ul className="plain-list">
             {reacted.map((item) => (
               <li key={item.gameId}>
-                <span>{item.reaction === "liked" ? "👍" : "👎"} {item.title ?? `Jogo ${item.gameId}`}</span>
+                <span className="history-game">
+                  <ThumbIcon down={item.reaction === "disliked"} filled />
+                  <span className="sr-only">{item.reaction === "liked" ? "Curtiu: " : "Não curtiu: "}</span>
+                  {item.title ?? `Jogo ${item.gameId}`}
+                </span>
                 <button type="button" className="btn ghost small" onClick={() => {
                   setHistoryNote(null)
                   reactToGame(item.gameId, null)
