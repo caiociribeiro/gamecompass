@@ -1,7 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { PageHeader } from "../components/PageHeader"
+import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
+import { apiError, apiGet } from "../lib/api"
+import type { Interaction } from "../types"
 
 export function Account() {
   const { user, updateUser, changePassword, logout } = useSession()
@@ -10,7 +13,21 @@ export function Account() {
   const [nameNote, setNameNote] = useState<string | null>(null)
   const [passwordNote, setPasswordNote] = useState<string | null>(null)
   const [confirmClear, setConfirmClear] = useState(false)
+  const { reactToGame, clearHistory } = useCatalog()
+  const [history, setHistory] = useState<Interaction[] | null>(null)
+  const [historyNote, setHistoryNote] = useState<string | null>(null)
+  const [confirmHistory, setConfirmHistory] = useState(false)
+  const userId = user?.id
+  useEffect(() => {
+    if (!userId) return
+    const controller = new AbortController()
+    apiGet<{ items: Interaction[] }>("/me/interactions", controller.signal)
+      .then((data) => { if (!controller.signal.aborted) setHistory(data.items) })
+      .catch((error) => { if (!controller.signal.aborted) setHistoryNote(apiError(error)) })
+    return () => controller.abort()
+  }, [userId])
   if (!user) return null
+  const reacted = (history ?? []).filter((item) => item.reaction)
 
   return (
     <div className="page narrow">
@@ -93,6 +110,53 @@ export function Account() {
         ) : (
           <button type="button" className="btn ghost" onClick={() => setConfirmClear(true)}>
             Limpar perfil
+          </button>
+        )}
+      </section>
+
+      <section className="stack card-block">
+        <h2>Histórico de jogos</h2>
+        <p>
+          Guardamos só o código do jogo, se você curtiu ou não, quantas vezes abriu a página dele e as datas. Jogos que
+          você não curtiu deixam de ser recomendados; os curtidos reforçam a afinidade das próximas sugestões.
+        </p>
+        {history === null && !historyNote && <p className="hint" role="status">Carregando o histórico…</p>}
+        {history !== null && (
+          <p className="hint">{history.length} {history.length === 1 ? "jogo visto" : "jogos vistos"} · {reacted.length} com reação.</p>
+        )}
+        {reacted.length > 0 && (
+          <ul className="plain-list">
+            {reacted.map((item) => (
+              <li key={item.gameId}>
+                <span>{item.reaction === "liked" ? "👍" : "👎"} {item.title ?? `Jogo ${item.gameId}`}</span>
+                <button type="button" className="btn ghost small" onClick={() => {
+                  setHistoryNote(null)
+                  reactToGame(item.gameId, null)
+                    .then(() => setHistory((current) => (current ?? []).map((entry) => entry.gameId === item.gameId ? { ...entry, reaction: null } : entry)))
+                    .catch((error) => setHistoryNote(apiError(error)))
+                }}>
+                  Remover reação
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {historyNote && <p className="hint" role="status">{historyNote}</p>}
+        {confirmHistory ? (
+          <div className="row">
+            <button type="button" className="btn danger" onClick={() => {
+              clearHistory()
+                .then((removed) => { setHistory([]); setHistoryNote(`Histórico removido (${removed} ${removed === 1 ? "registro" : "registros"}).`) })
+                .catch((error) => setHistoryNote(apiError(error)))
+                .finally(() => setConfirmHistory(false))
+            }}>
+              Confirmar limpeza do histórico
+            </button>
+            <button type="button" className="btn ghost" onClick={() => setConfirmHistory(false)}>Cancelar</button>
+          </div>
+        ) : (
+          <button type="button" className="btn ghost" disabled={!history?.length} onClick={() => setConfirmHistory(true)}>
+            Limpar histórico de jogos
           </button>
         )}
       </section>

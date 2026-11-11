@@ -1,7 +1,8 @@
-import { useEffect, useState, type MouseEvent } from "react"
+import { useEffect, useRef, useState, type MouseEvent } from "react"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { Cover } from "../components/GameCard"
 import { useTitle } from "../components/PageHeader"
+import { ReactionButtons } from "../components/ReactionButtons"
 import { RequirementsComparison } from "../components/RequirementsComparison"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
@@ -22,7 +23,7 @@ export function GameDetail() {
     }
   }
   const { user } = useSession()
-  const { hardware, compareGame, recommendations, calculationKey } = useCatalog()
+  const { hardware, compareGame, recommendations, calculationKey, reactions, reactionsStale, reactToGame, recordView } = useCatalog()
   const cached = recommendations && [...recommendations.items, ...recommendations.pending, ...recommendations.excluded].find((item) => item.game.id === id)
   const [computed, setComputed] = useState<{ key: string; match: GameMatch } | null>(null)
   const matchKey = JSON.stringify([id, calculationKey])
@@ -32,6 +33,15 @@ export function GameDetail() {
   const [revision, setRevision] = useState(0)
   const [system, setSystem] = useState<OperatingSystem>(user?.hardware?.os ?? "Windows")
   useTitle(game?.title ?? "Jogo")
+  const [reactionError, setReactionError] = useState<string | null>(null)
+  const viewed = useRef<string | null>(null)
+  useEffect(() => {
+    // Uma visualização por abertura da página, mesmo com a renderização dupla do modo de desenvolvimento.
+    if (!id || !user || viewed.current === id) return
+    viewed.current = id
+    recordView(id)
+  }, [id, user?.id, recordView])
+  const reaction = id && reactions[id] !== undefined ? reactions[id] : match?.reaction
   useEffect(() => {
     if (cached || !id || !user) return
     const controller = new AbortController()
@@ -83,6 +93,22 @@ export function GameDetail() {
             <span>de afinidade com o perfil informado</span>
           </div>
           {match.anchor && <p className="banner">Este é um dos seus jogos âncora.</p>}
+          {!match.anchor && (
+            <>
+              <ReactionButtons reaction={reaction} onReact={(next) => {
+                setReactionError(null)
+                reactToGame(game.id, next).catch((error) => setReactionError(apiError(error)))
+              }} />
+              {reactionError && <p className="hint" role="alert">{reactionError}</p>}
+              {reaction === "disliked" && <p className="hint">Este jogo não aparece mais nas suas recomendações.</p>}
+              {reaction === "liked" && (
+                <p className="hint">
+                  {reactionsStale ? "Curtida salva. Ela passa a contar na afinidade quando as sugestões forem atualizadas."
+                    : "Os jogos que você curte também entram no cálculo de afinidade."}
+                </p>
+              )}
+            </>
+          )}
           {user.hardware && (
             <p className={`banner ${match.compatible ? "ok" : "warn"}`}>
               {compatibilityLabel(match)}.
@@ -183,7 +209,7 @@ export function GameDetail() {
       </section>
       {match.reasons.length > 0 && (
         <section className="stack">
-          <h2>Relação com seu perfil</h2>
+          <h2>Por que combina com você</h2>
           <ul className="reasons">
             {match.reasons.map((reason) => (
               <li key={reason}>{reason}</li>

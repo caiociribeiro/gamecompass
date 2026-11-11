@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import { Link, useLocation } from "react-router-dom"
 import type { Game } from "../types"
 
@@ -37,15 +37,19 @@ export function GameCard({
   href,
   note,
   reason,
+  chips,
+  actions,
 }: {
   game: Game
   affinity?: number
   href: string
   note?: string
   reason?: string
+  chips?: string[]
+  actions?: ReactNode
 }) {
   const location = useLocation()
-  return (
+  const card = (
     <Link className="game-card" to={href} state={{ returnTo: location.pathname + location.search, returnKey: location.key }}>
       <Cover game={game} />
       <div className="game-card-body">
@@ -63,8 +67,15 @@ export function GameCard({
           </div>
         )}
         {note && <p className="note">{note}</p>}
-        {reason && <p className="hint card-reason">{reason}</p>}
+        {chips && chips.length > 0 && (
+          <ul className="why-chips" aria-label="Por que combina com você">
+            {chips.map((chip) => <li key={chip}>{chip}</li>)}
+          </ul>
+        )}
+        {reason && !chips?.length && <p className="hint card-reason">{reason}</p>}
       </div>
     </Link>
   )
+  // Os botões ficam fora do link: botão dentro de link não é HTML válido nem acessível.
+  return actions ? <div className="game-card-shell">{card}<div className="game-card-actions">{actions}</div></div> : card
 }
