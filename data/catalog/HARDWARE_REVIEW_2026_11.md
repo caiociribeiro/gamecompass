@@ -200,3 +200,21 @@ Onde a lista de alternativas inclui uma placa com mais de uma variante de memór
 **Efeito da segunda rodada.** Blocos do mínimo em revisão: 21 para 11. Nenhum requisito já resolvido mudou de nota. Na avaliação offline, os jogos `pending` por perfil caíram de 7,0 para 4,5 e os `items` subiram de 39,9 para 41,9.
 
 **O que ainda impede os 11 jogos do mínimo:** dois campos que a Steam não publicou (RAM do Unpacking, GPU do A Hat in Time); textos sem limite de geração (Total War: WARHAMMER III, TUNIC, Raft, Firewatch e a memória de 512 MB do Coffee Talk); a "GeForce GTX 630" do Overcooked! 2, que não existe com esse nome (o modelo é GT 630, grafia de fonte que a política mantém pendente); e nomes sem memória cujas variantes têm a mesma classe (RX 550 no Monster Hunter Rise, GTX 960 no Resident Evil 2 e no Ghost of Tsushima).
+
+### Terceira rodada: nomes sem memória cujas variantes têm a mesma classe
+
+Quando o texto da Steam cita um modelo sem informar a memória e todas as versões do catálogo estão na mesma classe (Arc A770, RX 480, RX 550, GTX 960), a escolha da versão não altera o resultado. Nesses casos não há alias (a política de aliases continua exigindo uma única variante); a regra de curadoria lista todas as versões como referência e o teste de invariância do gerador confirma que escolher qualquer uma delas dá a mesma nota.
+
+| Jogo | Nível | Campo | Referências |
+|---|---|---|---|
+| Cyberpunk 2077 | rec. | GPU | RTX 2060 SUPER, RX 5700 XT, Arc A770 (8GB e 16GB) |
+| Hogwarts Legacy | rec. | GPU | GTX 1080 Ti, RX 5700 XT, Arc A770 (8GB e 16GB) |
+| Monster Hunter: World | rec. | GPU | GTX 1060 3GB, GTX 1650, RX 480 (4GB e 8GB), RX 570 |
+| Monster Hunter Rise | mín. | GPU | GT 1030 DDR4, RX 550 (2GB e 4GB) |
+| Crusader Kings III | rec. | GPU | GTX 970, RX 480 (4GB e 8GB), Arc A580 |
+| Resident Evil 2 | mín. | GPU | GTX 960 (2GB e 4GB), RX 460 |
+| Ghost of Tsushima | mín. | GPU | GTX 960 (2GB e 4GB), RX 5500 XT (4GB e 8GB) |
+
+Continuam pendentes de propósito porque as versões têm classes diferentes: GTX 1060 (3GB: 50, 6GB: 100) em Kingdom Come: Deliverance, Rocket League e Resident Evil 2, e o texto "RX 480 with 3GB VRAM" do Resident Evil 2 (essa versão não existe). A RTX 2060 (Metro Exodus, Helldivers 2, Ghost of Tsushima) segue pendente porque a versão de 12GB tem outra configuração de chip e não está no catálogo.
+
+**Efeito.** 7 regras novas (188 no total). Base de comparação do Windows: 113 jogos; jogos que ainda precisam de curadoria: 7. Os 183 testes de scripts passam.

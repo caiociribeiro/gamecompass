@@ -2422,6 +2422,117 @@
       "source_url": "https://store.steampowered.com/app/460950/",
       "reviewed_at": "2026-11-09T23:30:00+00:00",
       "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita a GeForce 7600 GT (256 MB), fora do catálogo; as duas GeForce 7600 do catálogo têm a classe 1, o piso da escala. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1091500",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "GeForce RTX 2060 SUPER or Radeon RX 5700 XT or Arc A770",
+      "reference_models": [
+        "NVIDIA GeForce RTX 2060 SUPER",
+        "AMD Radeon RX 5700 XT",
+        "Intel Arc A770 8GB",
+        "Intel Arc A770 16GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1091500/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita Arc A770 sem informar a memória. As versões do catálogo desse modelo (Intel Arc A770 8GB e Intel Arc A770 16GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "990080",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce 1080 Ti or AMD Radeon RX 5700 XT or INTEL Arc A770",
+      "reference_models": [
+        "NVIDIA GeForce GTX 1080 Ti",
+        "AMD Radeon RX 5700 XT",
+        "Intel Arc A770 8GB",
+        "Intel Arc A770 16GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/990080/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita INTEL Arc A770 sem informar a memória. As versões do catálogo desse modelo (Intel Arc A770 8GB e Intel Arc A770 16GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "582010",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce GTX 1060 (VRAM 3GB) / NVIDIA GeForce GTX 1650 / AMD Radeon RX 480 / AMD Radeon RX 570",
+      "reference_models": [
+        "NVIDIA GeForce GTX 1060 3GB",
+        "NVIDIA GeForce GTX 1650 4GB",
+        "AMD Radeon RX 570 4GB",
+        "AMD Radeon RX 480 4GB",
+        "AMD Radeon RX 480 8GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/582010/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita AMD Radeon RX 480 sem informar a memória. As versões do catálogo desse modelo (AMD Radeon RX 480 4GB e AMD Radeon RX 480 8GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1446780",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce GT 1030 (DDR4) / AMD Radeon RX 550",
+      "reference_models": [
+        "NVIDIA GeForce GT 1030 DDR4 2GB",
+        "AMD Radeon RX 550 2GB",
+        "AMD Radeon RX 550 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1446780/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita AMD Radeon RX 550 sem informar a memória. As versões do catálogo desse modelo (AMD Radeon RX 550 2GB e AMD Radeon RX 550 4GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1158310",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce GTX 970 | AMD Radeon RX 480 | Intel Arc A580",
+      "reference_models": [
+        "NVIDIA GeForce GTX 970",
+        "Intel Arc A580 8GB",
+        "AMD Radeon RX 480 4GB",
+        "AMD Radeon RX 480 8GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1158310/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita AMD Radeon RX 480 sem informar a memória. As versões do catálogo desse modelo (AMD Radeon RX 480 4GB e AMD Radeon RX 480 8GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "883710",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA® GeForce® GTX 960 or AMD Radeon™ RX 460",
+      "reference_models": [
+        "AMD Radeon RX 460",
+        "NVIDIA GeForce GTX 960 2GB",
+        "NVIDIA GeForce GTX 960 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/883710/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita NVIDIA® GeForce® GTX 960 sem informar a memória. As versões do catálogo desse modelo (NVIDIA GeForce GTX 960 2GB e NVIDIA GeForce GTX 960 4GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "2215430",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce GTX 960 or AMD Radeon RX 5500 XT",
+      "reference_models": [
+        "NVIDIA GeForce GTX 960 2GB",
+        "NVIDIA GeForce GTX 960 4GB",
+        "AMD Radeon RX 5500 XT 4GB",
+        "AMD Radeon RX 5500 XT 8GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/2215430/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita NVIDIA GeForce GTX 960, AMD Radeon RX 5500 XT sem informar a memória. As versões do catálogo desse modelo (NVIDIA GeForce GTX 960 2GB e NVIDIA GeForce GTX 960 4GB; AMD Radeon RX 5500 XT 4GB e AMD Radeon RX 5500 XT 8GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
     }
   ]
 }
