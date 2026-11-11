@@ -101,8 +101,20 @@ export type HardwareAssessment = {
   checks: Check[]
   compatibility: Compatibility
 }
+export type Reaction = "liked" | "disliked"
+export type Interaction = {
+  gameId: string
+  title: string | null
+  reaction: Reaction | null
+  views: number
+  reactedAt: number | null
+  firstViewedAt: number | null
+  lastViewedAt: number | null
+}
+export type InteractionSummary = { authenticated: boolean; likedAnchors: string[]; hidden: string[] }
 export type GameMatch = {
   game: Game
+  reaction?: Reaction | null
   affinity: number
   reasons: string[]
   anchorMatches?: { id: string; title: string; similarity: number; genres: string[]; themes: string[] }[]
@@ -130,9 +142,11 @@ export type RecommendationResult = RecommendationGroups & {
   issues: { appid: string; message: string }[]
   source: string
   calculation: CalculationMetadata
+  interactions?: InteractionSummary
 }
 export type ComparisonResult = {
   match: GameMatch
   issues: { appid: string; message: string }[]
   calculation: CalculationMetadata
+  interactions?: InteractionSummary
 }

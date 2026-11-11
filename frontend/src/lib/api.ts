@@ -10,7 +10,7 @@ export class ApiError extends Error {
   }
 }
 
-type Method = "GET" | "POST" | "PATCH"
+type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
 
 async function apiRequest<T>(path: string, signal?: AbortSignal, payload?: unknown, method?: Method): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
@@ -50,4 +50,10 @@ export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): P
 }
 export function apiPatch<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   return apiRequest<T>(path, signal, body, "PATCH")
+}
+export function apiPut<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(path, signal, body, "PUT")
+}
+export function apiDelete<T>(path: string, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(path, signal, undefined, "DELETE")
 }

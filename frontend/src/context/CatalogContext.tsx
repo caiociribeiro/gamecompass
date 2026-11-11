@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
-import { apiError, apiGet, apiPost } from "../lib/api"
+import { apiDelete, apiError, apiGet, apiPost, apiPut } from "../lib/api"
 import { calculationProfile, type CalculationProfile } from "../lib/calculation"
 import { discoveryFilters, RequestScope } from "../lib/discovery"
-import type { ComparisonResult, Game, GameMatch, HardwareCatalog, RecommendationResult } from "../types"
+import type { ComparisonResult, Game, GameMatch, HardwareCatalog, Interaction, Reaction, RecommendationResult } from "../types"
 import { useSession } from "./SessionContext"
 
 type Collection = { items: Game[]; issues: { appid: string; message: string }[]; source?: string }
@@ -15,6 +15,13 @@ type CatalogValue = {
   loadGame: (appid: string) => Promise<Game>
   compareGame: (appid: string, signal: AbortSignal) => Promise<GameMatch>
   discoverGames: () => Promise<void>
+  /** Reações já enviadas nesta sessão; valem mais que o que veio na última resposta da API. */
+  reactions: Record<string, Reaction | null>
+  /** Verdadeiro quando uma curtida foi salva depois do último cálculo: a afinidade ainda não a considera. */
+  reactionsStale: boolean
+  reactToGame: (appid: string, reaction: Reaction | null) => Promise<void>
+  recordView: (appid: string) => void
+  clearHistory: () => Promise<number>
 }
 const EMPTY: HardwareCatalog = { CPU: [], GPU: [], score_version: "manual_v1", source: "neo4j" }
 const CatalogContext = createContext<CatalogValue | null>(null)
@@ -35,6 +42,8 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [gameIssues, setGameIssues] = useState<Collection["issues"]>([])
   const [cache, setCache] = useState<{ key: string; data: RecommendationResult } | null>(null)
   const [revision, setRevision] = useState(0)
+  const [reactions, setReactions] = useState<Record<string, Reaction | null>>({})
+  const [reactionsStale, setReactionsStale] = useState(false)
   const generation = useRef(0)
   const discovery = useRef(new RequestScope())
   const requestedContent = useRef<string | null>(null)
@@ -78,12 +87,40 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       setGames([...new Map(received.map((game) => [game.id, game])).values()])
       setGameIssues(data.issues)
       setCache({ key: calculationKey, data })
+      setReactionsStale(false)
     } catch (error) {
       if (token === generation.current && ticket.isCurrent()) setGamesError(apiError(error))
     } finally {
       if (token === generation.current && ticket.isCurrent()) setDiscoveryLoading(false)
     }
   }, [userId, profile, contentKey, calculationKey])
+
+  const reactToGame = useCallback(async (appid: string, reaction: Reaction | null) => {
+    await apiPut<Interaction>(`/me/games/${encodeURIComponent(appid)}/reaction`, { reaction })
+    setReactions((current) => ({ ...current, [appid]: reaction }))
+    // Não curtir tira o jogo da lista na hora; a curtida só entra na afinidade no próximo cálculo.
+    if (reaction === "disliked") {
+      const without = (matches: GameMatch[]) => matches.filter((match) => match.game.id !== appid)
+      setCache((current) => current && { ...current, data: {
+        ...current.data, items: without(current.data.items), pending: without(current.data.pending), excluded: without(current.data.excluded) } })
+    }
+    setReactionsStale(true)
+  }, [])
+  const recordView = useCallback((appid: string) => {
+    // Registro silencioso: jogo fora do catálogo ou falha de rede não devem atrapalhar a leitura.
+    apiPost(`/me/games/${encodeURIComponent(appid)}/view`, {}).catch(() => undefined)
+  }, [])
+  const clearHistory = useCallback(async () => {
+    const result = await apiDelete<{ removed: number }>("/me/interactions")
+    setReactions({})
+    setReactionsStale(true)
+    return result.removed
+  }, [])
+
+  useEffect(() => {
+    setReactions({})
+    setReactionsStale(false)
+  }, [userId])
 
   useEffect(() => {
     const scope = discovery.current
@@ -139,8 +176,9 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({ games, hardware, gamesLoading: anchorLoading || discoveryLoading,
     hardwareLoading, gamesError, hardwareError, gameIssues, discovered: Boolean(recommendations),
     candidateSource: recommendations?.source ?? null, recommendations, calculationKey,
-    refresh, loadGame, compareGame, discoverGames }), [games, hardware, anchorLoading, discoveryLoading,
-    hardwareLoading, gamesError, hardwareError, gameIssues, recommendations, calculationKey, refresh, loadGame, compareGame, discoverGames])
+    refresh, loadGame, compareGame, discoverGames, reactions, reactionsStale, reactToGame, recordView, clearHistory }), [games, hardware, anchorLoading, discoveryLoading,
+    hardwareLoading, gamesError, hardwareError, gameIssues, recommendations, calculationKey, refresh, loadGame, compareGame, discoverGames,
+    reactions, reactionsStale, reactToGame, recordView, clearHistory])
   return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>
 }
 export function useCatalog() {

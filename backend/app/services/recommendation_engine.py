@@ -168,13 +168,22 @@ def anchors_of(user, games):
     return [by_id[identifier] for identifier in dict.fromkeys(user['anchorIds']) if identifier in by_id]
 
 
+def liked_extras(user, games, anchors, game):
+    """Jogos curtidos que reforçam a afinidade, além dos 3 âncora. Nunca o próprio jogo avaliado."""
+    by_id = {g['id']: g for g in games}
+    taken = {a['id'] for a in anchors} | {game['id']}
+    return [by_id[i] for i in dict.fromkeys(user.get('likedIds') or []) if i in by_id and i not in taken]
+
+
 def describe_match(user, game, games, hardware):
     anchors = anchors_of(user, games)
+    # Sem curtidas o cálculo é idêntico ao rules_v1 original (contrato de paridade).
+    affinity_anchors = anchors + liked_extras(user, games, anchors, game)
     assessments = {level: assess_hardware(game, user.get('hardware'), hardware, level) for level in ('minimum', 'recommended')}
     minimum, recommended = assessments['minimum']['compatibility'], assessments['recommended']['compatibility']
     compatibility = 'compatible' if minimum == 'needs_review' and recommended == 'compatible' else minimum
     meets = ('recommended' if recommended == 'compatible' else 'minimum') if compatibility == 'compatible' else None
-    return {'game': game, **content_affinity(user, game, anchors), 'checks': assessments['minimum']['checks'],
+    return {'game': game, **content_affinity(user, game, affinity_anchors), 'checks': assessments['minimum']['checks'],
         'compatibility': compatibility, 'meets': meets,
         'estimated': any(c.get('estimated', False) for c in assessments[meets or 'minimum']['checks']),
         'assessments': assessments, 'compatible': compatibility == 'compatible', 'anchor': any(a['id'] == game['id'] for a in anchors)}
@@ -194,6 +203,7 @@ def build_recommendations(user, games, hardware):
     if not profile_ready(user, games, hardware):
         return {'items': [], 'pending': [], 'excluded': []}
     ranked = [describe_match(user, g, games, hardware) for g in games]
-    ranked = sorted([m for m in ranked if not m['anchor'] and m['affinity'] >= MIN_AFFINITY], key=lambda m: (-m['affinity'], title_key(m['game']['title']), m['game']['id']))
+    hidden = set(user.get('dislikedIds') or [])
+    ranked = sorted([m for m in ranked if not m['anchor'] and m['game']['id'] not in hidden and m['affinity'] >= MIN_AFFINITY], key=lambda m: (-m['affinity'], title_key(m['game']['title']), m['game']['id']))
     return {group: [m for m in ranked if m['compatibility'] == status]
             for group, status in [('items', 'compatible'), ('pending', 'needs_review'), ('excluded', 'incompatible')]}

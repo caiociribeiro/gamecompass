@@ -538,3 +538,16 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 /* Painel: marca a etapa que a pessoa deve fazer agora. */
 .next-tag { display: inline-block; margin-left: 8px; padding: 2px 10px; border-radius: 999px; background: rgba(224, 164, 90, 0.16); color: var(--brass); font-size: 0.78rem; font-weight: 600; }
 .next-cta { justify-self: start; }
+
+/* Reações e explicações nos cartões */
+.game-card-shell { display: grid; gap: 8px; align-content: start; }
+.game-card-actions { display: flex; justify-content: flex-end; }
+.reactions { display: flex; flex-wrap: wrap; gap: 8px; }
+.reactions .btn.on { border-color: rgba(224, 164, 90, 0.7); color: var(--brass); background: rgba(224, 164, 90, 0.16); }
+.why-chips { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.why-chips li { border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-size: 0.8rem; color: var(--muted, inherit); }
+.reactions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.thumb { flex: none; display: block; }
+.thumb.down { transform: scaleY(-1); }
+.history-game { display: inline-flex; align-items: center; gap: 8px; color: var(--brass); min-width: 0; }
+

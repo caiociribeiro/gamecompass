@@ -116,6 +116,45 @@ test("do cadastro às recomendações, só pelos botões da tela", async ({ page
     for (const game of ANCHORS) expect(links).not.toContain(`/app/jogos/${game.id}`)
   })
 
+  const shells = page.locator(".game-card-shell")
+  // Pelo título: depois de curtir um jogo, os outros cartões passam a citá-lo nos chips ("Parecido com ...").
+  const cardOf = (title: string) => shells.filter({ has: page.locator("h3", { hasText: title }) })
+  let disliked = ""
+  let liked = ""
+
+  await test.step("não curtir tira o jogo da lista na hora", async () => {
+    const before = await shells.count()
+    expect(before).toBeGreaterThan(1)
+    disliked = (await shells.nth(0).locator("h3").innerText()).trim()
+    liked = (await shells.nth(1).locator("h3").innerText()).trim()
+    await shells.nth(0).getByRole("button", { name: "Não curtir este jogo" }).click()
+    await expect(cardOf(disliked)).toHaveCount(0)
+    await expect(shells).toHaveCount(before - 1)
+  })
+
+  await test.step("curtir avisa que a afinidade muda no próximo cálculo e atualizar aplica", async () => {
+    const card = cardOf(liked)
+    await card.getByRole("button", { name: "Curtir este jogo", exact: true }).click()
+    await expect(card.getByRole("button", { name: "Curtir este jogo", exact: true })).toHaveAttribute("aria-pressed", "true")
+    const notice = page.getByRole("status").filter({ hasText: "Suas reações foram salvas" })
+    await expect(notice).toBeVisible()
+    await notice.getByRole("button", { name: "Atualizar sugestões" }).click()
+    await expect(notice).toHaveCount(0, { timeout: 30_000 })
+    await expect(cardOf(disliked)).toHaveCount(0)
+    await expect(cardOf(liked).getByRole("button", { name: "Curtir este jogo", exact: true })).toHaveAttribute("aria-pressed", "true")
+  })
+
+  await test.step("a conta lista as reações e permite limpar o histórico", async () => {
+    await page.goto("/app/conta")
+    const history = page.locator("section", { has: page.getByRole("heading", { name: "Histórico de jogos" }) })
+    await expect(history).toContainText(liked)
+    await expect(history).toContainText(disliked)
+    await history.getByRole("button", { name: "Limpar histórico de jogos" }).click()
+    await history.getByRole("button", { name: "Confirmar limpeza do histórico" }).click()
+    await expect(history).toContainText("Histórico removido")
+    await expect(history).not.toContainText(liked)
+  })
+
   await test.step("o painel termina com o perfil completo", async () => {
     await page.goto("/app")
     await expect(page.getByRole("heading", { name: "3 de 3 prontos" })).toBeVisible()

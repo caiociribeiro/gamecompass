@@ -1,18 +1,43 @@
 import { Link, useLocation, useSearchParams } from "react-router-dom"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { GameCard } from "../components/GameCard"
+import { ReactionButtons } from "../components/ReactionButtons"
 import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
+import { explanationChips } from "../lib/explain"
 import { nextPendingStep, profileSteps } from "../lib/profile"
 import { compatibilityLabel, profileReady } from "../lib/recommend"
 import { fold } from "../lib/text"
+import { useState } from "react"
+import { apiError } from "../lib/api"
+import type { GameMatch, Reaction } from "../types"
 
 export function Recommendations() {
   const { user } = useSession()
   const location = useLocation()
   const [params, setParams] = useSearchParams()
-  const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues, recommendations } = useCatalog()
+  const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues, recommendations,
+    reactions, reactionsStale, reactToGame } = useCatalog()
+  const [reactionError, setReactionError] = useState<string | null>(null)
+  const reactionOf = (match: GameMatch) => reactions[match.game.id] !== undefined ? reactions[match.game.id] : match.reaction
+  const card = (match: GameMatch) => (
+    <GameCard
+      key={match.game.id}
+      game={match.game}
+      affinity={match.affinity}
+      href={`/app/jogos/${match.game.id}`}
+      note={compatibilityLabel(match)}
+      reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
+      chips={explanationChips(match)}
+      actions={
+        <ReactionButtons compact reaction={reactionOf(match)} onReact={(next: Reaction | null) => {
+          setReactionError(null)
+          reactToGame(match.game.id, next).catch((error) => setReactionError(apiError(error)))
+        }} />
+      }
+    />
+  )
   const query = params.get("q") ?? ""
   const status = params.get("status") ?? "all"
   const filter = ["recommended", "minimum", "pending", "incompatible"].includes(status) ? status : "all"
@@ -116,6 +141,16 @@ export function Recommendations() {
             · {result.excluded.length} com restrições identificadas.
           </p>
           <p className="hint" role="status">Exibindo {visible} de {total} resultados.</p>
+          {reactionError && <p className="hint" role="alert">{reactionError}</p>}
+          {reactionsStale && (
+            <p className="banner" role="status">
+              Suas reações foram salvas. Jogos que você não curtiu já saíram da lista; as curtidas entram no cálculo de
+              afinidade quando você atualizar as sugestões.{" "}
+              <button type="button" className="btn small" disabled={gamesLoading} onClick={() => void discoverGames()}>
+                Atualizar sugestões
+              </button>
+            </p>
+          )}
           {visible === 0 && <p className="empty">{total > 0
             ? "Nenhum jogo encontrado com esses filtros."
             : "Nenhuma sugestão disponível para este conjunto de âncoras e preferências. Experimente outras escolhas."}</p>}
@@ -123,16 +158,7 @@ export function Recommendations() {
             <section className="stack">
               <h2>Requisitos atendidos</h2>
               <div className="card-grid">
-                {items.map((match) => (
-                    <GameCard
-                      key={match.game.id}
-                      game={match.game}
-                      affinity={match.affinity}
-                      href={`/app/jogos/${match.game.id}`}
-                      note={compatibilityLabel(match)}
-                      reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
-                    />
-                  ))}
+                {items.map(card)}
               </div>
             </section>
           )}
@@ -144,16 +170,7 @@ export function Recommendations() {
               computador.
             </p>
             <div className="card-grid">
-                {pending.map((match) => (
-                    <GameCard
-                      key={match.game.id}
-                      game={match.game}
-                      affinity={match.affinity}
-                      href={`/app/jogos/${match.game.id}`}
-                      note={compatibilityLabel(match)}
-                      reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
-                    />
-                  ))}
+                {pending.map(card)}
             </div>
           </section>
           )}

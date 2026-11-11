@@ -64,6 +64,16 @@ def authenticated(request: Request) -> tuple[dict, str]:
     return user, digest
 
 
+def optional_user(request: Request) -> dict | None:
+    """Conta da sessão, ou None sem sessão válida. Falha do banco continua sendo erro 503."""
+    try:
+        return authenticated(request)[0]
+    except HTTPException as exc:
+        if exc.status_code == 401:
+            return None
+        raise
+
+
 def client_key(request: Request, scope: str) -> str:
     return f'{scope}:{request.client.host if request.client else "?"}'
 

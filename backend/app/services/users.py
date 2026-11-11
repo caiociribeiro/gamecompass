@@ -1,6 +1,9 @@
 """Contas, sessões e perfil de jogo no Neo4j.
 
-(:User)-[:HAS_SESSION]->(:Session). O perfil fica como propriedades do próprio
+(:User)-[:HAS_SESSION]->(:Session) e (:User)-[:INTERACTED]->(:Game), uma única
+relação por par com a reação (liked/disliked), o número de visualizações e as
+datas. A recarga do catálogo só troca as arestas de gênero e tag, então as
+interações sobrevivem. O perfil fica como propriedades do próprio
 User; os jogos âncora são ids Steam, sem relacionamento com :Game, para que a
 recarga do catálogo não afete contas.
 """
@@ -31,6 +34,14 @@ def account_from(row: dict) -> dict:
     return {"id": row["id"], "name": row["name"], "email": row["email"],
             "genres": list(row.get("genres") or []), "themes": list(row.get("themes") or []),
             "anchorIds": list(row.get("anchor_ids") or []), "hardware": hardware}
+
+
+def interaction_from(row: dict) -> dict:
+    """Formato público de uma interação: só o jogo, a reação, as visualizações e as datas."""
+    rel = row["rel"]
+    return {"gameId": row["game_id"], "title": row.get("title"), "reaction": rel.get("reaction"),
+            "views": int(rel.get("views") or 0), "reactedAt": rel.get("reacted_at"),
+            "firstViewedAt": rel.get("first_viewed_at"), "lastViewedAt": rel.get("last_viewed_at")}
 
 
 def profile_properties(changes: dict) -> dict:
@@ -113,3 +124,41 @@ class UserStore:
         rows = self._run("MATCH (u:User {id: $uid}) SET u += $props, u.profile_updated_at = $now RETURN u {.*} AS user",
                          uid=user_id, props=profile_properties(changes), now=now)
         return rows[0]["user"] if rows else None
+
+    # Interações com jogos. O jogo precisa existir no grafo; o catálogo não é alterado.
+
+    def record_view(self, *, user_id: str, game_id: str, now: int) -> dict | None:
+        return self._interaction(
+            "MATCH (u:User {id: $uid}), (g:Game {id: $gid}) MERGE (u)-[r:INTERACTED]->(g)"
+            " ON CREATE SET r.views = 1, r.first_viewed_at = $now"
+            " ON MATCH SET r.views = coalesce(r.views, 0) + 1"
+            " SET r.last_viewed_at = $now RETURN g.id AS game_id, g.title AS title, r {.*} AS rel",
+            uid=user_id, gid=game_id, now=now)
+
+    def set_reaction(self, *, user_id: str, game_id: str, reaction: str | None, now: int) -> dict | None:
+        return self._interaction(
+            "MATCH (u:User {id: $uid}), (g:Game {id: $gid}) MERGE (u)-[r:INTERACTED]->(g)"
+            " ON CREATE SET r.views = 0 SET r.reaction = $reaction, r.reacted_at = CASE WHEN $reaction IS NULL THEN NULL ELSE $now END"
+            " RETURN g.id AS game_id, g.title AS title, r {.*} AS rel",
+            uid=user_id, gid=game_id, reaction=reaction, now=now)
+
+    def _interaction(self, query: str, **params) -> dict | None:
+        rows = self._run(query, **params)
+        if not rows:
+            return None
+        found = interaction_from(rows[0])
+        if not found["reaction"] and not found["views"]:
+            # Reação removida de um jogo nunca visto: não deixa uma relação vazia no grafo.
+            self._run("MATCH (:User {id: $uid})-[r:INTERACTED]->(:Game {id: $gid}) DELETE r",
+                      uid=params["uid"], gid=params["gid"])
+        return found
+
+    def list_interactions(self, user_id: str) -> list[dict]:
+        rows = self._run(
+            "MATCH (:User {id: $uid})-[r:INTERACTED]->(g:Game) RETURN g.id AS game_id, g.title AS title, r {.*} AS rel"
+            " ORDER BY coalesce(r.reacted_at, r.last_viewed_at, 0) DESC, g.id", uid=user_id)
+        return [interaction_from(row) for row in rows]
+
+    def clear_interactions(self, user_id: str) -> int:
+        rows = self._run("MATCH (:User {id: $uid})-[r:INTERACTED]->(:Game) DELETE r RETURN count(r) AS removed", uid=user_id)
+        return int(rows[0]["removed"]) if rows else 0
