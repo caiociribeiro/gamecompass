@@ -595,6 +595,10 @@ próprios, passe `--scenarios arquivo.json` com `{"scenarios": [{"anchorIds":
 da API). `--json` troca o texto por JSON. O resultado depende do catálogo
 carregado no banco da máquina em uso.
 
+#### Casos de ouro
+
+Além da contagem de pendências, há 22 casos com a resposta esperada escrita à mão (computador, jogo, nível, veredito e motivo), usando o texto real de requisitos da Steam e as notas do CSV versionado. Rodam no CI, sem Neo4j nem Steam: `backend/tests/test_gold_cases.py`. O resultado atual (19 corretos, 3 divergências conhecidas, nenhum falso positivo), os casos e os limites estão em [data/evaluation](data/evaluation/README.md); para gerar o relatório, na pasta `backend`, `python -m app.evaluate_gold`.
+
 ## Jogos, gêneros e tags no Neo4j
 
 A seleção está em `data/catalog/games.json`: 120 jogos reais,
