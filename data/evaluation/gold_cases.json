@@ -1,0 +1,1028 @@
+{
+  "schema_version": "gamecompass_gold_cases_v1",
+  "principle": "Cada caso traz a resposta esperada, escrita antes de rodar o motor, a partir do texto de requisitos publicado pela Steam e de relações de desempenho amplamente documentadas (diferenças de duas ou mais gerações) ou de regras determinísticas (versão do Windows, RAM, campo não publicado). Casos em que a diferença real é pequena ou discutível ficam de fora de propósito. O esperado nunca é copiado da saída do motor. Quando o motor diverge de um caso por uma limitação já entendida, o caso recebe known_divergence (o que o motor devolve hoje e por quê); o teste exige que continue assim, para que a correção futura obrigue a remover a marca.",
+  "machines": {
+    "LOW": {
+      "label": "PC antigo de escritório",
+      "cpu": "Intel Core 2 Duo E8400",
+      "gpu": "NVIDIA GeForce GT 1030 DDR4 2GB",
+      "ramGb": 4,
+      "os": "Windows",
+      "windowsVersion": "10"
+    },
+    "GTX1050TI": {
+      "label": "PC de entrada de 2017",
+      "cpu": "AMD Ryzen 5 3600",
+      "gpu": "NVIDIA GeForce GTX 1050 Ti 4GB",
+      "ramGb": 16,
+      "os": "Windows",
+      "windowsVersion": "10"
+    },
+    "RTX3060": {
+      "label": "PC intermediário",
+      "cpu": "AMD Ryzen 5 3600",
+      "gpu": "NVIDIA GeForce RTX 3060 12GB",
+      "ramGb": 16,
+      "os": "Windows",
+      "windowsVersion": "11"
+    },
+    "TOP": {
+      "label": "PC de alto desempenho",
+      "cpu": "AMD Ryzen 7 5800X3D",
+      "gpu": "NVIDIA GeForce RTX 4080 16GB",
+      "ramGb": 32,
+      "os": "Windows",
+      "windowsVersion": "11"
+    }
+  },
+  "games": {
+    "1091500": {
+      "title": "Cyberpunk 2077",
+      "source_url": "https://store.steampowered.com/app/1091500/",
+      "collected_at": "2026-10-31T00:53:32.362552+00:00",
+      "response_sha256": "502da0b35437bb7e2e17e467458f5f6b87eefc64036af819cdb808b1c6c8a69c",
+      "steam": {
+        "steam_appid": 1091500,
+        "name": "Cyberpunk 2077",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "CD PROJEKT RED"
+        ],
+        "genres": [
+          {
+            "id": "3",
+            "description": "RPG"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "9 dez. 2020"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> 64-bit Windows 10<br></li><li><strong>Processador:</strong> Core i7-6700 or Ryzen 5 1600<br></li><li><strong>Memória:</strong> 12 GB de RAM<br></li><li><strong>Placa gráfica:</strong> GeForce GTX 1060 6GB or Radeon RX 580 8GB or Arc A380<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Espaço no disco:</strong> Requer 70 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> SSD required. Attention: In this game you will encounter a variety of visual effects that may provide seizures or loss of consciousness in a minority of people. If you or someone you know experiences any of the above symptoms while playing, stop and seek medical attention immediately.</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> 64-bit Windows 10<br></li><li><strong>Processador:</strong> Core i7-12700 or Ryzen 7 7800X3D<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> GeForce RTX 2060 SUPER or Radeon RX 5700 XT or Arc A770<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Espaço no disco:</strong> Requer 70 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> SSD required.</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um processador Apple<br></li><li><strong>Sistema Operativo:</strong> macOS: 15.5 or later<br></li><li><strong>Processador:</strong> M1<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Espaço no disco:</strong> Requer 92 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um processador Apple<br></li><li><strong>Sistema Operativo:</strong> macOS: 15.5 or later<br></li><li><strong>Processador:</strong> M3 Pro<br></li><li><strong>Memória:</strong> 18 GB de RAM<br></li><li><strong>Espaço no disco:</strong> Requer 92 GB de espaço livre</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/48a93d6445a67520ea49833c93dae8f2e68fc540/header_alt_assets_9.jpg?t=1792682505"
+      }
+    },
+    "1174180": {
+      "title": "Red Dead Redemption 2",
+      "source_url": "https://store.steampowered.com/app/1174180/",
+      "collected_at": "2026-10-31T00:53:33.608161+00:00",
+      "response_sha256": "6e19324c95c8ecc517419d0734b314890f3b17f94e5937fc3be9db63be0cc8dd",
+      "steam": {
+        "steam_appid": 1174180,
+        "name": "Red Dead Redemption 2",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Rockstar Games"
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          },
+          {
+            "id": "25",
+            "description": "Aventura"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "5 dez. 2019"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 10 - 64-bit<br></li><li><strong>Processador:</strong> Intel® Core™ i5-2500K / AMD FX-6300<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Nvidia GeForce GTX 770 2GB / AMD Radeon R9 280 3GB<br></li><li><strong>Rede:</strong> Ligação à Internet de banda larga<br></li><li><strong>Espaço no disco:</strong> Requer 150 GB de espaço livre<br></li><li><strong>Placa de som:</strong> Direct X Compatible</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 10 - 64-bit<br></li><li><strong>Processador:</strong> Intel® Core™ i7-4770K / AMD Ryzen 5 1500X<br></li><li><strong>Memória:</strong> 12 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Nvidia GeForce GTX 1060 6GB / AMD Radeon RX 480 4GB<br></li><li><strong>Rede:</strong> Ligação à Internet de banda larga<br></li><li><strong>Espaço no disco:</strong> Requer 150 GB de espaço livre<br></li><li><strong>Placa de som:</strong> Direct X Compatible</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg?t=1759502961"
+      }
+    },
+    "413150": {
+      "title": "Stardew Valley",
+      "source_url": "https://store.steampowered.com/app/413150/",
+      "collected_at": "2026-10-31T00:53:39.502231+00:00",
+      "response_sha256": "5b34638c418a458b5feb5bc6885a14de9d01972319a76b9ceb9778c41a474a98",
+      "steam": {
+        "steam_appid": 413150,
+        "name": "Stardew Valley",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "ConcernedApe"
+        ],
+        "genres": [
+          {
+            "id": "23",
+            "description": "Indie"
+          },
+          {
+            "id": "3",
+            "description": "RPG"
+          },
+          {
+            "id": "28",
+            "description": "Simulação"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "26 fev. 2016"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": true
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo *:</strong> Windows Vista or greater<br></li><li><strong>Processador:</strong> 2 Ghz<br></li><li><strong>Memória:</strong> 2 GB de RAM<br></li><li><strong>Placa gráfica:</strong> 256 mb video memory, shader model 3.0+<br></li><li><strong>DirectX:</strong> Versão 10<br></li><li><strong>Espaço no disco:</strong> Requer 500 MB de espaço livre</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Mac OSX 10.10+<br></li><li><strong>Processador:</strong> 2 Ghz<br></li><li><strong>Memória:</strong> 2 GB de RAM<br></li><li><strong>Placa gráfica:</strong> 256 mb video memory, OpenGL 2<br></li><li><strong>Espaço no disco:</strong> Requer 500 MB de espaço livre</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Ubuntu 12.04 LTS<br></li><li><strong>Processador:</strong> 2 Ghz<br></li><li><strong>Memória:</strong> 2 GB de RAM<br></li><li><strong>Placa gráfica:</strong> 256 mb video memory, OpenGL 2<br></li><li><strong>Espaço no disco:</strong> Requer 500 MB de espaço livre</li></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg?t=1786554168"
+      }
+    },
+    "1145360": {
+      "title": "Hades",
+      "source_url": "https://store.steampowered.com/app/1145360/",
+      "collected_at": "2026-10-31T00:53:43.491930+00:00",
+      "response_sha256": "cf569f8f565a55866e96621b27c168ce250b2bb20be6c16acdf3def0f35717ff",
+      "steam": {
+        "steam_appid": 1145360,
+        "name": "Hades",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Supergiant Games"
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          },
+          {
+            "id": "23",
+            "description": "Indie"
+          },
+          {
+            "id": "3",
+            "description": "RPG"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "17 set. 2020"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo *:</strong> Windows 7 SP1<br></li><li><strong>Processador:</strong> Dual Core 2.4 GHz<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>Placa gráfica:</strong> 1GB VRAM / DirectX 10+ support<br></li><li><strong>Espaço no disco:</strong> Requer 15 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo *:</strong> Windows 7 SP1<br></li><li><strong>Processador:</strong> Dual Core 3.0 GHz+<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> 2GB VRAM / DirectX 10+ support<br></li><li><strong>Espaço no disco:</strong> Requer 20 GB de espaço livre</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> 10.13.6+<br></li><li><strong>Processador:</strong> Dual Core 2.4GHz<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Intel HD 5000 (must support Metal API)<br></li><li><strong>Espaço no disco:</strong> Requer 15 GB GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> MacBook Air, MacBook Pro, iMac, Mac Mini late 2012 and newer; Mac Pro late 2013 and newer;  MacBook 2015 and newer</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> macOS 10.14+<br></li><li><strong>Processador:</strong> Quad Core 3.0 GHz+<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Intel UHD 630+ (must support Metal API)<br></li><li><strong>Espaço no disco:</strong> Requer 20 GB de espaço livre</li></ul>"
+        },
+        "linux_requirements": [],
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg?t=1758127023"
+      }
+    },
+    "730": {
+      "title": "Counter-Strike 2",
+      "source_url": "https://store.steampowered.com/app/730/",
+      "collected_at": "2026-11-06T19:17:27.639048+00:00",
+      "response_sha256": "dadd1d69cdf76f98c0680c445617fa1d3c2b40ee4484924e5580256bf162676f",
+      "steam": {
+        "steam_appid": 730,
+        "name": "Counter-Strike 2",
+        "type": "game",
+        "is_free": true,
+        "developers": [
+          "Valve"
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          },
+          {
+            "id": "37",
+            "description": "Grátis para Jogar"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "21 ago. 2012"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": true
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Windows® 10<br></li><li><strong>Processador:</strong> Processador com 4 threads - Intel® Core™ i5 750 ou superior<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> A placa gráfica deve ter, no mínimo, 1 GB e ser compatível com DirectX 11 e Shader Model 5.0<br></li><li><strong>DirectX:</strong> Versão 11<br></li><li><strong>Espaço no disco:</strong> Requer 85 GB de espaço livre</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> macOS 10.11 (El Capitan) ou mais recente<br></li><li><strong>Processador:</strong> Processador Intel Core Duo (2 GHz ou superior)<br></li><li><strong>Memória:</strong> 2 GB de RAM<br></li><li><strong>Placa gráfica:</strong> ATI Radeon HD 2400 ou superior / NVIDIA 8600M ou superior<br></li><li><strong>Espaço no disco:</strong> Requer 15 GB de espaço livre</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Ubuntu 20.04<br></li><li><strong>Processador:</strong> Processador com 4 threads - Intel® Core™ i5 750 ou superior<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> AMD GCN+ ou NVIDIA Kepler+ com drivers para Vulkan atualizados. Compatibilidade com VK_EXT_graphics_pipeline_library altamente recomendada.<br></li><li><strong>Espaço no disco:</strong> Requer 85 GB de espaço livre<br></li><li><strong>Placa de som:</strong> Altamente recomendada</li></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg?t=1793054556"
+      }
+    },
+    "1245620": {
+      "title": "ELDEN RING",
+      "source_url": "https://store.steampowered.com/app/1245620/",
+      "collected_at": "2026-10-31T00:53:36.120042+00:00",
+      "response_sha256": "23e229ae8842a4410f1669fabbf3e0aac09802f85d8b58cc38f832352053d0f6",
+      "steam": {
+        "steam_appid": 1245620,
+        "name": "ELDEN RING",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "FromSoftware, Inc."
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          },
+          {
+            "id": "3",
+            "description": "RPG"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "24 fev. 2022"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 10<br></li><li><strong>Processador:</strong> INTEL CORE I5-8400 or AMD RYZEN 3 3300X<br></li><li><strong>Memória:</strong> 12 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA GEFORCE GTX 1060 3 GB or AMD RADEON RX 580 4 GB<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Espaço no disco:</strong> Requer 60 GB de espaço livre<br></li><li><strong>Placa de som:</strong> Windows Compatible Audio Device<br></li><li><strong>Notas adicionais:</strong> </li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 10/11<br></li><li><strong>Processador:</strong> INTEL CORE I7-8700K or AMD RYZEN 5 3600X<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA GEFORCE GTX 1070 8 GB or AMD RADEON RX VEGA 56 8 GB<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Espaço no disco:</strong> Requer 60 GB de espaço livre<br></li><li><strong>Placa de som:</strong> Windows Compatible Audio Device<br></li><li><strong>Notas adicionais:</strong> </li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg?t=1790290043"
+      }
+    },
+    "489830": {
+      "title": "The Elder Scrolls V: Skyrim Special Edition",
+      "source_url": "https://store.steampowered.com/app/489830/",
+      "collected_at": "2026-11-06T19:10:14.281218+00:00",
+      "response_sha256": "9c26f0fb21646af70f6f1465392bd99f503cb836f0aed0c1c823a0e206f431b0",
+      "steam": {
+        "steam_appid": 489830,
+        "name": "The Elder Scrolls V: Skyrim Special Edition",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Bethesda Game Studios"
+        ],
+        "genres": [
+          {
+            "id": "3",
+            "description": "RPG"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "27 out. 2016"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo *:</strong> Windows 7/8.1/10 (64-bit Version)<br></li><li><strong>Processador:</strong> Intel i5-750/AMD Phenom II X4-945<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA GTX 470 1GB /AMD HD 7870 2GB<br></li><li><strong>Espaço no disco:</strong> Requer 12 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo *:</strong> Windows 7/8.1/10 (64-bit Version)<br></li><li><strong>Processador:</strong> Intel i5-2400/AMD FX-8320<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA GTX 780 3GB /AMD R9 290 4GB<br></li><li><strong>Espaço no disco:</strong> Requer 12 GB de espaço livre</li></ul>"
+        },
+        "mac_requirements": [],
+        "linux_requirements": [],
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/489830/header.jpg?t=1786648247"
+      }
+    },
+    "427520": {
+      "title": "Factorio",
+      "source_url": "https://store.steampowered.com/app/427520/",
+      "collected_at": "2026-11-06T19:10:32.308179+00:00",
+      "response_sha256": "a4a57965ee5bab92496935b900f75e7845312d4e34edfd64be30b5ab8815c0cc",
+      "steam": {
+        "steam_appid": 427520,
+        "name": "Factorio",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Wube Software LTD."
+        ],
+        "genres": [
+          {
+            "id": "4",
+            "description": "Casual"
+          },
+          {
+            "id": "23",
+            "description": "Indie"
+          },
+          {
+            "id": "28",
+            "description": "Simulação"
+          },
+          {
+            "id": "2",
+            "description": "Estratégia"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "14 ago. 2020"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": true
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Windows 11, 10<br></li><li><strong>Processador:</strong> Quad core 3Ghz+<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> DirectX 11 capable GPU with 1GB VRAM - GeForce GTX 750 Ti, Radeon R7 360 or Intel UHD Graphics 730<br></li><li><strong>DirectX:</strong> Versão 11<br></li><li><strong>Espaço no disco:</strong> Requer 5 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> Normal sprite resolution, Low quality compression, 1080p resolution</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Windows 11, 10<br></li><li><strong>Processador:</strong> Quad core 4Ghz+ from 2020 or newer<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> DirectX 11 capable GPU with 4 GB VRAM - GeForce GTX 1050 Ti, Radeon RX 570, Intel Arc<br></li><li><strong>DirectX:</strong> Versão 11<br></li><li><strong>Espaço no disco:</strong> Requer 10 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> High sprite resolution, High quality compression</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> OS X 10.10 Yosemite<br></li><li><strong>Processador:</strong> 2016 Mac<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Espaço no disco:</strong> Requer 5 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> Normal sprite resolution, Low quality compression, 1080p resolution</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Processador:</strong> 2020 Apple Silicon<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Espaço no disco:</strong> Requer 10 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> High sprite resolution, High quality compression</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Linux (tarball installation)<br></li><li><strong>Processador:</strong> Dual core 3Ghz+<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> DirectX 11 capable GPU with 1GB VRAM - GeForce GTX 750 Ti, Radeon R7 360 or Intel UHD Graphics 730<br></li><li><strong>Espaço no disco:</strong> Requer 5 GB de espaço livre<br></li><li><strong>Placa de som:</strong> PulseAudio<br></li><li><strong>Notas adicionais:</strong> Normal sprite resolution, Low quality compression, 1080p resolution</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Linux (tarball installation)<br></li><li><strong>Processador:</strong> Quad core 3GHz+<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> DirectX 11 capable GPU with 4 GB VRAM - GeForce GTX 1050 Ti, Radeon RX 570, Intel Arc<br></li><li><strong>Espaço no disco:</strong> Requer 10 GB de espaço livre<br></li><li><strong>Placa de som:</strong> PulseAudio<br></li><li><strong>Notas adicionais:</strong> High sprite resolution, High quality compression</li></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427520/ab9a2df0a77caebde20dc45adc021de8cdcf7cc5/header.jpg?t=1792752343"
+      }
+    },
+    "2054970": {
+      "title": "Dragon's Dogma 2",
+      "source_url": "https://store.steampowered.com/app/2054970/",
+      "collected_at": "2026-11-06T19:18:01.534370+00:00",
+      "response_sha256": "fe88715a5f28db0c2ee6738468413f0c1b5b6500516805e34a18c157b1df6dd8",
+      "steam": {
+        "steam_appid": 2054970,
+        "name": "Dragon's Dogma 2",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "CAPCOM Co., Ltd."
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          },
+          {
+            "id": "3",
+            "description": "RPG"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "21 mar. 2024"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 11 (64 bit)<br></li><li><strong>Processador:</strong> Intel Core i5 8500 / AMD Ryzen 5 3500<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA GeForce GTX 1660 / AMD Radeon RX 5500 XT with 8GB VRAM<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Rede:</strong> Ligação à Internet de banda larga<br></li><li><strong>Notas adicionais:</strong> Suporta jogabilidade a 1080p (com upscaler)/45-60 fps ao selecionar Dar prioridade ao desempenho na qualidade gráfica. Nota: a taxa de fotogramas poderá descer quando a carga de processamento for alta demais. NVIDIA GeForce RTX 2080 Ti ou AMD Radeon RX 6800 são necessárias para suportar o Ray Tracing. SSD recomendada.</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 11 (64 bit)<br></li><li><strong>Processador:</strong> Intel Core i7-10700 / AMD Ryzen 5 3600X<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA GeForce RTX 2070 Super / AMD Radeon RX 6600 XT<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Rede:</strong> Ligação à Internet de banda larga<br></li><li><strong>Notas adicionais:</strong> Suporta jogabilidade a 1080p (com upscaler)/60 fps ao selecionar Dar prioridade ao desempenho na qualidade gráfica. Nota: a taxa de fotogramas poderá descer quando a carga de processamento for alta demais. NVIDIA GeForce RTX 2080 Ti ou AMD Radeon RX 6800 são necessárias para suportar o Ray Tracing. SSD recomendada.</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2054970/header.jpg?t=1791504871"
+      }
+    },
+    "1086940": {
+      "title": "Baldur's Gate 3",
+      "source_url": "https://store.steampowered.com/app/1086940/",
+      "collected_at": "2026-10-31T00:53:37.967159+00:00",
+      "response_sha256": "673e025900e4c541ae5bbdd4fbd024d06ba260818793a364594eaaa4d0ce64f4",
+      "steam": {
+        "steam_appid": 1086940,
+        "name": "Baldur's Gate 3",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Larian Studios"
+        ],
+        "genres": [
+          {
+            "id": "25",
+            "description": "Aventura"
+          },
+          {
+            "id": "3",
+            "description": "RPG"
+          },
+          {
+            "id": "2",
+            "description": "Estratégia"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "3 ago. 2023"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 10 64-bit<br></li><li><strong>Processador:</strong> Intel I5 4690 / AMD FX 8350 / Snapdragon X Elite<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Nvidia GTX 970 / RX 480 / Intel Arc A380 / Qualcomm Adreno X1 (4GB+ of VRAM)<br></li><li><strong>DirectX:</strong> Versão 11<br></li><li><strong>Espaço no disco:</strong> Requer 150 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> SSD required</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> Windows 10 64-bit<br></li><li><strong>Processador:</strong> Intel i7 8700K / AMD r5 3600<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Nvidia 2060 Super / RX 5700 XT / Intel Arc A580 (8GB+ of VRAM)<br></li><li><strong>DirectX:</strong> Versão 11<br></li><li><strong>Espaço no disco:</strong> Requer 150 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> SSD required</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> macOS 14.7.1 or newer<br></li><li><strong>Processador:</strong> Apple M1<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Apple M1<br></li><li><strong>Espaço no disco:</strong> Requer 150 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> Min specs can run the game on low to medium settings. Splitscreen will not run at an acceptable level of performance. SSD required.</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Latest macOS<br></li><li><strong>Processador:</strong> Apple M1 Pro or better<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Apple M1 Pro or better<br></li><li><strong>Espaço no disco:</strong> Requer 150 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> Recommended specs can run the game on high or ultra settings. SSD required.</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/48a2fcbda8565bb45025e98fd8ebde8a7203f6a0/header.jpg?t=1777363040"
+      }
+    },
+    "292030": {
+      "title": "The Witcher 3: Wild Hunt — Remastered",
+      "source_url": "https://store.steampowered.com/app/292030/",
+      "collected_at": "2026-10-31T00:53:34.917203+00:00",
+      "response_sha256": "3f2138adbdb654b2e0a2058c4f8dcd02a45ad26edfed42be5d89dee73ded88e7",
+      "steam": {
+        "steam_appid": 292030,
+        "name": "The Witcher 3: Wild Hunt — Remastered",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "CD PROJEKT RED"
+        ],
+        "genres": [
+          {
+            "id": "3",
+            "description": "RPG"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "18 mai. 2015"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> 64-bit Windows 11<br></li><li><strong>Processador:</strong> Core i5-8400 / Ryzen 5 2600<br></li><li><strong>Memória:</strong> 12 GB de RAM<br></li><li><strong>Placa gráfica:</strong> GeForce GTX 1660 / Radeon RX 5500 XT 8GB / Arc A580<br></li><li><strong>Espaço no disco:</strong> Requer 60 SSD GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> VRAM 6 GB</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> 64-bit Windows 11<br></li><li><strong>Processador:</strong> Intel Core i7 8700K / AMD Ryzen 5 3600X<br></li><li><strong>Memória:</strong> 16 GB de RAM<br></li><li><strong>Placa gráfica:</strong> RTX 2060 Super / AMD Radeon RX 6600 XT / Intel Arc B580<br></li><li><strong>Espaço no disco:</strong> Requer 60 SSD GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> VRAM 8 GB</li></ul>"
+        },
+        "mac_requirements": [],
+        "linux_requirements": [],
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/e8afc4252e3fee8ed2525ab2fd7675cca39aa38d/header_alt_assets_1.jpg?t=1790845156"
+      }
+    },
+    "883710": {
+      "title": "Resident Evil 2",
+      "source_url": "https://store.steampowered.com/app/883710/",
+      "collected_at": "2026-11-06T19:17:50.712251+00:00",
+      "response_sha256": "37b66c53a241b01ab24ffd1fbeed78b2a48cb8e06e8adc2a33d6f4b4b71a3118",
+      "steam": {
+        "steam_appid": 883710,
+        "name": "Resident Evil 2",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "CAPCOM Co., Ltd."
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "24 jan. 2019"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> WINDOWS® 10 (64-BIT Required)<br></li><li><strong>Processador:</strong> Intel® Core™ i5-4460 or AMD FX™-6300 or better<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA® GeForce® GTX 960 or AMD Radeon™ RX 460<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Espaço no disco:</strong> Requer 26 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> This game is expected to run at 1080p/30 FPS. If you have don't have enough graphics memory to run the game at your selected texture quality, you must go to Options &gt; Graphics and lower the texture quality or shadow quality, or decrease the resolution. An internet connection is required for product activation. (Network connectivity uses Steam® developed by Valve® Corporation.)</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo:</strong> WINDOWS® 10 (64-BIT Required)<br></li><li><strong>Processador:</strong> Intel® Core™ i7-3770 or AMD FX™-9590 or better<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Placa gráfica:</strong> NVIDIA® GeForce® GTX 1060 or AMD Radeon™ RX 480  with 3GB VRAM<br></li><li><strong>DirectX:</strong> Versão 12<br></li><li><strong>Espaço no disco:</strong> Requer 26 GB de espaço livre<br></li><li><strong>Notas adicionais:</strong> This game is expected to run at 1080p/60 FPS. An internet connection is required for product activation. (Network connectivity uses Steam® developed by Valve® Corporation.)</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/883710/header.jpg?t=1779433152"
+      }
+    },
+    "253230": {
+      "title": "A Hat in Time",
+      "source_url": "https://store.steampowered.com/app/253230/",
+      "collected_at": "2026-11-06T19:11:19.752837+00:00",
+      "response_sha256": "363eb2b4ea129738e499829836f6561af3d50465fa4c0f5fda22852877573b24",
+      "steam": {
+        "steam_appid": 253230,
+        "name": "A Hat in Time",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Gears for Breakfast"
+        ],
+        "genres": [
+          {
+            "id": "25",
+            "description": "Aventura"
+          },
+          {
+            "id": "23",
+            "description": "Indie"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "5 out. 2017"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": false,
+          "linux": false
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo *:</strong> Windows XP SP3 / Windows Vista / Windows 7 / Windows 8 / Windows 10 64-bit only<br></li><li><strong>Processador:</strong> 3.0 GHz processor<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>DirectX:</strong> Versão 9.0c<br></li><li><strong>Espaço no disco:</strong> Requer 8 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo *:</strong> Windows 7 / Windows 8 / Windows 10 64-bit only<br></li><li><strong>Processador:</strong> 3.5 GHz processor<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>DirectX:</strong> Versão 9.0c<br></li><li><strong>Espaço no disco:</strong> Requer 8 GB de espaço livre</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> MAC OS X 10.11.6 or higher<br></li><li><strong>Processador:</strong> Quad-core Intel or AMD Processor, 3.5 GHz processor<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>Espaço no disco:</strong> Requer 8 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> MAC OS X 10.11.6 or higher<br></li><li><strong>Processador:</strong> Quad-core Intel or AMD Processor, 4.0 GHz processor<br></li><li><strong>Memória:</strong> 8 GB de RAM<br></li><li><strong>Espaço no disco:</strong> Requer 8 GB de espaço livre</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/253230/header.jpg?t=1790173529"
+      }
+    },
+    "1135690": {
+      "title": "Unpacking",
+      "source_url": "https://store.steampowered.com/app/1135690/",
+      "collected_at": "2026-11-06T19:11:07.793640+00:00",
+      "response_sha256": "ea06096ea6594044e5ad679f1a32e1dcf7c59372381e85ea1b49513e29598948",
+      "steam": {
+        "steam_appid": 1135690,
+        "name": "Unpacking",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Witch Beam"
+        ],
+        "genres": [
+          {
+            "id": "4",
+            "description": "Casual"
+          },
+          {
+            "id": "23",
+            "description": "Indie"
+          },
+          {
+            "id": "28",
+            "description": "Simulação"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "1 nov. 2021"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": true
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits<br></li><li><strong>Sistema Operativo *:</strong> Windows 7 SP1+<br></li><li><strong>Processador:</strong> SSE2 instruction set support<br></li><li><strong>Placa gráfica:</strong> Graphics card with DX10 (shader model 4.0) capabilities.<br></li><li><strong>Espaço no disco:</strong> Requer 1 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li>Requer um sistema operativo e processador de 64 bits</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> macOS 10.13+<br></li><li><strong>Processador:</strong> SSE2 instruction set support<br></li><li><strong>Placa gráfica:</strong> Graphics card with DX10 (shader model 4.0) capabilities.<br></li><li><strong>Espaço no disco:</strong> Requer 1 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Ubuntu 16.04+<br></li><li><strong>Processador:</strong> SSE2 instruction set support<br></li><li><strong>Placa gráfica:</strong> Graphics card with DX10 (shader model 4.0) capabilities.<br></li><li><strong>Espaço no disco:</strong> Requer 1 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1135690/header.jpg?t=1789426289"
+      }
+    },
+    "728880": {
+      "title": "Overcooked! 2",
+      "source_url": "https://store.steampowered.com/app/728880/",
+      "collected_at": "2026-11-06T19:18:04.195944+00:00",
+      "response_sha256": "d67c8caf18e3702db7538b84a01b0c1cb46f046947ce657571b8922414445d93",
+      "steam": {
+        "steam_appid": 728880,
+        "name": "Overcooked! 2",
+        "type": "game",
+        "is_free": false,
+        "developers": [
+          "Ghost Town Games Ltd.",
+          "Team17"
+        ],
+        "genres": [
+          {
+            "id": "1",
+            "description": "Ação"
+          },
+          {
+            "id": "4",
+            "description": "Casual"
+          },
+          {
+            "id": "23",
+            "description": "Indie"
+          }
+        ],
+        "release_date": {
+          "coming_soon": false,
+          "date": "7 ago. 2018"
+        },
+        "platforms": {
+          "windows": true,
+          "mac": true,
+          "linux": true
+        },
+        "pc_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> WIN7-64 bit<br></li><li><strong>Processador:</strong> Intel i3-2100 / AMD A8-5600k<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>Placa gráfica:</strong> GeForce GTX 630 / Radeon HD 6570<br></li><li><strong>DirectX:</strong> Versão 11<br></li><li><strong>Espaço no disco:</strong> Requer 3 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Win7 -64 bit<br></li><li><strong>Processador:</strong> Intel i5-650 / AMD A10-5800K<br></li><li><strong>Placa gráfica:</strong> Nvidia GeForce GTX 650 / Radeon HD 7510<br></li><li><strong>Placa de som:</strong> DirectX Compatible Sound Card</li></ul>"
+        },
+        "mac_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> MacOS Sierra - 10.12.6<br></li><li><strong>Processador:</strong> 2.7 GHz Intel Core i5<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>Placa gráfica:</strong> Nvidia GeForce GT 640M<br></li><li><strong>Espaço no disco:</strong> Requer 3 GB de espaço livre</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> MacOS High Sierra - 10.13.1<br></li><li><strong>Processador:</strong> 3.1 GHz Intel Core i5<br></li><li><strong>Placa gráfica:</strong> AMD Radeon Pro 560 / Nvidia GeForce GTX 780m<br></li><li><strong>Placa de som:</strong> DirectX Compatible Sound Card</li></ul>"
+        },
+        "linux_requirements": {
+          "minimum": "<strong>Mínimos:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Mint 18 / Ubuntu 16.04.01<br></li><li><strong>Processador:</strong> Intel i3-2100 / AMD A8-5600K<br></li><li><strong>Memória:</strong> 4 GB de RAM<br></li><li><strong>Placa gráfica:</strong> GeForce 450GTS<br></li><li><strong>Espaço no disco:</strong> Requer 3 GB de espaço livre<br></li><li><strong>Placa de som:</strong> DirectX Compatible Sound Card</li></ul>",
+          "recommended": "<strong>Recomendados:</strong><br><ul class=\"bb_ul\"><li><strong>Sistema Operativo:</strong> Mint 18 / Ubuntu 16.04.01<br></li><li><strong>Processador:</strong> 3.1 GHz Intel Core i5<br></li><li><strong>Placa gráfica:</strong> AMD Radeon Pro 560 / Nvidia GeForce GTX 780m<br></li><li><strong>Placa de som:</strong> DirectX Compatible Sound Card</li></ul>"
+        },
+        "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/728880/9305414f49b2f7aee7f7198dc507d6b66383fdd6/header.jpg?t=1789548883"
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "low-cyberpunk-min",
+      "kind": "hardware_gap",
+      "machine": "LOW",
+      "game": "1091500",
+      "level": "minimum",
+      "expect": "incompatible",
+      "failing_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O mínimo pede GTX 1060 6GB, RX 580 8GB ou Arc A380 e um Core i7-6700 ou Ryzen 5 1600 com 12 GB. Uma GT 1030 DDR4 e um Core 2 Duo de 2008 com 4 GB ficam muito abaixo de todas as opções."
+    },
+    {
+      "id": "low-rdr2-min",
+      "kind": "hardware_gap",
+      "machine": "LOW",
+      "game": "1174180",
+      "level": "minimum",
+      "expect": "incompatible",
+      "failing_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O mínimo pede GTX 770 2GB ou R9 280 3GB, Core i5-2500K ou FX-6300 e 8 GB. A GT 1030 DDR4, o Core 2 Duo e os 4 GB ficam abaixo."
+    },
+    {
+      "id": "low-cs2-min",
+      "kind": "hardware_gap",
+      "machine": "LOW",
+      "game": "730",
+      "level": "minimum",
+      "expect": "incompatible",
+      "failing_checks": [
+        "Memória RAM"
+      ],
+      "why": "O mínimo exige 8 GB de RAM; o computador tem 4 GB. Verificação determinística, sem depender do índice."
+    },
+    {
+      "id": "low-stardew-min",
+      "kind": "hardware_gap",
+      "machine": "LOW",
+      "game": "413150",
+      "level": "minimum",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O mínimo é 2 GHz, 2 GB, 256 MB de vídeo e shader model 3.0. Um Core 2 Duo de 3 GHz, 4 GB e uma GT 1030 cumprem com folga.",
+      "known_divergence": {
+        "actual": "incompatible",
+        "reason": "A curadoria de 31/10/2026 (TCC1) usa a GeForce GTS 450 (classe 3) como referência de \"256 mb video memory, shader model 3.0+\". É um exemplo representativo, acima do mínimo literal (que uma placa de classe 1 cumpre), e a GT 1030 DDR4 (classe 2) fica abaixo dela. Erro na direção segura (reprova a mais)."
+      }
+    },
+    {
+      "id": "low-hades-min",
+      "kind": "hardware_gap",
+      "machine": "LOW",
+      "game": "1145360",
+      "level": "minimum",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O mínimo é um dual core de 2,4 GHz, 4 GB e 1 GB de vídeo com DirectX 10. Um Core 2 Duo E8400 (dual core, 3,0 GHz), 4 GB e uma GT 1030 cumprem.",
+      "known_divergence": {
+        "actual": "incompatible",
+        "reason": "A curadoria de 31/10/2026 (TCC1) usa o Core i3-3240 (classe 25) para \"Dual Core 2.4 GHz\" e a GTS 450 (classe 3) para \"1GB VRAM / DirectX 10+\". Ambos estão acima do mínimo literal (um Core 2 Duo de 2,4 GHz é classe 5). Erro na direção segura (reprova a mais)."
+      }
+    },
+    {
+      "id": "gtx1050ti-cyberpunk-rec",
+      "kind": "hardware_gap",
+      "machine": "GTX1050TI",
+      "game": "1091500",
+      "level": "recommended",
+      "expect": "incompatible",
+      "failing_checks": [
+        "Placa de vídeo"
+      ],
+      "why": "O recomendado pede RTX 2060 SUPER, RX 5700 XT ou Arc A770; todas são pelo menos duas vezes mais rápidas que uma GTX 1050 Ti."
+    },
+    {
+      "id": "gtx1050ti-eldenring-rec",
+      "kind": "hardware_gap",
+      "machine": "GTX1050TI",
+      "game": "1245620",
+      "level": "recommended",
+      "expect": "incompatible",
+      "failing_checks": [
+        "Placa de vídeo"
+      ],
+      "why": "O recomendado pede GTX 1070 8GB ou RX Vega 56 8GB, cerca de duas vezes mais rápidas que a GTX 1050 Ti."
+    },
+    {
+      "id": "gtx1050ti-factorio-min",
+      "kind": "hardware_gap",
+      "machine": "GTX1050TI",
+      "game": "427520",
+      "level": "minimum",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Memória RAM"
+      ],
+      "why": "O mínimo cita GTX 750 Ti, Radeon R7 360 ou Intel UHD 730 com 1 GB de VRAM; a GTX 1050 Ti 4GB é mais nova e mais rápida que a 750 Ti."
+    },
+    {
+      "id": "gtx1050ti-skyrim-min",
+      "kind": "hardware_gap",
+      "machine": "GTX1050TI",
+      "game": "489830",
+      "level": "minimum",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo"
+      ],
+      "why": "O mínimo cita GTX 470 1GB ou HD 7870 2GB; a GTX 1050 Ti é de duas gerações depois e mais rápida que a GTX 470."
+    },
+    {
+      "id": "rtx3060-bg3-rec",
+      "kind": "hardware_gap",
+      "machine": "RTX3060",
+      "game": "1086940",
+      "level": "recommended",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O recomendado pede RTX 2060 Super, RX 5700 XT ou Arc A580 e um Ryzen 5 3600 com 16 GB; a RTX 3060 12GB supera a 2060 Super e o Ryzen é o próprio modelo citado."
+    },
+    {
+      "id": "top-rdr2-rec",
+      "kind": "hardware_gap",
+      "machine": "TOP",
+      "game": "1174180",
+      "level": "recommended",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O recomendado pede GTX 1060 6GB ou RX 480 4GB, Core i7-4770K ou Ryzen 5 1500X e 12 GB; o computador está várias gerações acima."
+    },
+    {
+      "id": "top-eldenring-rec",
+      "kind": "hardware_gap",
+      "machine": "TOP",
+      "game": "1245620",
+      "level": "recommended",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O recomendado pede GTX 1070 ou Vega 56, Core i7-8700K ou Ryzen 5 3600X e 16 GB; o computador está muito acima."
+    },
+    {
+      "id": "top-bg3-rec",
+      "kind": "hardware_gap",
+      "machine": "TOP",
+      "game": "1086940",
+      "level": "recommended",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O recomendado pede RTX 2060 Super, RX 5700 XT ou Arc A580, Core i7-8700K ou Ryzen 5 3600 e 16 GB; o computador está muito acima."
+    },
+    {
+      "id": "top-witcher3-rec",
+      "kind": "hardware_gap",
+      "machine": "TOP",
+      "game": "292030",
+      "level": "recommended",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Processador",
+        "Memória RAM"
+      ],
+      "why": "O recomendado pede RTX 2060 Super, RX 6600 XT ou Arc B580, Core i7-8700K ou Ryzen 5 3600X e 16 GB em Windows 11; o computador cumpre tudo."
+    },
+    {
+      "id": "rtx3060-dd2-rec-win11",
+      "kind": "rule",
+      "machine": "RTX3060",
+      "game": "2054970",
+      "level": "recommended",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo",
+        "Sistema operacional"
+      ],
+      "why": "Regressão registrada na sessão de revisão do índice: a RX 6600 XT do requisito recomendado e a RTX 3060 12GB estão na mesma classe (300)."
+    },
+    {
+      "id": "rtx3060-dd2-min-win10",
+      "kind": "rule",
+      "machine": "RTX3060",
+      "game": "2054970",
+      "level": "minimum",
+      "expect": "incompatible",
+      "windows_version": "10",
+      "failing_checks": [
+        "Sistema operacional"
+      ],
+      "why": "O requisito é Windows 11 (64 bit); com Windows 10 salvo no perfil o sistema operacional não atende, mesmo com hardware de sobra."
+    },
+    {
+      "id": "rtx3060-witcher3-min-win10",
+      "kind": "rule",
+      "machine": "RTX3060",
+      "game": "292030",
+      "level": "minimum",
+      "expect": "incompatible",
+      "windows_version": "10",
+      "failing_checks": [
+        "Sistema operacional"
+      ],
+      "why": "O mínimo exige 64-bit Windows 11; com Windows 10 o sistema operacional não atende."
+    },
+    {
+      "id": "top-overcooked2-min",
+      "kind": "rule",
+      "machine": "TOP",
+      "game": "728880",
+      "level": "minimum",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo"
+      ],
+      "why": "O texto lista \"GeForce GTX 630 / Radeon HD 6570\". A GTX 630 não existe com esse nome (política: nomes com erro de grafia ficam pendentes), mas a Radeon HD 6570 é identificada e o computador a supera; uma alternativa identificada basta para aprovar.",
+      "known_divergence": {
+        "actual": "needs_review",
+        "reason": "O requisito de sistema vem como \"WIN7-64 bit\" (mínimo) e \"Win7 -64 bit\" (recomendado); o windows_check não reconhece \"WIN7\" sem o espaço e deixa o sistema operacional pendente. Erro na direção segura (pede conferência a mais). 5 outros blocos do catálogo de 120 jogos têm texto de sistema não reconhecido por outros motivos."
+      }
+    },
+    {
+      "id": "top-re2-rec",
+      "kind": "policy",
+      "machine": "TOP",
+      "game": "883710",
+      "level": "recommended",
+      "expect": "needs_review",
+      "why": "O texto cita \"GTX 1060\" (3 GB ou 6 GB, classes diferentes) e \"RX 480 with 3GB VRAM\" (versão que não existe); nenhuma alternativa é identificada com segurança, então o resultado fica pendente em vez de aprovado."
+    },
+    {
+      "id": "top-re2-min",
+      "kind": "policy",
+      "machine": "TOP",
+      "game": "883710",
+      "level": "minimum",
+      "expect": "compatible",
+      "ok_checks": [
+        "Placa de vídeo"
+      ],
+      "why": "O mínimo cita GTX 960 (variantes na mesma classe) e RX 460, identificada; o computador supera a RX 460."
+    },
+    {
+      "id": "top-hat-in-time-min",
+      "kind": "policy",
+      "machine": "TOP",
+      "game": "253230",
+      "level": "minimum",
+      "expect": "needs_review",
+      "why": "A Steam não publicou placa de vídeo no mínimo; sem o dado, nunca aprovar nem reprovar."
+    },
+    {
+      "id": "top-unpacking-min",
+      "kind": "policy",
+      "machine": "TOP",
+      "game": "1135690",
+      "level": "minimum",
+      "expect": "needs_review",
+      "why": "A Steam não publicou a memória RAM nem modelos de CPU/GPU no mínimo; o resultado fica pendente."
+    }
+  ]
+}
