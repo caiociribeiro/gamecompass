@@ -52,8 +52,13 @@ documentado; não comprova desempenho igual em cada jogo.
    preferível, mas avaliações de épocas diferentes também podem orientar
    uma aproximação de curadoria, explicitando que não são um teste único.
 5. Atribuir a mesma classe a placas de faixa semelhante, aceitando
-   diferenças por jogo, drivers, clocks e memória. Preservar os registros
-   de 4GB e 8GB mesmo quando compartilhem a classe.
+   diferenças por jogo, drivers e clocks. Preservar os registros de cada
+   variante de memória. Variantes do mesmo modelo só dividem a classe quando
+   a diferença média em jogos é pequena (cerca de 10% ou menos) e não há
+   estouro de VRAM documentado; quando a capacidade menor estoura em jogos
+   atuais, a variante menor recebe uma classe própria, abaixo da maior.
+   Um nome publicado sem a memória continua pendente, mesmo que as variantes
+   compartilhem a classe (política dos aliases em scripts/test_alias_policy.py).
 6. Manter a nota vazia para modelos ainda não avaliados. Não classificar
    automaticamente um nome desconhecido ou ambíguo.
 

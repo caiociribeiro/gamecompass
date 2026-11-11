@@ -6841,11 +6841,6 @@
   },
   {
     "component_type": "GPU",
-    "alias": "AMD Radeon RX 5500 XT",
-    "canonical_name": "AMD Radeon RX 5500 XT 8GB"
-  },
-  {
-    "component_type": "GPU",
     "alias": "AMD RX 5600 XT",
     "canonical_name": "AMD Radeon RX 5600 XT 6GB"
   },
@@ -7193,5 +7188,20 @@
     "component_type": "GPU",
     "alias": "AMD Radeon X1950 Pro (256MB VRAM with Shader Model 3.0",
     "canonical_name": "ATI Radeon X1950 Pro 256MB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVidia 650TI",
+    "canonical_name": "NVIDIA GeForce GTX 650 Ti 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "nVidia GeForce 9600GT",
+    "canonical_name": "NVIDIA GeForce 9600 GT 512MB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 5500XT 4GB",
+    "canonical_name": "AMD Radeon RX 5500 XT 4GB"
   }
 ]
