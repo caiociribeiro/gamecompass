@@ -168,3 +168,35 @@ Das 45 combinações (jogo, nível e campo) em que a Steam publica um texto gen�
 **Efeito.** Blocos do mínimo em revisão: 36 para 21. Jogos com base de comparação no Windows: 99 para 108 de 120. Na avaliação offline (60 perfis simulados), os jogos `pending` por perfil caíram de 10,5 para 7,0 e os `items` subiram de 36,6 para 39,9.
 
 **O que ainda impede os 21 jogos do mínimo.** Quase todos têm uma única pendência de GPU: variantes de memória sem a capacidade no texto (RX 550, GTX 960, GeForce 7600 GT e outras, que continuam pendentes pela política dos aliases), textos compostos ou com "or equivalent" (Factorio, Rainbow Six Siege, Frostpunk, Alien: Isolation, Don't Starve Together), peças ainda fora do índice (GeForce GTX 630 e "GTX 700 series", entre outras) e dois campos que a Steam não publicou (RAM do Unpacking, GPU do A Hat in Time).
+
+### Segunda rodada: textos compostos e a RX 5500 XT 4GB
+
+**Nova peça: RX 5500 XT 4GB, classe 100.** O Rainbow Six Siege pede essa placa e o catálogo só tinha a de 8GB (150). O [TechSpot](https://www.techspot.com/review/1961-radeon-rx-5500-4gb-vs-8gb/) testou duas placas idênticas, exceto pela memória, em 12 jogos: a de 4GB fica 3,5% abaixo a 1080p e 5% a 1440p, no nível da RX 580 e da GTX 1650 Super, com estouro de VRAM documentado (Call of Duty: Modern Warfare −15%, Shadow of the Tomb Raider −10%, Battlefield V a 1440p −11%). Pela regra de variantes de VRAM do `SCORING.md`, ganha classe própria abaixo da de 8GB. Com duas variantes, o alias genérico `AMD Radeon RX 5500 XT` (sem memória) deixou de valer e foi removido; ele só era usado pelo Ghost of Tsushima, que já estava pendente por outro motivo.
+
+**Mais 17 regras de curadoria** (181 no total, eram 164) para textos que nomeiam modelos que já existem no catálogo, mas com formatação fora do padrão ou com "or equivalent":
+
+| Jogo | Nível | Campo | Referência |
+| --- | --- | --- | --- |
+| Factorio | mín. | GPU | NVIDIA GeForce GTX 750 Ti 2GB |
+| Assetto Corsa | mín. | GPU | AMD Radeon HD 5450 |
+| Assetto Corsa | rec. | GPU | NVIDIA GeForce GTX 970, AMD Radeon R9 290X 4GB |
+| Frostpunk | mín. | GPU | AMD Radeon R7 370 2GB |
+| Frostpunk | rec. | GPU | AMD Radeon RX 580 4GB |
+| Alien: Isolation | mín. | GPU | NVIDIA GeForce GT 430, AMD Radeon HD 5570 |
+| Alien: Isolation | rec. | GPU | NVIDIA GeForce GTX 660, AMD Radeon R9 270 2GB |
+| Don't Starve Together | mín. | GPU | AMD Radeon HD 5450 |
+| Dead Cells | rec. | GPU | AMD Radeon HD 7870 2GB |
+| Firewatch | mín. | GPU | NVIDIA GeForce GTS 450 |
+| GRIS | mín. | CPU | AMD Athlon 64 X2 5600+ |
+| Cult of the Lamb | mín. | CPU | Intel Core i3-3240, AMD FX-4300 |
+| Cult of the Lamb | mín. | GPU | NVIDIA GeForce GTX 560 Ti 1GB, AMD Radeon HD 7750 1GB |
+| Cult of the Lamb | rec. | GPU | NVIDIA GeForce GTX 1050 2GB, AMD Radeon R9 380 2GB |
+| Two Point Hospital | mín. | GPU | NVIDIA GeForce GT 1030 DDR4 2GB, NVIDIA GeForce GT 1030 GDDR5 2GB, NVIDIA GeForce GTX 460, AMD Radeon RX 550 2GB, AMD Radeon HD 6850, Intel HD Graphics 630 |
+| Two Point Hospital | rec. | GPU | NVIDIA GeForce GTX 1060 3GB, NVIDIA GeForce GTX 780 3GB, AMD Radeon RX 580 4GB, AMD Radeon R9 290X 4GB |
+| Katana ZERO | mín. | GPU | NVIDIA GeForce 7600 256MB, NVIDIA GeForce 7600 GS 512MB |
+
+Onde a lista de alternativas inclui uma placa com mais de uma variante de memória (GT 1030 no Two Point Hospital), as referências listam todas as variantes e o piso é definido por uma alternativa mais fraca, então a variante não muda o resultado.
+
+**Efeito da segunda rodada.** Blocos do mínimo em revisão: 21 para 11. Nenhum requisito já resolvido mudou de nota. Na avaliação offline, os jogos `pending` por perfil caíram de 7,0 para 4,5 e os `items` subiram de 39,9 para 41,9.
+
+**O que ainda impede os 11 jogos do mínimo:** dois campos que a Steam não publicou (RAM do Unpacking, GPU do A Hat in Time); textos sem limite de geração (Total War: WARHAMMER III, TUNIC, Raft, Firewatch e a memória de 512 MB do Coffee Talk); a "GeForce GTX 630" do Overcooked! 2, que não existe com esse nome (o modelo é GT 630, grafia de fonte que a política mantém pendente); e nomes sem memória cujas variantes têm a mesma classe (RX 550 no Monster Hunter Rise, GTX 960 no Resident Evil 2 e no Ghost of Tsushima).

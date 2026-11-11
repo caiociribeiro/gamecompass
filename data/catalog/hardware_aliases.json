@@ -6841,11 +6841,6 @@
   },
   {
     "component_type": "GPU",
-    "alias": "AMD Radeon RX 5500 XT",
-    "canonical_name": "AMD Radeon RX 5500 XT 8GB"
-  },
-  {
-    "component_type": "GPU",
     "alias": "AMD RX 5600 XT",
     "canonical_name": "AMD Radeon RX 5600 XT 6GB"
   },
@@ -7203,5 +7198,10 @@
     "component_type": "GPU",
     "alias": "nVidia GeForce 9600GT",
     "canonical_name": "NVIDIA GeForce 9600 GT 512MB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD RX 5500XT 4GB",
+    "canonical_name": "AMD Radeon RX 5500 XT 4GB"
   }
 ]

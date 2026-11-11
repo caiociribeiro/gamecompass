@@ -2186,6 +2186,242 @@
       "source_url": "https://store.steampowered.com/app/242550/",
       "reviewed_at": "2026-11-09T22:00:00+00:00",
       "notes": "Referência aproximada definida pelo GameCompass para TCC1. GeForce 9600 GT ou Radeon HD 3850 (\"or higher\"): os dois pisos nomeados. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "427520",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "DirectX 11 capable GPU with 1GB VRAM - GeForce GTX 750 Ti, Radeon R7 360 or Intel UHD Graphics 730",
+      "reference_models": [
+        "NVIDIA GeForce GTX 750 Ti 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/427520/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto exige DirectX 11 com 1 GB e cita a GTX 750 Ti como exemplo; uso o exemplo como referência. O catálogo só tem a versão de 2GB, e o texto pede 1 GB. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "244210",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "DirectX 10.1 (e.g. AMD Radeon HD 6450, Nvidia GeForce GT 460)",
+      "reference_models": [
+        "AMD Radeon HD 5450"
+      ],
+      "source_url": "https://store.steampowered.com/app/244210/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto pede apenas DirectX 10.1 e cita como exemplos a HD 6450 (fora do catálogo) e a GT 460; a HD 5450 é o equivalente mais próximo do catálogo. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "244210",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "DirectX 11 (e.g. AMD Radeon 290x, Nvidia GeForce GTX 970)",
+      "reference_models": [
+        "NVIDIA GeForce GTX 970",
+        "AMD Radeon R9 290X 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/244210/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto pede DirectX 11 e dá como exemplos a Radeon 290X e a GeForce GTX 970; uso os dois exemplos, e a GTX 970 define o piso. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "323190",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "GeForce GTX 660, Radeon R7 370 or equivalent with 2 GB of video RAM",
+      "reference_models": [
+        "AMD Radeon R7 370 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/323190/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto nomeia a Radeon R7 370 com 2 GB (\"or equivalent\"); a R7 370 de 2GB é o piso. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "323190",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "GeForce 970, Radeon RX 580 or equivalent with 4GB of video RAM",
+      "reference_models": [
+        "AMD Radeon RX 580 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/323190/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto nomeia a RX 580 com 4 GB de memória (\"or equivalent\"); a capacidade informada identifica a versão de 4GB. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "214490",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "1GB (AMD Radeon HD 5550 or Nvidia GeForce GT 430)",
+      "reference_models": [
+        "NVIDIA GeForce GT 430",
+        "AMD Radeon HD 5570"
+      ],
+      "source_url": "https://store.steampowered.com/app/214490/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. GT 430 ou HD 5550; a HD 5550 não está no catálogo e uso a vizinha HD 5570, que não é mais fraca. A GT 430 define o piso. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "214490",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "2GB (AMD GPU: AMD Radeon R9 200 Series or Nvidia GPU: Nvidia GeForce GTX660)",
+      "reference_models": [
+        "NVIDIA GeForce GTX 660",
+        "AMD Radeon R9 270 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/214490/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. GTX 660 ou \"R9 200 Series\" com 2 GB; a R9 270 de 2GB é a placa da série no catálogo. As duas têm a mesma classe. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "322330",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Radeon HD5450 or better; 256 MB or higher",
+      "reference_models": [
+        "AMD Radeon HD 5450"
+      ],
+      "source_url": "https://store.steampowered.com/app/322330/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto fixa a HD 5450 como piso (\"or better\"). A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "588650",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "Nvidia GTX 460 / Radeon HD 7800 or better",
+      "reference_models": [
+        "AMD Radeon HD 7870 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/588650/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita a \"HD 7800\" (série de uma única geração); uso a HD 7870, a placa da série no catálogo, que não é mais fraca que a HD 7850. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "383870",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce 450 or higher with 1GB Memory",
+      "reference_models": [
+        "NVIDIA GeForce GTS 450"
+      ],
+      "source_url": "https://store.steampowered.com/app/383870/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto fixa a GeForce 450 (\"or higher\", 1 GB) como piso; a GTS 450 é a placa dessa numeração no catálogo. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "683320",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel Core2 Duo E6750 (2 * 2660) or equivalent / AMD Athlon 64 X2 Dual Core 5000+ (2 * 2600) or equivalent",
+      "reference_models": [
+        "AMD Athlon 64 X2 5600+"
+      ],
+      "source_url": "https://store.steampowered.com/app/683320/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita o Athlon 64 X2 5000+ (2,6 GHz), que não está no catálogo; uso o 5600+ (2,8 GHz), que não é mais fraco. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1313140",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel Core i3-3240 (2 * 3400); AMD FX-4300 (4 * 3800)",
+      "reference_models": [
+        "Intel Core i3-3240",
+        "AMD FX-4300"
+      ],
+      "source_url": "https://store.steampowered.com/app/1313140/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. Duas alternativas nomeadas (o texto só traz uma formatação diferente do padrão). A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1313140",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "GeForce GTX 560 Ti (1024 VRAM); Radeon HD 7750 (1024 VRAM)",
+      "reference_models": [
+        "NVIDIA GeForce GTX 560 Ti 1GB",
+        "AMD Radeon HD 7750 1GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1313140/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. Duas alternativas nomeadas; a memória (1024 MB) identifica as versões de 1GB. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1313140",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "GeForce GTX 1050 (2048 VRAM); Radeon R9 380 (2048 VRAM)",
+      "reference_models": [
+        "NVIDIA GeForce GTX 1050 2GB",
+        "AMD Radeon R9 380 2GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1313140/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. Duas alternativas nomeadas; a memória (2048 MB) identifica as versões de 2GB. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "535930",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA Geforce GT 1030, 2GB (Legacy: NVIDIA GeForce GTX 460), AMD RX550, 2GB (Legacy: AMD Radeon HD 6850), Integrated: Intel HD Graphics 630",
+      "reference_models": [
+        "NVIDIA GeForce GT 1030 DDR4 2GB",
+        "NVIDIA GeForce GT 1030 GDDR5 2GB",
+        "NVIDIA GeForce GTX 460",
+        "AMD Radeon RX 550 2GB",
+        "AMD Radeon HD 6850",
+        "Intel HD Graphics 630"
+      ],
+      "source_url": "https://store.steampowered.com/app/535930/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto traz alternativas de três fabricantes. A GT 1030 de 2GB tem duas versões de memória, mas o HD Graphics 630 (classe 2) é a alternativa mais fraca e define o piso, então a versão da GT 1030 não muda o resultado. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "535930",
+      "platform": "Windows",
+      "level": "recommended",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA Geforce GTX 1060, 3 GB (Legacy: NVIDIA Geforce GTX 780, 4GB) or AMD RX 580, 4 GB (Legacy: AMD R9 290X, 4GB)",
+      "reference_models": [
+        "NVIDIA GeForce GTX 1060 3GB",
+        "NVIDIA GeForce GTX 780 3GB",
+        "AMD Radeon RX 580 4GB",
+        "AMD Radeon R9 290X 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/535930/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. Quatro alternativas nomeadas (GTX 1060 3GB ou GTX 780, RX 580 4GB ou R9 290X). A GTX 780 citada tem 4 GB, que não existe no catálogo; uso a de 3GB, mesma GPU. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "460950",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "GeForce 7600 GT (256 MB)",
+      "reference_models": [
+        "NVIDIA GeForce 7600 256MB",
+        "NVIDIA GeForce 7600 GS 512MB"
+      ],
+      "source_url": "https://store.steampowered.com/app/460950/",
+      "reviewed_at": "2026-11-09T23:30:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita a GeForce 7600 GT (256 MB), fora do catálogo; as duas GeForce 7600 do catálogo têm a classe 1, o piso da escala. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
     }
   ]
 }

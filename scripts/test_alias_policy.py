@@ -78,7 +78,7 @@ class AliasPolicyTests(unittest.TestCase):
             ("AMD Ryzen 1600x", "CPU"): "AMD Ryzen 5 1600X",
             ("Intel Core i5 3470 a 3.2 GHZ (4 CPUs)", "CPU"): "Intel Core i5-3470",
             ("Intel® iCore™ i5-3570K", "CPU"): "Intel Core i5-3570K",
-            ("AMD Radeon RX 5500 XT", "GPU"): "AMD Radeon RX 5500 XT 8GB",
+            ("AMD Radeon RX 5500 XT 8GB", "GPU"): "AMD Radeon RX 5500 XT 8GB",
             ("AMD RX 5600-XT", "GPU"): "AMD Radeon RX 5600 XT 6GB",
             ("Radeon RX 6700 XT", "GPU"): "AMD Radeon RX 6700 XT 12GB",
             ("Intel Arc A750", "GPU"): "Intel Arc A750 8GB",
@@ -95,6 +95,7 @@ class AliasPolicyTests(unittest.TestCase):
             ("AMD® ATI Radeon™ HD 5870 (1GB VRAM)", "GPU"): "AMD Radeon HD 5870",
             ("AMD FX4300", "CPU"): "AMD FX-4300",
             ("NVidia 650TI", "GPU"): "NVIDIA GeForce GTX 650 Ti 2GB",
+            ("AMD RX 5500XT 4GB", "GPU"): "AMD Radeon RX 5500 XT 4GB",
             ("nVidia GeForce 9600GT", "GPU"): "NVIDIA GeForce 9600 GT 512MB",
             ("AMD X8 FX-8350 a 4 GHZ (8 CPUs)", "CPU"): "AMD FX-8350",
             ("AMD HD7750", "GPU"): "AMD Radeon HD 7750 1GB",
@@ -119,6 +120,7 @@ class AliasPolicyTests(unittest.TestCase):
             ("AMD Radeon RX 480", "GPU"),   # 4GB ou 8GB
             ("AMD Radeon RX 550", "GPU"),   # 2GB ou 4GB
             ("GeForce RTX 2060", "GPU"),    # a versão de 12GB tem outra configuração de chip
+            ("AMD Radeon RX 5500 XT", "GPU"),  # 4GB ou 8GB, com classes diferentes
             ("NVIDIA GeForce RTX 2060", "GPU"),
             ("NVIDIA GeForce GTX 1060", "GPU"),  # 3GB ou 6GB
             ("AMD GPU Radeon RX 580", "GPU"),    # 4GB ou 8GB
