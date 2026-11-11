@@ -370,7 +370,7 @@ a esses candidatos pela API, após a solicitação do cliente.
 
 `POST /api/recommendations` recebe três `anchorIds` distintos, `genres`, `themes` e `hardware` com `cpuId`, `gpuId`, `ramGb`, `os` e, em Windows, `windowsVersion`. A API consulta uma única referência de hardware do Neo4j por requisição e reutiliza esse contexto para as âncoras, os candidatos e a comparação. Não aceita pontuações, requisitos de jogos ou dados de conta no corpo.
 
-A resposta contém `items`, `pending`, `excluded`, `anchors`, `issues`, `source` e `calculation`. Cada resultado contém afinidade, justificativas, verificações separadas de mínimos/recomendados e sugestões de substituição. `calculation` informa `engine_version: rules_v1`, versão do índice, limiar e hashes de hardware/curadoria. As sugestões continuam sendo referências de desempenho, sem cotação ou validação de encaixe físico.
+A resposta contém `items`, `pending`, `excluded`, `anchors`, `issues`, `source`, `calculation` e `interactions`. Cada resultado contém afinidade, justificativas, verificações separadas de mínimos/recomendados e sugestões de substituição. `calculation` informa `engine_version: rules_v1`, versão do índice, limiar e hashes de hardware/curadoria. As sugestões continuam sendo referências de desempenho, sem cotação ou validação de encaixe físico.
 
 `POST /api/games/{appid}/comparison` recebe as mesmas preferências e até três âncoras; aceita `hardware: null` para consultar afinidade antes de cadastrar o computador. Devolve `match`, `issues` e `calculation`. Um detalhe aberto pela lista reutiliza a resposta atual do servidor; outros jogos usam esse endpoint. Trocar perfil cancela a comparação anterior.
 
@@ -390,7 +390,7 @@ npm run build
 npm run dev
 ```
 
-O catálogo de 120 jogos e o CSV de hardware já carregados continuam sendo usados. O cálculo continua recebendo apenas os dados necessários no corpo da requisição; ele não lê a conta.
+O catálogo de 120 jogos e o CSV de hardware já carregados continuam sendo usados. O cálculo recebe o perfil no corpo da requisição; a única leitura da conta é a das reações do usuário da sessão (veja "Interações com jogos"), e sem sessão o resultado é o do `rules_v1` puro.
 
 ### Contas e perfil
 
@@ -408,6 +408,19 @@ constraints de unicidade em `User.id`, `User.email` e `Session.token_hash`
 | `GET /api/auth/me` | Conta e perfil da sessão atual (401 sem sessão válida). |
 | `POST /api/auth/password` | Troca a senha e encerra as demais sessões. |
 | `PATCH /api/me/profile` | Atualização parcial de nome, gêneros, temáticas, âncoras e hardware; `hardware: null` limpa o computador. |
+
+### Interações com jogos
+
+Cada visualização e reação fica em uma única relação por par, `(:User)-[:INTERACTED {reaction, views, reacted_at, first_viewed_at, last_viewed_at}]->(:Game)`. Só jogos do catálogo aceitam interação (404 para os demais). A recarga do catálogo troca apenas as arestas `HAS_GENRE`/`HAS_TAG`, então as interações sobrevivem (verificado carregando o catálogo com uma interação existente). O histórico guarda apenas o id do jogo, a reação, o número de visualizações e as datas; a conta pode apagá-lo.
+
+| Rota | Função |
+| --- | --- |
+| `POST /api/me/games/{appid}/view` | Soma uma visualização. |
+| `PUT /api/me/games/{appid}/reaction` | `{"reaction": "liked" \| "disliked" \| null}`; `null` remove a reação e mantém as visualizações. |
+| `GET /api/me/interactions` | Interações da conta, da mais recente para a mais antiga. |
+| `DELETE /api/me/interactions` | Apaga todo o histórico da conta e informa quantos registros removeu. |
+
+Efeito nas recomendações (regra A, com o `rules_v1` intacto): jogos **não curtidos** saem de `items`, `pending` e `excluded`; até 10 jogos **curtidos** entram como âncoras extras no cálculo de afinidade, sem pontuar contra si mesmos, e nunca substituem as 3 âncoras do perfil. A resposta traz `interactions` (`authenticated`, `likedAnchors`, `hidden`) e cada resultado traz `reaction`. Sem curtidas o cálculo é idêntico ao contrato de paridade com o TCC1. O jogo não curtido continua acessível pelo link direto da página de detalhe.
 
 - Senhas: Argon2id (`argon2-cffi`), mínimo de 8 caracteres. Nenhuma senha em texto puro é guardada.
 - Sessão: token aleatório em cookie `gc_session` (`HttpOnly`, `SameSite=Lax`, 7 dias). O banco guarda apenas o SHA-256 do token. Defina `SESSION_COOKIE_SECURE=true` atrás de HTTPS.

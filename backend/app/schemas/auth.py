@@ -1,6 +1,6 @@
 """Entradas de conta e de perfil. O id do usuário nunca vem do cliente."""
 
-from typing import Annotated
+from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 from .recommendations import HardwareInput, Preference, SteamID
@@ -51,3 +51,10 @@ class ProfilePatch(BaseModel):
     @classmethod
     def unique_in_order(cls, value):
         return list(dict.fromkeys(value))
+
+
+class ReactionInput(BaseModel):
+    """Reação a um jogo; None remove a reação sem apagar as visualizações."""
+    model_config = ConfigDict(extra='forbid')
+    reaction: Literal['liked', 'disliked'] | None
+

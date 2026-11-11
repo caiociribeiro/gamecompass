@@ -155,6 +155,33 @@ class ApiFlowTests(unittest.TestCase):
         for match in groups["excluded"]:
             self.assertEqual(match["compatibility"], "incompatible")
 
+    def test_05b_reacoes_a_jogos_mudam_as_recomendacoes_e_podem_ser_apagadas(self):
+        def listed():
+            status, result = self.call("POST", "/api/recommendations", profile())
+            self.assertEqual(status, 200, result)
+            return result, [m["game"]["id"] for g in ("items", "pending", "excluded") for m in result[g]]
+        before, ids = listed()
+        self.assertGreaterEqual(len(ids), 2)
+        hidden, liked = ids[0], ids[1]
+        status, seen = self.call("POST", f"/api/me/games/{hidden}/view")
+        self.assertEqual((status, seen["views"]), (200, 1))
+        status, _ = self.call("PUT", f"/api/me/games/{hidden}/reaction", {"reaction": "disliked"})
+        self.assertEqual(status, 200)
+        status, _ = self.call("PUT", f"/api/me/games/{liked}/reaction", {"reaction": "liked"})
+        self.assertEqual(status, 200)
+        after, ids_after = listed()
+        self.assertNotIn(hidden, ids_after, "Um jogo marcado como não curtido não pode ser recomendado.")
+        self.assertIn(liked, ids_after)
+        self.assertEqual(after["interactions"]["hidden"], [hidden])
+        self.assertEqual(after["interactions"]["likedAnchors"], [liked])
+        self.assertEqual(after["calculation"]["engine_version"], "rules_v1")
+        status, body = self.call("GET", "/api/me/interactions")
+        self.assertEqual((status, len(body["items"])), (200, 2))
+        status, body = self.call("DELETE", "/api/me/interactions")
+        self.assertEqual((status, body["removed"]), (200, 2))
+        _, ids_clean = listed()
+        self.assertEqual(ids_clean, ids)
+
     def test_06_regressao_dragons_dogma_2_com_rtx_3060_12gb(self):
         # A RX 6600 XT (alternativa do requisito recomendado) está na classe 300, a mesma da RTX 3060 12GB.
         status, body = self.call("POST", f"/api/games/{DRAGONS_DOGMA_2}/comparison", profile("11"))

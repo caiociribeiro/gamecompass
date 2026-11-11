@@ -76,5 +76,34 @@ class UserStoreNeo4jTests(unittest.TestCase):
         self.assertIsNone(self.store.user_for_session(f'a2-{self.tag}', now))
 
 
+    def test_interactions_use_one_relationship_per_game(self):
+        now = int(time.time())
+        ana = self.store.create_user(name='Ana', email=self.email('inter'), password_hash='hash', now=now)
+        with self.driver.session(database=settings.neo4j_database) as session:
+            game = session.run("MATCH (g:Game) RETURN g.id AS id, g.title AS title ORDER BY g.id LIMIT 1").single()
+        if game is None:
+            self.skipTest('Catálogo de jogos não carregado no Neo4j.')
+        gid = game['id']
+        self.assertIsNone(self.store.record_view(user_id=ana['id'], game_id='0', now=now))  # fora do catálogo
+        self.assertEqual(self.store.record_view(user_id=ana['id'], game_id=gid, now=now)['views'], 1)
+        self.assertEqual(self.store.record_view(user_id=ana['id'], game_id=gid, now=now + 5)['views'], 2)
+        liked = self.store.set_reaction(user_id=ana['id'], game_id=gid, reaction='liked', now=now + 6)
+        self.assertEqual((liked['reaction'], liked['views'], liked['reactedAt'], liked['title']), ('liked', 2, now + 6, game['title']))
+        self.store.set_reaction(user_id=ana['id'], game_id=gid, reaction='disliked', now=now + 7)
+        items = self.store.list_interactions(ana['id'])
+        self.assertEqual([(i['gameId'], i['reaction']) for i in items], [(gid, 'disliked')])
+        with self.driver.session(database=settings.neo4j_database) as session:
+            count = session.run("MATCH (:User {id: $uid})-[r:INTERACTED]->(:Game {id: $gid}) RETURN count(r) AS n",
+                                uid=ana['id'], gid=gid).single()['n']
+        self.assertEqual(count, 1)
+        # Reação removida de um jogo nunca visto não deixa relação vazia.
+        other = self.store.list_interactions(ana['id'])[0]['gameId']
+        self.assertEqual(self.store.clear_interactions(ana['id']), 1)
+        self.assertEqual(self.store.list_interactions(ana['id']), [])
+        self.store.set_reaction(user_id=ana['id'], game_id=other, reaction='liked', now=now)
+        self.store.set_reaction(user_id=ana['id'], game_id=other, reaction=None, now=now)
+        self.assertEqual(self.store.list_interactions(ana['id']), [])
+
+
 if __name__ == '__main__':
     unittest.main()
