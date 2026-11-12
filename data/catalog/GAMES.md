@@ -83,6 +83,8 @@ A seleção continua com 120 jogos, mas 28 títulos de nicho foram trocados por 
 - Tiro (classificação editorial) foi aplicado a PUBG, Apex, Call of Duty, Battlefield 6, Hunt, Destiny 2, Marvel Rivals e ARC Raiders. Relaxante (5) e Puzzle (7) ficaram com poucos jogos, e o gênero "Acesso Antecipado" passou a existir porque a Steam o atribui a alguns dos novos (Phasmophobia, R.E.P.O., Path of Exile 2 e BeamNG.drive entre os novos; Project Zomboid já estava).
 - Requisitos: os jogos novos publicam CPUs e GPUs que o índice não tem (i5-4430, i5-4590, i5-6600K, i7-6800K, GTX 1070 Ti, HD 7790, R9 390 e outras) ou citam só "GTX 1060"/"RX 480" sem a memória, ou ainda dão textos genéricos ("2 GHz Processor"). Nada disso foi preenchido sem fonte: os jogos ficam pendentes nos mínimos até haver classe documentada. Foram aplicados só aliases para modelos únicos do catálogo e uma regra para o i3-12100 (referência: i3-12100F, mesmo conjunto de núcleos e frequências). A contagem atualizada de pendências está no relatório de revisão.
 
+Números depois da troca: 120 jogos, 16 gêneros, 10 temáticas e 626 relações (342 `HAS_GENRE` e 284 `HAS_TAG`); 111 jogos com base de comparação de hardware no Windows. Os números de 99 e 601 do parágrafo da ampliação acima descrevem o estado de 06/11/2026.
+
 Os nós de jogos removidos continuam no Neo4j, porque a carga não apaga jogos omitidos. Para limpar sem perder reações de usuários, rode no Neo4j Browser ou no `cypher-shell`, trocando a lista pelos AppIDs atuais de `games.json`:
 
 ```cypher
@@ -213,6 +215,8 @@ A revisão inclui esses blocos em `not_provided` e os contabiliza separadamente 
 
 Objetivo: separar erro de extração ou identificação de informação que a Steam
 realmente não publica, sem inventar requisitos para chegar a 100% de cobertura.
+
+**Registro histórico.** Unpacking, A Hat in Time, Baba Is You e Spelunky 2, citados nesta seção e em outras mais abaixo, saíram do catálogo na troca de 10/11/2026. O texto fica como registro do que a fonte publicava.
 
 **Pendências dos jogos.** O texto original (`appdetails.json`) dos quatro jogos
 foi comparado com o resultado do parser. Em todos, o dado falta na fonte:

@@ -1,6 +1,6 @@
 # Revisão de hardware de 06/11/2026
 
-Acrescenta 50 peças (30 CPUs e 20 GPUs) ao índice `manual_v1`, que passa de 262 para 312 componentes (145 CPUs e 167 GPUs). Elas aparecem nos requisitos dos 120 jogos do catálogo e estavam como "não identificadas". Os nomes, notas e aliases anteriores não foram alterados.
+Acrescenta 50 peças (30 CPUs e 20 GPUs) ao índice `manual_v1`, que passa de 262 para 312 componentes. Com a RX 5500 XT 4GB, acrescentada depois, o índice tem 313 (145 CPUs e 168 GPUs). Elas aparecem nos requisitos dos 120 jogos do catálogo e estavam como "não identificadas". Os nomes, notas e aliases anteriores não foram alterados.
 
 ## Critério e limites desta revisão
 
