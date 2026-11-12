@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { PageHeader } from "../components/PageHeader"
 import { SearchSelect } from "../components/SearchSelect"
@@ -6,12 +6,33 @@ import { StepFooter } from "../components/StepFooter"
 import { StepNav } from "../components/StepNav"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
+import { useSound } from "../context/SoundContext"
 import { OPERATING_SYSTEMS, RAM_OPTIONS, WINDOWS_VERSIONS } from "../data/hardware"
 import { hardwareSummary } from "../lib/hardware"
 import type { OperatingSystem, WindowsVersion } from "../types"
+import "../styles/results.css"
+
+function bitmap(rows: string[], palette: Record<string, string>) {
+  const cells: ReactNode[] = []
+  rows.forEach((row, y) => {
+    for (let x = 0; x < row.length; x += 1) {
+      if (palette[row[x]]) cells.push(<rect key={`${x}-${y}`} x={x} y={y} width={1.03} height={1.03} fill={palette[row[x]]} />)
+    }
+  })
+  return <svg viewBox="0 0 8 8" shapeRendering="crispEdges" aria-hidden="true" focusable="false">{cells}</svg>
+}
+
+const SLOT_ICONS = [
+  bitmap(["KKKKKKKK", "KGGGGGGK", "KGKKKKGK", "KGKYYKGK", "KGKYYKGK", "KGKKKKGK", "KGGGGGGK", "KKKKKKKK"], { K: "#000", G: "#6be1ff", Y: "#ffd86b" }),
+  bitmap(["........", "KKKKKKKK", "KGGGGGGK", "KGKKGKKK", "KGKKGGGK", "KGGGGGGK", "KKKKKKKK", "K.K.K.K."], { K: "#000", G: "#5cff9d" }),
+  bitmap(["........", "KKKKKKKK", "KRKRKRKK", "KRKRKRKK", "KRKRKRKK", "KKKKKKKK", "K.K.K.K.", "........"], { K: "#000", R: "#ff9bb5" }),
+  bitmap(["..KKKK..", ".KOOOOK.", "KOOKKOOK", "KOKOOKOK", "KOKOOKOK", "KOOKKOOK", ".KOOOOK.", "..KKKK.."], { K: "#000", O: "#ffd86b" }),
+]
+const SLOT_LABELS = ["CPU", "GPU", "RAM", "SISTEMA"]
 
 export function Hardware() {
   const { user, updateUser } = useSession()
+  const { play } = useSound()
   const { hardware, hardwareLoading, hardwareError, refresh } = useCatalog()
   const [cpuId, setCpuId] = useState(user?.hardware?.cpuId ?? "")
   const [gpuId, setGpuId] = useState(user?.hardware?.gpuId ?? "")
@@ -20,22 +41,61 @@ export function Hardware() {
   const [windowsVersion, setWindowsVersion] = useState<WindowsVersion | "">(
     user?.hardware?.windowsVersion ?? "",
   )
-  const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
+  const [justFilled, setJustFilled] = useState<number | null>(null)
+  const lastSent = useRef<string | null>(null)
+  const stored = user?.hardware
+  const cpuKnown = hardware.CPU.some((part) => part.id === cpuId)
+  const gpuKnown = hardware.GPU.some((part) => part.id === gpuId)
+  const ramValid = RAM_OPTIONS.some((value) => value === Number(ramGb))
+  const windowsValid = os !== "Windows" || WINDOWS_VERSIONS.some((version) => version === windowsVersion)
+  const catalogReady = !hardwareLoading && !hardwareError
+  const complete = catalogReady && cpuKnown && gpuKnown && ramValid && Boolean(os) && windowsValid
+
+  // Salva sozinho: assim que as quatro peças estão válidas e diferentes do que está na conta.
+  useEffect(() => {
+    if (!complete || !os) return
+    const next = {
+      cpuId, gpuId, ramGb: Number(ramGb), os,
+      windowsVersion: os === "Windows" ? windowsVersion as WindowsVersion : undefined,
+    }
+    const same = stored && stored.cpuId === next.cpuId && stored.gpuId === next.gpuId && stored.ramGb === next.ramGb &&
+      stored.os === next.os && (next.os !== "Windows" || (stored.windowsVersion ?? "") === next.windowsVersion)
+    const key = JSON.stringify(next)
+    if (same) { lastSent.current = key; return }
+    if (lastSent.current === key) return
+    lastSent.current = key
+    updateUser({ hardware: next })
+    setSaved(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [complete, cpuId, gpuId, ramGb, os, windowsVersion])
+
   if (!user) return null
   const cpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.CPU.length
   const gpuUnavailable = hardwareLoading || Boolean(hardwareError) || !hardware.GPU.length
   const summary = hardwareSummary(user.hardware, hardware)
-  const stored = user.hardware
-  // Este formulário só grava ao clicar em Salvar; o rodapé não deve liberar a próxima etapa
-  // enquanto o que está na tela for diferente do que está salvo.
-  const dirty = stored
-    ? cpuId !== stored.cpuId || gpuId !== stored.gpuId || Number(ramGb) !== stored.ramGb || os !== stored.os ||
-      (os === "Windows" && windowsVersion !== (stored.windowsVersion ?? ""))
-    : Boolean(cpuId || gpuId || ramGb || os)
+  const catalogFilled = catalogReady && hardware.CPU.length > 0 && hardware.GPU.length > 0
+  let error: string | null = null
+  if (catalogFilled && ((cpuId && !cpuKnown) || (gpuId && !gpuKnown) || (ramGb && !ramValid))) {
+    error = "Selecione uma CPU, uma GPU, a RAM e o sistema operacional disponíveis."
+  } else if (cpuKnown && gpuKnown && ramValid && os === "Windows" && !windowsValid) {
+    error = "Selecione sua versão do Windows de 64 bits."
+  }
+
+  const nameOf = (list: { id: string; name: string }[], id: string) => list.find((part) => part.id === id)?.name ?? ""
+  const osText = os ? (os === "Windows" && windowsVersion ? `Windows ${windowsVersion}` : os) : ""
+  const slotValues = [
+    cpuKnown ? nameOf(hardware.CPU, cpuId) : "",
+    gpuKnown ? nameOf(hardware.GPU, gpuId) : "",
+    ramValid ? `${ramGb} GB` : "",
+    os && windowsValid ? osText : "",
+  ]
+  const filled = slotValues.filter(Boolean).length
+  const changed = (slot: number) => { setSaved(false); setJustFilled(slot) }
+
   return (
-    <div className="page narrow">
-      <StepNav current="hardware" />
+    <div className="page">
+      <StepNav current="hardware" live={{ hardware: filled / 4 }} />
       <PageHeader
         eyebrow="Hardware"
         title="O computador em que você joga"
@@ -54,149 +114,124 @@ export function Hardware() {
       <button type="button" className="btn ghost small" disabled={hardwareLoading} onClick={refresh}>
         Atualizar catálogo
       </button>
-      <form
-        className="stack"
-        onSubmit={(event) => {
-          event.preventDefault()
-          if (
-            hardwareLoading ||
-            hardwareError ||
-            !hardware.CPU.some((part) => part.id === cpuId) ||
-            !hardware.GPU.some((part) => part.id === gpuId) ||
-            !RAM_OPTIONS.some((value) => value === Number(ramGb)) ||
-            !os
-          ) {
-            setSaved(false)
-            setError("Selecione uma CPU, uma GPU, a RAM e o sistema operacional disponíveis.")
-            return
-          }
-          if (os === "Windows" && !WINDOWS_VERSIONS.some((version) => version === windowsVersion)) {
-            setSaved(false)
-            setError("Selecione sua versão do Windows de 64 bits.")
-            return
-          }
-          updateUser({
-            hardware: {
-              cpuId, gpuId, ramGb: Number(ramGb), os,
-              windowsVersion: os === "Windows" ? windowsVersion as WindowsVersion : undefined,
-            },
-          })
-          setError(null)
-          setSaved(true)
-        }}
-      >
-        <SearchSelect
-          label="Processador"
-          disabled={cpuUnavailable}
-          options={hardware.CPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
-          value={cpuId}
-          onChange={(id) => {
-            setCpuId(id)
-            setSaved(false)
-          }}
-          placeholder={
-            hardwareLoading
-              ? "Carregando processadores…"
-              : cpuUnavailable
-                ? "Catálogo de CPUs indisponível"
-                : "Buscar modelo de CPU"
-          }
-          empty="Nenhum processador com esse nome no catálogo carregado."
-        />
-        <SearchSelect
-          label="Placa de vídeo"
-          disabled={gpuUnavailable}
-          options={hardware.GPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
-          value={gpuId}
-          onChange={(id) => {
-            setGpuId(id)
-            setSaved(false)
-          }}
-          placeholder={
-            hardwareLoading
-              ? "Carregando placas de vídeo…"
-              : gpuUnavailable
-                ? "Catálogo de GPUs indisponível"
-                : "Buscar modelo de GPU"
-          }
-          empty="Nenhuma placa com esse nome no catálogo carregado."
-        />
-        <label>
-          Memória RAM
-          <select
-            value={ramGb}
-            onChange={(event) => {
-              setRamGb(event.target.value)
-              setSaved(false)
-            }}
-          >
-            <option value="">Selecione</option>
-            {RAM_OPTIONS.map((ram) => (
-              <option key={ram} value={ram}>
-                {ram} GB
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Sistema operacional
-          <select
-            value={os}
-            onChange={(event) => {
-              setOs(event.target.value as OperatingSystem | "")
-              setWindowsVersion("")
-              setSaved(false)
-            }}
-          >
-            <option value="">Selecione</option>
-            {OPERATING_SYSTEMS.map((system) => (
-              <option key={system} value={system}>
-                {system}
-              </option>
-            ))}
-          </select>
-        </label>
-        {os === "Windows" && (
-          <label>
-            Versão do Windows
-            <select
-              value={windowsVersion}
-              onChange={(event) => {
-                setWindowsVersion(event.target.value as WindowsVersion | "")
-                setSaved(false)
-              }}
-            >
-              <option value="">Selecione</option>
-              {WINDOWS_VERSIONS.map((version) => (
-                <option key={version} value={version}>Windows {version} (64 bits)</option>
+      <div className="pc-cols">
+        <aside className="pc" aria-label="Seu computador montado">
+          <div className={`pc-mon${filled === 4 ? " on" : ""}`}>
+            {filled === 4 ? <span className="on1">PC PRONTO<br /><i>▮</i></span> : <span className="off">SEM SINAL<br />MONTE O PC</span>}
+          </div>
+          <div className="pc-power" aria-hidden="true">
+            {[0, 1, 2, 3].map((index) => <i key={index} className={index < filled ? "on" : ""} />)}
+          </div>
+          {SLOT_LABELS.map((label, index) => (
+            <div key={label} className={`pc-slot${slotValues[index] ? " fl" : ""}${slotValues[index] && justFilled === index ? " ins" : ""}`}>
+              {SLOT_ICONS[index]}
+              <div>
+                <b>{label}</b>
+                <span>{slotValues[index] || "vazio"}</span>
+              </div>
+            </div>
+          ))}
+        </aside>
+        <form className="pc-form" onSubmit={(event) => event.preventDefault()}>
+          <SearchSelect
+            label="Processador"
+            disabled={cpuUnavailable}
+            options={hardware.CPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
+            value={cpuId}
+            onChange={(id) => { setCpuId(id); changed(0) }}
+            placeholder={
+              hardwareLoading
+                ? "Carregando processadores…"
+                : cpuUnavailable
+                  ? "Catálogo de CPUs indisponível"
+                  : "Buscar modelo de CPU"
+            }
+            empty="Nenhum processador com esse nome no catálogo carregado."
+          />
+          <SearchSelect
+            label="Placa de vídeo"
+            disabled={gpuUnavailable}
+            options={hardware.GPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
+            value={gpuId}
+            onChange={(id) => { setGpuId(id); changed(1) }}
+            placeholder={
+              hardwareLoading
+                ? "Carregando placas de vídeo…"
+                : gpuUnavailable
+                  ? "Catálogo de GPUs indisponível"
+                  : "Buscar modelo de GPU"
+            }
+            empty="Nenhuma placa com esse nome no catálogo carregado."
+          />
+          <div className="pc-field">
+            <span className="field-label" id="ram-label">Memória RAM</span>
+            <div className="chips" role="group" aria-labelledby="ram-label">
+              {RAM_OPTIONS.map((ram) => (
+                <button
+                  key={ram}
+                  type="button"
+                  className={`chip${Number(ramGb) === ram ? " on" : ""}`}
+                  aria-pressed={Number(ramGb) === ram}
+                  onClick={() => { play("select"); setRamGb(String(ram)); changed(2) }}
+                >
+                  {ram} GB
+                </button>
               ))}
-            </select>
-          </label>
-        )}
-        {error && (
-          <p className="form-error" role="alert">
-            {error}
-          </p>
-        )}
-        {saved && (
-          <p className="hint" role="status">
-            Computador salvo na sua conta.
-          </p>
-        )}
-        <button className="btn" type="submit" disabled={cpuUnavailable || gpuUnavailable}>
-          Salvar computador
-        </button>
-      </form>
+            </div>
+          </div>
+          <div className="pc-field">
+            <span className="field-label" id="os-label">Sistema operacional</span>
+            <div className="chips" role="group" aria-labelledby="os-label">
+              {OPERATING_SYSTEMS.map((system) => (
+                <button
+                  key={system}
+                  type="button"
+                  className={`chip${os === system ? " on" : ""}`}
+                  aria-pressed={os === system}
+                  onClick={() => {
+                    play("select")
+                    if (os !== system) { setOs(system); setWindowsVersion("") }
+                    changed(3)
+                  }}
+                >
+                  {system}
+                </button>
+              ))}
+            </div>
+            {os === "Windows" && (
+              <>
+                <span className="field-label" id="wv-label" style={{ marginTop: 12 }}>Versão do Windows</span>
+                <div className="chips" role="group" aria-labelledby="wv-label">
+                  {WINDOWS_VERSIONS.map((version) => (
+                    <button
+                      key={version}
+                      type="button"
+                      className={`chip${windowsVersion === version ? " on" : ""}`}
+                      aria-pressed={windowsVersion === version}
+                      onClick={() => { play("select"); setWindowsVersion(version); changed(3) }}
+                    >
+                      Windows {version} (64 bits)
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          {error && (
+            <p className="form-error" role="alert">
+              {error}
+            </p>
+          )}
+          <p className="pc-saved" role="status">{saved ? "▮ SALVO NA CONTA" : ""}</p>
+        </form>
+      </div>
       {summary && (
-        <section className="summary-line">
+        <section className="panel">
           <p className="eyebrow">Seu computador</p>
           <p>{summary.text}</p>
         </section>
       )}
-      <StepFooter
-        id="hardware"
-        pending={dirty ? "Há alterações que ainda não foram salvas. Clique em Salvar computador para continuar." : undefined}
-      />
+      <StepFooter id="hardware" />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react"
 import { fold } from "../lib/text"
+import "../styles/results.css"
 
 type Option = {
   id: string
@@ -51,8 +52,8 @@ export function SearchSelect({
             <strong>{selected.label}</strong>
             {selected.hint && <span>{selected.hint}</span>}
           </div>
-          <button type="button" className="btn ghost small" disabled={disabled} onClick={() => onChange("")}>
-            Trocar
+          <button type="button" className="picked-x" aria-label="Trocar" title="Trocar" disabled={disabled} onClick={() => onChange("")}>
+            <span aria-hidden="true">✕</span>
           </button>
         </div>
       ) : (

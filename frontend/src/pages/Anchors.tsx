@@ -6,6 +6,9 @@ import { StepFooter } from "../components/StepFooter"
 import { StepNav } from "../components/StepNav"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
+import { useSound } from "../context/SoundContext"
+import { useGridCols } from "../lib/useGridCols"
+import "../styles/start.css"
 import { apiError, apiGet } from "../lib/api"
 import type { GameSearchResult } from "../types"
 
@@ -17,6 +20,7 @@ type Suggestions = {
 export function Anchors() {
   const { user, updateUser } = useSession()
   const { games, loadGame } = useCatalog()
+  const { play } = useSound()
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<GameSearchResult[]>([])
   const [searching, setSearching] = useState(false)
@@ -32,6 +36,7 @@ export function Anchors() {
   const anchorIds = user?.anchorIds ?? []
   const full = anchorIds.length >= 3
   const term = query.trim()
+  const gridRef = useGridCols(suggestions.length)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -87,6 +92,7 @@ export function Anchors() {
     setAddError(null)
     try {
       await loadGame(result.id)
+      play("select")
       updateUser({ anchorIds: [...anchorIds, result.id] })
       setQuery("")
       setResults([])
@@ -101,56 +107,51 @@ export function Anchors() {
     <div className="page narrow">
       <StepNav current="anchors" />
       <PageHeader
-        eyebrow="Jogos âncora"
+        eyebrow="FASE 2 · ÂNCORAS"
         title="Três jogos que representam você"
         lede="Pesquise pelo nome ou escolha entre as sugestões abaixo. Selecione três jogos que você gosta para encontrar títulos parecidos. Cada escolha é salva na sua conta na hora."
       />
       <CatalogStatus />
-      <ol className="slots">
+      <ol className="anchor-slots" aria-label="Seus três jogos âncora">
         {[0, 1, 2].map((index) => {
           const game = selected[index]
           const id = anchorIds[index]
+          const remove = (target: string) => {
+            play("back")
+            updateUser({ anchorIds: anchorIds.filter((item) => item !== target) })
+          }
           return (
-            <li key={index}>
-              <span>Âncora {index + 1}</span>
+            <li key={game?.id ?? id ?? `vazio-${index}`} className={game ? "anchor-slot full" : "anchor-slot"}>
+              <span className="lab">ÂNCORA {index + 1}</span>
               {game ? (
-                <div className="slot-filled">
-                  <Cover game={game} className="cover-sm" />
-                  <div>
-                    <strong>{game.title}</strong>
-                    <p>{game.genres.join(" · ")}</p>
-                  </div>
+                <>
+                  <Cover game={game} />
+                  <p className="nm">{game.title}</p>
                   <button
                     type="button"
-                    className="btn ghost small"
+                    className="x"
+                    aria-label={`Remover ${game.title}`}
                     disabled={Boolean(adding)}
-                    onClick={() =>
-                      updateUser({
-                        anchorIds: anchorIds.filter((item) => item !== game.id),
-                      })
-                    }
+                    onClick={() => remove(game.id)}
                   >
-                    Remover
+                    ✕
                   </button>
-                </div>
+                </>
               ) : id ? (
-                <div>
+                <div className="missing-detail">
                   <p>Detalhes do jogo salvo ainda não disponíveis.</p>
                   <button
                     type="button"
-                    className="btn ghost small"
+                    className="x"
+                    aria-label="Remover jogo salvo"
                     disabled={Boolean(adding)}
-                    onClick={() =>
-                      updateUser({
-                        anchorIds: anchorIds.filter((item) => item !== id),
-                      })
-                    }
+                    onClick={() => remove(id)}
                   >
-                    Remover
+                    ✕
                   </button>
                 </div>
               ) : (
-                <p className="muted">Vazio</p>
+                <span className="q" aria-label="Vazio">?</span>
               )}
             </li>
           )
@@ -161,12 +162,12 @@ export function Anchors() {
           {addError}
         </p>
       )}
-      <label className="stack-label">
+      <label className="anchor-search">
         Buscar jogos na Steam
         <input
           value={query}
           maxLength={100}
-          placeholder={full ? "Remova um jogo para trocar" : "Digite o nome do jogo"}
+          placeholder={full ? "3 de 3 escolhidos. Remova um para trocar" : "Digite o nome do jogo"}
           disabled={full || Boolean(adding)}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -246,11 +247,11 @@ export function Anchors() {
           {!suggestionsLoading && !suggestionsError && !suggestions.length && (
             <p className="empty">Nenhuma sugestão disponível agora. Use a busca pelo nome.</p>
           )}
-          <ul className="anchor-suggestions-grid">
+          <ul className="anchor-suggestions-grid card-grid" ref={gridRef}>
             {suggestions.map((game) => {
               const chosen = anchorIds.includes(game.id)
               return (
-                <li className="anchor-suggestion" key={game.id}>
+                <li className={`anchor-suggestion${chosen ? " chosen" : full ? " locked" : ""}`} key={game.id}>
                   <Cover game={{ ...game, image_url: game.image_url ?? null }} />
                   <div className="anchor-suggestion-body">
                     <h3>{game.title}</h3>
@@ -260,7 +261,7 @@ export function Anchors() {
                       disabled={full || Boolean(adding) || chosen}
                       onClick={() => void add(game)}
                     >
-                      {adding === game.id ? "Carregando…" : chosen ? "Selecionado" : "Usar"}
+                      {adding === game.id ? "Carregando…" : chosen ? "Escolhido" : "Usar"}
                     </button>
                   </div>
                 </li>

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { AuthFrame, FormError, useField } from "../components/AuthFrame"
 import { useTitle } from "../components/PageHeader"
@@ -7,6 +8,8 @@ export function Register() {
   useTitle("Criar conta")
   const { register } = useSession()
   const { error, pending, onSubmit } = useField()
+  const [pwLength, setPwLength] = useState(0)
+  const level = Math.min(4, Math.floor(pwLength / 3))
 
   return (
     <AuthFrame
@@ -39,8 +42,11 @@ export function Register() {
         </label>
         <label>
           Senha
-          <input name="password" type="password" autoComplete="new-password" minLength={8} maxLength={128} required />
+          <input name="password" type="password" autoComplete="new-password" minLength={8} maxLength={128} required onChange={(e) => setPwLength(e.target.value.length)} />
         </label>
+        <div className="pw-meter" data-level={pwLength === 0 ? 0 : Math.max(1, level)} aria-hidden="true">
+          <i /><i /><i /><i />
+        </div>
         <label>
           Confirmar senha
           <input name="confirm" type="password" autoComplete="new-password" minLength={8} maxLength={128} required />

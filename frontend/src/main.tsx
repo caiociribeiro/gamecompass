@@ -4,16 +4,19 @@ import { BrowserRouter } from "react-router-dom"
 import { App } from "./App"
 import { SessionProvider } from "./context/SessionContext"
 import { CatalogProvider } from "./context/CatalogContext"
+import { SoundProvider } from "./context/SoundContext"
 import "./styles/global.css"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <SessionProvider>
-        <CatalogProvider>
-          <App />
-        </CatalogProvider>
-      </SessionProvider>
+      <SoundProvider>
+        <SessionProvider>
+          <CatalogProvider>
+            <App />
+          </CatalogProvider>
+        </SessionProvider>
+      </SoundProvider>
     </BrowserRouter>
   </StrictMode>,
 )

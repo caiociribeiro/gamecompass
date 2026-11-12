@@ -8,25 +8,32 @@ function hue(id: string) {
   return hash
 }
 
-export function Cover({ game, className = "" }: {
+export function Cover({ game, className = "", badge }: {
   game: Pick<Game, "id" | "title" | "image_url">
   className?: string
+  badge?: { label: string; tone?: "ok" | "min" | "pending" }
 }) {
   const tone = hue(game.id)
-  const [broken, setBroken] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const src = failed ? null : game.image_url
   return (
     <div
       className={`cover ${className}`.trim()}
-      style={{
-        background: `linear-gradient(160deg, hsl(${tone} 28% 28%), hsl(${(tone + 40) % 360} 22% 14%))`,
-      }}
+      style={{ background: `linear-gradient(160deg, hsl(${tone} 38% 32%), hsl(${(tone + 40) % 360} 30% 16%))` }}
       aria-hidden="true"
     >
-      {game.image_url && !broken ? (
-        <img src={game.image_url} alt="" loading="lazy" onError={() => setBroken(true)} />
+      {src ? (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailed(true)}
+        />
       ) : (
         <span>{game.title.slice(0, 1)}</span>
       )}
+      {badge && <span className={`cover-badge ${badge.tone ?? "pending"}`}>{badge.label}</span>}
     </div>
   )
 }
@@ -39,6 +46,7 @@ export function GameCard({
   reason,
   chips,
   actions,
+  badge,
 }: {
   game: Game
   affinity?: number
@@ -47,20 +55,17 @@ export function GameCard({
   reason?: string
   chips?: string[]
   actions?: ReactNode
+  badge?: { label: string; tone?: "ok" | "min" | "pending" }
 }) {
   const location = useLocation()
   const card = (
     <Link className="game-card" to={href} state={{ returnTo: location.pathname + location.search, returnKey: location.key }}>
-      <Cover game={game} />
+      <Cover game={game} badge={badge} />
       <div className="game-card-body">
         <div className="game-card-top">
           <h3>{game.title}</h3>
           {typeof affinity === "number" && <strong>{affinity}%</strong>}
         </div>
-        <p className="muted">
-          {game.developer} · {game.year}
-        </p>
-        <p className="tags">{game.genres.join(" · ")}</p>
         {typeof affinity === "number" && (
           <div className="meter" aria-hidden="true">
             <span style={{ width: `${affinity}%` }} />
@@ -77,5 +82,5 @@ export function GameCard({
     </Link>
   )
   // Os botões ficam fora do link: botão dentro de link não é HTML válido nem acessível.
-  return actions ? <div className="game-card-shell">{card}<div className="game-card-actions">{actions}</div></div> : card
+  return actions ? <div className="game-card-shell">{card}<div className="game-card-actions">{actions}</div></div> : <div className="game-card-shell">{card}</div>
 }

@@ -9,9 +9,42 @@ import { explanationChips } from "../lib/explain"
 import { nextPendingStep, profileSteps } from "../lib/profile"
 import { compatibilityLabel, profileReady } from "../lib/recommend"
 import { fold } from "../lib/text"
-import { useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
+import { LoadingBar } from "../components/PhaseOverlay"
+import { StepNav } from "../components/StepNav"
+import "../styles/results.css"
 import { apiError } from "../lib/api"
 import type { GameMatch, Reaction } from "../types"
+
+const STATUS_FILTERS: [string, string][] = [
+  ["all", "Todos"],
+  ["recommended", "Recomendados atendidos"],
+  ["minimum", "Apenas mínimos atendidos"],
+  ["pending", "Validação pendente"],
+  ["incompatible", "Com restrições"],
+]
+
+/** Escolhe quantas colunas cada grade usa: cartões entre 240 e 360px, preferindo completar a última linha. */
+function fitColumns(root: HTMLElement) {
+  const width = root.clientWidth
+  if (!width) return
+  const gap = 16
+  const maxC = Math.max(2, Math.floor((width + gap) / (240 + gap)))
+  const minC = Math.max(2, Math.min(maxC, Math.ceil((width + gap) / (360 + gap))))
+  root.querySelectorAll<HTMLElement>(".card-grid").forEach((grid) => {
+    const n = grid.children.length
+    let best = maxC
+    let bestScore = -1
+    for (let c = maxC; c >= minC; c -= 1) {
+      const rest = n % c
+      const fill = n <= c ? n / c : rest === 0 ? 1 : (rest / c) * 0.5 + 0.5
+      const score = fill * 1000 + c
+      if (score > bestScore) { bestScore = score; best = c }
+    }
+    if (n && n < minC) best = minC
+    grid.style.setProperty("--cols", String(best))
+  })
+}
 
 export function Recommendations() {
   const { user } = useSession()
@@ -20,6 +53,7 @@ export function Recommendations() {
   const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues, recommendations,
     reactions, reactionsStale, reactToGame } = useCatalog()
   const [reactionError, setReactionError] = useState<string | null>(null)
+  const pageRef = useRef<HTMLDivElement>(null)
   const reactionOf = (match: GameMatch) => reactions[match.game.id] !== undefined ? reactions[match.game.id] : match.reaction
   const card = (match: GameMatch) => (
     <GameCard
@@ -28,6 +62,7 @@ export function Recommendations() {
       affinity={match.affinity}
       href={`/app/jogos/${match.game.id}`}
       note={compatibilityLabel(match)}
+      badge={match.meets === "recommended" ? { label: "RECOMENDADO", tone: "ok" } : match.meets === "minimum" ? { label: "MÍNIMO", tone: "min" } : { label: "PENDENTE", tone: "pending" }}
       reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
       chips={explanationChips(match)}
       actions={
@@ -47,6 +82,15 @@ export function Recommendations() {
     else next.delete(key)
     setParams(next, { replace: true })
   }
+  useLayoutEffect(() => {
+    const root = pageRef.current
+    if (!root) return
+    fitColumns(root)
+    if (typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(() => fitColumns(root))
+    observer.observe(root)
+    return () => observer.disconnect()
+  })
   if (!user) return null
   const ready = profileReady(user, games, hardware)
   const result = recommendations ?? { items: [], pending: [], excluded: [] }
@@ -57,7 +101,8 @@ export function Recommendations() {
   const visible = items.length + pending.length + excluded.length
   const total = result.items.length + result.pending.length + result.excluded.length
   return (
-    <div className="page">
+    <div className="page" ref={pageRef}>
+      {!(ready && discovered) && <StepNav current="recs" />}
       <PageHeader
         eyebrow="Recomendações"
         title="Jogos para o seu perfil e para o seu PC"
@@ -98,7 +143,8 @@ export function Recommendations() {
           <button type="button" className="btn" disabled={gamesLoading} onClick={() => void discoverGames()}>
             {gamesLoading ? "Buscando sugestões…" : discovered ? "Atualizar sugestões" : "Buscar sugestões"}
           </button>
-          {!discovered && <p className="hint">As sugestões são consultadas quando você solicitar.</p>}
+          {gamesLoading && <LoadingBar />}
+          {!discovered && !gamesLoading && <p className="hint">As sugestões são consultadas quando você solicitar.</p>}
         </div>
       )}
       {ready && discovered && (
@@ -114,8 +160,14 @@ export function Recommendations() {
           {gameIssues.filter((issue) => !issue.appid).map((issue) => (
             <p className="hint" key={issue.message}>{issue.message}</p>
           ))}
-          <div className="recommendation-filters">
-            <label className="stack-label">
+          <div className="sum">
+            <span className="tg g">{result.items.filter((match) => match.meets === "recommended").length} atendem aos recomendados</span>
+            <span className="tg y">{result.items.filter((match) => match.meets === "minimum").length} atendem aos mínimos</span>
+            <span className="tg p">{result.pending.length} com validação pendente</span>
+            <span className="tg r">{result.excluded.length} com restrições identificadas</span>
+          </div>
+          <div className="flt">
+            <label className="flt-name">
               Filtrar a lista
               <input
                 value={query}
@@ -123,27 +175,19 @@ export function Recommendations() {
                 onChange={(event) => updateFilter("q", event.target.value)}
               />
             </label>
-            <label className="stack-label">
-              Situação dos requisitos
-              <select value={filter} onChange={(event) => updateFilter("status", event.target.value)}>
-                <option value="all">Todos os resultados</option>
-                <option value="recommended">Recomendados atendidos</option>
-                <option value="minimum">Apenas mínimos atendidos</option>
-                <option value="pending">Validação pendente</option>
-                <option value="incompatible">Com restrições</option>
-              </select>
-            </label>
+            <div className="chips" role="group" aria-label="Situação dos requisitos">
+              {STATUS_FILTERS.map(([value, label]) => (
+                <button key={value} type="button" className={`chip${filter === value ? " on" : ""}`} aria-pressed={filter === value}
+                  onClick={() => updateFilter("status", value)}>
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-          <p className="hint">
-            {result.items.filter((match) => match.meets === "recommended").length} atendem aos recomendados
-            {" · "}{result.items.filter((match) => match.meets === "minimum").length} atendem aos mínimos
-            {" · "}{result.pending.length} com validação pendente
-            · {result.excluded.length} com restrições identificadas.
-          </p>
-          <p className="hint" role="status">Exibindo {visible} de {total} resultados.</p>
+          <p className="count" role="status">Exibindo {visible} de {total} resultados.</p>
           {reactionError && <p className="hint" role="alert">{reactionError}</p>}
           {reactionsStale && (
-            <p className="banner" role="status">
+            <p className="banner reactions-banner" role="status">
               Suas reações foram salvas. Jogos que você não curtiu já saíram da lista; as curtidas entram no cálculo de
               afinidade quando você atualizar as sugestões.{" "}
               <button type="button" className="btn small" disabled={gamesLoading} onClick={() => void discoverGames()}>

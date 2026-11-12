@@ -1,95 +1,102 @@
-import { useState } from "react"
-import { NavLink, Outlet, useNavigate } from "react-router-dom"
+import { useEffect, useRef, useState } from "react"
+import { Link, Outlet, useLocation } from "react-router-dom"
 import { useSession } from "../context/SessionContext"
-import { useCatalog } from "../context/CatalogContext"
-import { profileSteps } from "../lib/profile"
+import { useSound } from "../context/SoundContext"
 import { LegacyImportNotice } from "./LegacyImportNotice"
-import { Logo } from "./Logo"
+import { Avatar } from "./PixelIcons"
 
-const LINKS = [
-  { to: "/app", label: "Painel", end: true },
-  { to: "/app/preferencias", label: "Preferências", end: false },
-  { to: "/app/ancoras", label: "Jogos âncora", end: false },
-  { to: "/app/hardware", label: "Hardware", end: false },
-  { to: "/app/recomendacoes", label: "Recomendações", end: false },
-  { to: "/app/conta", label: "Conta", end: false },
-  { to: "/app/sobre", label: "Sobre", end: false },
+const PHASE: [RegExp, string][] = [
+  [/^\/app\/preferencias/, "FASE 1 · PERFIL"],
+  [/^\/app\/ancoras/, "FASE 2 · ÂNCORAS"],
+  [/^\/app\/hardware/, "FASE 3 · COMPUTADOR"],
+  [/^\/app\/recomendacoes/, "FASE 4 · SUGESTÕES"],
+  [/^\/app\/jogos/, "FICHA DO JOGO"],
+  [/^\/app\/conta/, "SUA CONTA"],
+  [/^\/app\/sobre/, "SOBRE"],
 ]
 
-export function AppShell() {
-  const { user, logout, saveError, dismissSaveError } = useSession()
-  const { games, hardware } = useCatalog()
-  const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
-  const steps = user ? profileSteps(user, games, hardware) : []
+const MENU: [string, string, string][] = [
+  ["/app", "★", "INÍCIO"],
+  ["/app/preferencias", "1", "PERFIL"],
+  ["/app/ancoras", "2", "ÂNCORAS"],
+  ["/app/hardware", "3", "COMPUTADOR"],
+  ["/app/recomendacoes", "4", "SUGESTÕES"],
+]
 
-  function closeAnd(action?: () => void) {
-    setOpen(false)
-    action?.()
-  }
-
+function SideMenu({ pathname, onClose }: { pathname: string; onClose: () => void }) {
+  const first = useRef<HTMLAnchorElement>(null)
+  useEffect(() => {
+    first.current?.focus()
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose()
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [onClose])
+  const current = (to: string) => (to === "/app" ? pathname === "/app" || pathname === "/app/" : pathname.startsWith(to))
   return (
-    <div className={open ? "shell nav-open" : "shell"}>
-      <button type="button" className="scrim" aria-label="Fechar menu" onClick={() => setOpen(false)} />
-      <aside className="rail">
-        <Logo />
-        <nav className="rail-nav">
-          {LINKS.map((link) => {
-            const step = steps.find((item) => item.to === link.to)
-            return (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.end}
-                className={({ isActive }) => (isActive ? "rail-link active" : "rail-link")}
-                onClick={() => setOpen(false)}
-              >
-                <span>{link.label}</span>
-                {step && <i className={step.done ? "dot on" : "dot"} aria-hidden="true" />}
-              </NavLink>
-            )
-          })}
-        </nav>
-        <div className="rail-foot">
-          <p className="muted tiny">Catálogo conectado. Perfil salvo na sua conta.</p>
-          <div className="who">
-            <strong>{user?.name}</strong>
-            <span>{user?.email}</span>
-          </div>
-          <button
-            type="button"
-            className="btn ghost small"
-            onClick={() =>
-              closeAnd(() => {
-                void logout()
-                navigate("/entrar")
-              })
-            }
-          >
-            Sair
-          </button>
-        </div>
-      </aside>
-      <div className="workspace">
-        <header className="mobile-bar">
-          <button type="button" className="btn ghost small" onClick={() => setOpen(true)}>
-            Menu
-          </button>
-          <Logo size={22} />
-        </header>
-        <main className="workspace-main">
-          {saveError && (
-            <p className="form-error" role="alert">
-              {saveError}{" "}
-              <button type="button" className="btn ghost small" onClick={dismissSaveError}>
-                Fechar
-              </button>
-            </p>
-          )}
-          <LegacyImportNotice />
-          <Outlet />
-        </main>
-      </div>
+    <>
+      <div className="drawer-backdrop" onClick={onClose} aria-hidden="true" />
+      <nav className="drawer" id="menu-lateral" aria-label="Menu das fases">
+        <p className="drawer-title">MENU</p>
+        <ul>
+          {MENU.map(([to, mark, name], index) => (
+            <li key={to}>
+              <Link ref={index === 0 ? first : undefined} to={to} className={current(to) ? "cur" : ""} aria-current={current(to) ? "page" : undefined} onClick={onClose}>
+                <b aria-hidden="true">{mark}</b>
+                {name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </>
+  )
+}
+
+/** Cabeçalho fixo do app: botão de início, nome da fase, som, sobre e a conta (avatar e nome). */
+export function AppShell() {
+  const { user, saveError, dismissSaveError } = useSession()
+  const { enabled, toggle } = useSound()
+  const { pathname } = useLocation()
+  const label = PHASE.find(([pattern]) => pattern.test(pathname))?.[1] ?? "INÍCIO"
+  const [open, setOpen] = useState(false)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  const close = () => {
+    setOpen(false)
+    toggleRef.current?.focus()
+  }
+  useEffect(() => setOpen(false), [pathname])
+  const atHome = pathname === "/app" || pathname === "/app/"
+  return (
+    <div className="shell">
+      <i className="stars" aria-hidden="true" />
+      <header className="app-top">
+        <button ref={toggleRef} type="button" className="top-btn menu-btn" aria-expanded={open} aria-controls="menu-lateral" aria-label="Abrir menu das fases" onClick={() => setOpen((value) => !value)}>
+          ☰
+        </button>
+        {atHome ? <span className="top-btn ghost" aria-hidden="true">GAMECOMPASS</span> : <Link className="top-btn" to="/app" aria-label="Voltar ao início">◀<span className="lbl"> INÍCIO</span></Link>}
+        <span className="grow" aria-live="polite">{label}</span>
+        <button type="button" className="top-btn ghost" aria-pressed={enabled} aria-label={`Som: ${enabled ? "ligado" : "desligado"}`} onClick={toggle}>
+          ♪<span className="lbl"> SOM: {enabled ? "LIGADO" : "DESLIGADO"}</span>
+        </button>
+        <Link className="top-btn ghost" to="/app/sobre">SOBRE</Link>
+        <Link className="me" to="/app/conta" aria-label="Sua conta">
+          <Avatar name={user?.name} />
+          <span className="lbl">{user?.name}</span>
+        </Link>
+      </header>
+      {open && <SideMenu pathname={pathname} onClose={close} />}
+      <main className="workspace-main">
+        {saveError && (
+          <p className="form-error" role="alert" style={{ padding: "10px 20px" }}>
+            {saveError}{" "}
+            <button type="button" className="btn small" onClick={dismissSaveError}>
+              Fechar
+            </button>
+          </p>
+        )}
+        <LegacyImportNotice />
+        <Outlet />
+      </main>
     </div>
   )
 }

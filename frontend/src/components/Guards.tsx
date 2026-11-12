@@ -16,9 +16,9 @@ function Checking() {
 }
 
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { user, status } = useSession()
+  const { user, status, signedOut } = useSession()
   if (status === "loading") return <Checking />
-  if (!user) return <Navigate to="/entrar" replace />
+  if (!user) return <Navigate to={signedOut ? "/" : "/entrar"} replace />
   return children
 }
 

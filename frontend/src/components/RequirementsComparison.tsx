@@ -1,3 +1,4 @@
+import "../styles/results.css"
 import type { Check, GameMatch, HardwareCatalog, HardwareProfile, RequirementLevel } from "../types"
 
 const LEVELS = [
