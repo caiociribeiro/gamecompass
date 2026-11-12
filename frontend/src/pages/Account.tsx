@@ -4,7 +4,8 @@ import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { apiError, apiGet } from "../lib/api"
-import { ThumbIcon } from "../components/ReactionButtons"
+import { Avatar, HeartIcon } from "../components/PixelIcons"
+import "../styles/results.css"
 import type { Interaction } from "../types"
 
 export function Account() {
@@ -37,9 +38,13 @@ export function Account() {
         title="Sua conta"
         lede="Nome, senha e perfil de jogo ficam na sua conta e acompanham você em qualquer navegador."
       />
+      <div className="account-me">
+        <Avatar name={user.name} />
+        <strong>{user.name}</strong>
+      </div>
 
       <form
-        className="stack card-block"
+        className="panel account-panel"
         onSubmit={(event) => {
           event.preventDefault()
           const next = name.trim()
@@ -64,7 +69,7 @@ export function Account() {
       </form>
 
       <form
-        className="stack card-block"
+        className="panel account-panel"
         onSubmit={async (event) => {
           event.preventDefault()
           const form = event.currentTarget
@@ -89,11 +94,12 @@ export function Account() {
         </button>
       </form>
 
-      <section className="stack card-block">
+      <section className="panel account-panel">
         <h2>Perfil de jogo</h2>
         <p>Limpar remove gêneros, temáticas, jogos âncora e computador. A conta continua existindo.</p>
         {confirmClear ? (
-          <div className="row">
+          <div className="row confirm-box">
+            <p className="form-error">Tem certeza? Isso não pode ser desfeito.</p>
             <button
               type="button"
               className="btn danger"
@@ -115,7 +121,7 @@ export function Account() {
         )}
       </section>
 
-      <section className="stack card-block">
+      <section className="panel account-panel">
         <h2>Histórico de jogos</h2>
         <p>
           Guardamos só o código do jogo, se você curtiu ou não, quantas vezes abriu a página dele e as datas. Jogos que
@@ -126,11 +132,11 @@ export function Account() {
           <p className="hint">{history.length} {history.length === 1 ? "jogo visto" : "jogos vistos"} · {reacted.length} com reação.</p>
         )}
         {reacted.length > 0 && (
-          <ul className="plain-list">
+          <ul className="plain-list history-list">
             {reacted.map((item) => (
               <li key={item.gameId}>
                 <span className="history-game">
-                  <ThumbIcon down={item.reaction === "disliked"} filled />
+                  <span className="history-heart" aria-hidden="true"><HeartIcon broken={item.reaction === "disliked"} filled /></span>
                   <span className="sr-only">{item.reaction === "liked" ? "Curtiu: " : "Não curtiu: "}</span>
                   {item.title ?? `Jogo ${item.gameId}`}
                 </span>
@@ -148,7 +154,8 @@ export function Account() {
         )}
         {historyNote && <p className="hint" role="status">{historyNote}</p>}
         {confirmHistory ? (
-          <div className="row">
+          <div className="row confirm-box">
+            <p className="form-error">Tem certeza? Isso não pode ser desfeito.</p>
             <button type="button" className="btn danger" onClick={() => {
               clearHistory()
                 .then((removed) => { setHistory([]); setHistoryNote(`Histórico removido (${removed} ${removed === 1 ? "registro" : "registros"}).`) })
@@ -168,10 +175,10 @@ export function Account() {
 
       <button
         type="button"
-        className="btn ghost"
+        className="btn danger"
         onClick={() => {
+          navigate("/")
           void logout()
-          navigate("/entrar")
         }}
       >
         Sair da conta

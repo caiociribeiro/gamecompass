@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from "react"
 import { Link } from "react-router-dom"
 import { Logo } from "./Logo"
+import "../styles/public.css"
 
 export function AuthFrame({
   title,
@@ -14,9 +15,12 @@ export function AuthFrame({
   return (
     <div className="auth">
       <section className="auth-panel">
-        <Link to="/" className="quiet-link">
-          <Logo />
+        <Link to="/" className="auth-back">
+          ◀ INÍCIO
         </Link>
+        <div className="logo-row">
+          <Logo />
+        </div>
         <h1>{title}</h1>
         <p className="lede">{lede}</p>
         {children}

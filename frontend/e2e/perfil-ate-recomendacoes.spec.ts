@@ -89,18 +89,16 @@ test("do cadastro às recomendações, só pelos botões da tela", async ({ page
     await expect(page).toHaveURL(/\/app\/hardware$/)
   })
 
-  await test.step("computador: alterações não salvas bloqueiam o avanço", async () => {
+  await test.step("computador: salva sozinho quando as peças estão completas", async () => {
     const footer = page.locator(".step-footer")
     await page.getByRole("combobox", { name: "Processador" }).fill("Ryzen 5 3600")
     await page.getByRole("option").filter({ has: page.getByText("AMD Ryzen 5 3600", { exact: true }) }).click()
     await page.getByRole("combobox", { name: "Placa de vídeo" }).fill("RTX 3060 12GB")
     await page.getByRole("option").filter({ has: page.getByText("NVIDIA GeForce RTX 3060 12GB", { exact: true }) }).click()
-    await page.getByLabel("Memória RAM").selectOption("16")
-    await page.getByLabel("Sistema operacional").selectOption("Windows")
-    await page.getByLabel("Versão do Windows").selectOption("11")
-    await expect(footer).toContainText("Há alterações que ainda não foram salvas.")
     await expect(footer.getByRole("button", { name: "Ver recomendações" })).toBeDisabled()
-    await page.getByRole("button", { name: "Salvar computador" }).click()
+    await page.getByRole("button", { name: "16 GB", exact: true }).click()
+    await page.getByRole("button", { name: "Windows", exact: true }).click()
+    await page.getByRole("button", { name: /Windows 11/ }).click()
     await expect(footer).toContainText("Etapa concluída")
     await footer.getByRole("link", { name: "Ver recomendações" }).click()
     await expect(page).toHaveURL(/\/app\/recomendacoes$/)
@@ -159,5 +157,12 @@ test("do cadastro às recomendações, só pelos botões da tela", async ({ page
     await page.goto("/app")
     await expect(page.getByRole("heading", { name: "3 de 3 prontos" })).toBeVisible()
     await expect(page.getByRole("link", { name: "Ver recomendações" })).toBeVisible()
+  })
+
+  await test.step("sair da conta leva à Landing, não ao login", async () => {
+    await page.goto("/app/conta")
+    await page.getByRole("button", { name: "Sair da conta" }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(page.getByRole("heading", { name: /Jogos do seu gosto/ })).toBeVisible()
   })
 })

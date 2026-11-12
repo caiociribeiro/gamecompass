@@ -15,6 +15,8 @@ type SessionContextValue = {
   user: UserProfile | null
   /** "loading" enquanto a API confirma se já existe uma sessão válida. */
   status: "loading" | "ready"
+  /** Verdadeiro depois que a pessoa clicou em sair (a Landing é o destino, não o login). */
+  signedOut: boolean
   /** Falha ao falar com a API (verificação da sessão ou saída). */
   error: string | null
   /** Falha ao gravar o perfil no servidor. */
@@ -34,6 +36,7 @@ const SessionContext = createContext<SessionContextValue | null>(null)
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [status, setStatus] = useState<"loading" | "ready">("loading")
+  const [signedOut, setSignedOut] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -75,6 +78,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           const account = await apiPost<UserProfile>(path, body)
           epoch.current += 1
           setUser(account)
+          setSignedOut(false)
           setError(null)
           setSaveError(null)
           return null
@@ -90,6 +94,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       error,
       saveError,
       saving,
+      signedOut,
       dismissSaveError: () => setSaveError(null),
       login: (email, password) => enter("/auth/login", { email: email.trim().toLowerCase(), password }),
       register: (input) =>
@@ -98,6 +103,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         // A interface sai na hora; o servidor encerra a sessão logo depois, na ordem da fila.
         epoch.current += 1
         setUser(null)
+        setSignedOut(true)
         setSaveError(null)
         return enqueue(async () => {
           try {
