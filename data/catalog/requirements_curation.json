@@ -2533,6 +2533,21 @@
       "source_url": "https://store.steampowered.com/app/2215430/",
       "reviewed_at": "2026-11-10T12:00:00+00:00",
       "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita NVIDIA GeForce GTX 960, AMD Radeon RX 5500 XT sem informar a memória. As versões do catálogo desse modelo (NVIDIA GeForce GTX 960 2GB e NVIDIA GeForce GTX 960 4GB; AMD Radeon RX 5500 XT 4GB e AMD Radeon RX 5500 XT 8GB) têm a mesma classe, então a escolha da versão não altera o resultado; as duas entram como referência. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "2246340",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel® Core™ i5-10400 or Intel® Core™ i3-12100 or AMD Ryzen™ 5 3600",
+      "reference_models": [
+        "Intel Core i5-10400",
+        "Intel Core i3-12100F",
+        "AMD Ryzen 5 3600"
+      ],
+      "source_url": "https://store.steampowered.com/app/2246340/",
+      "reviewed_at": "2026-11-10T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita três alternativas; Intel Core i5-10400 e AMD Ryzen 5 3600 estão no catálogo, e Intel Core i3-12100 não. O i3-12100F do catálogo tem os mesmos núcleos e frequências do i3-12100; a diferença é só a ausência de vídeo integrado, irrelevante para a classe do processador, e entra como referência dele. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
     }
   ]
 }
