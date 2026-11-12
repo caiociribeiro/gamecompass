@@ -7263,5 +7263,85 @@
     "component_type": "CPU",
     "alias": "Intel i3 4170 @ 3.7 GHz",
     "canonical_name": "Intel Core i3-4170"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel CPU 7th Gen 7700",
+    "canonical_name": "Intel Core i7-7700"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Pentium G4560 3.5 GHz",
+    "canonical_name": "Intel Pentium G4560"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel® Core™ i3 3250 3.5 GHz",
+    "canonical_name": "Intel Core i3-3250"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon™ HD 7790 (2 GB)",
+    "canonical_name": "AMD Radeon HD 7790 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R9 390",
+    "canonical_name": "AMD Radeon R9 390 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GTX 1650 Super",
+    "canonical_name": "NVIDIA GeForce GTX 1650 SUPER 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce 1070 Ti",
+    "canonical_name": "NVIDIA GeForce GTX 1070 Ti 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Nvidia® GeForce™ GTX 470 (1.28GB)",
+    "canonical_name": "NVIDIA GeForce GTX 470 1GB"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i5 6600k",
+    "canonical_name": "Intel Core i5-6600K"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Nvidia GTX 1050 Ti",
+    "canonical_name": "NVIDIA GeForce GTX 1050 Ti 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Radeon R7 360, 2 GB",
+    "canonical_name": "AMD Radeon R7 360 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "Intel Arc A310, 4GB",
+    "canonical_name": "Intel Arc A310 4GB"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel Core i5-6400 (2.7 GHz 4 Core)",
+    "canonical_name": "Intel Core i5-6400"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD Ryzen 5 1500X (3.5 GHz 4 Core)",
+    "canonical_name": "AMD Ryzen 5 1500X"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA GeForce GTX 1060 (req. 6GB VRAM)",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon RX 580 (req. 6GB VRAM)",
+    "canonical_name": "AMD Radeon RX 580 8GB"
   }
 ]

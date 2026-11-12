@@ -608,7 +608,7 @@ As informações vêm da Steam; as tags seguem a curadoria do projeto.
 Detalhes dos scripts, esquema e limites: [GAMES.md](data/catalog/GAMES.md).
 
 Na raiz do projeto, valide e atualize primeiro o hardware. A revisão
-atual tem 145 CPUs e 168 GPUs (313 peças), todas com classificação manual aproximada
+atual tem 154 CPUs e 173 GPUs (327 peças), todas com classificação manual aproximada
 para o TCC1. O lote mais recente adiciona modelos citados pelos requisitos.
 As justificativas estão em
 [REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md),

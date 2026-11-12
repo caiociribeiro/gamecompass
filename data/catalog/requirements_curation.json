@@ -2548,6 +2548,106 @@
       "source_url": "https://store.steampowered.com/app/2246340/",
       "reviewed_at": "2026-11-10T12:00:00+00:00",
       "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita três alternativas; Intel Core i5-10400 e AMD Ryzen 5 3600 estão no catálogo, e Intel Core i3-12100 não. O i3-12100F do catálogo tem os mesmos núcleos e frequências do i3-12100; a diferença é só a ausência de vídeo integrado, irrelevante para a classe do processador, e entra como referência dele. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "394360",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "Nvidia® GeForce™ GTX 470 (1.28GB) | AMD® HD 5850 (1GB) | Intel Iris Xe G7 (Tiger Lake) | AMD® Radeon™ RX Vega 11",
+      "reference_models": [
+        "NVIDIA GeForce GTX 470 1GB",
+        "AMD Radeon HD 5850",
+        "AMD Radeon RX Vega 11"
+      ],
+      "source_url": "https://store.steampowered.com/app/394360/",
+      "reviewed_at": "2026-11-12T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto lista quatro alternativas. A Intel Iris Xe G7 (Tiger Lake) não está no catálogo e é mais rápida que a GTX 470 e a HD 5850, que definem o piso; ficou fora das referências, como no Cities: Skylines. A GTX 470 de 1,28GB do texto é a GTX 470 de 1GB do catálogo (1280 MB reais). A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "261550",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Intel® Core™ i3-8100 / AMD Ryzen™ 3 1200 / Snapdragon X Elite",
+      "reference_models": [
+        "Intel Core i3-8100",
+        "AMD Ryzen 3 1200"
+      ],
+      "source_url": "https://store.steampowered.com/app/261550/",
+      "reviewed_at": "2026-11-12T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto lista três alternativas. O Snapdragon X Elite é ARM e não tem classe no índice x86; ficou fora das referências, como no Baldur's Gate 3. Valem as duas alternativas x86 identificadas. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "2694490",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "4 core 2.8GHz x64-compatible",
+      "reference_models": [
+        "Intel Core 2 Quad Q9650"
+      ],
+      "source_url": "https://store.steampowered.com/app/2694490/",
+      "reviewed_at": "2026-11-12T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto fixa só clock e número de núcleos (quad-core de 2,8 GHz). Usei o quad-core de geração mais antiga já classificado (classe 15), mesmo critério do Rocket League (3.0+ GHz quad core). O clock real é menor que o do Q9650 (3,0 GHz), então a referência pode ser um pouco generosa; confiança baixa. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "2694490",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA® GeForce® GTX 960 or ATI Radeon™ RX 470",
+      "reference_models": [
+        "NVIDIA GeForce GTX 960 2GB",
+        "NVIDIA GeForce GTX 960 4GB",
+        "AMD Radeon RX 470 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/2694490/",
+      "reviewed_at": "2026-11-12T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita a GTX 960 sem informar a memória. As duas versões do catálogo (2GB e 4GB) têm a mesma classe (20), então a escolha não altera o resultado; as duas entram como referência, junto com a RX 470 4GB (40). A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1808500",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GeForce GTX 1050 Ti or AMD Radeon RX 580 or Intel Arc A380",
+      "reference_models": [
+        "NVIDIA GeForce GTX 1050 Ti 4GB",
+        "AMD Radeon RX 580 4GB",
+        "AMD Radeon RX 580 8GB",
+        "Intel Arc A380 6GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/1808500/",
+      "reviewed_at": "2026-11-12T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto cita a RX 580 sem informar a memória. As duas versões do catálogo (4GB e 8GB) têm a mesma classe (100), então a escolha não altera o resultado; as duas entram como referência, junto com a GTX 1050 Ti 4GB e a Arc A380 6GB. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "594650",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "GPU",
+      "expected_query": "NVIDIA GTX 1650 Super or AMD Radeon RX 5500 XT, with a minimum of 4GB of VRAM",
+      "reference_models": [
+        "NVIDIA GeForce GTX 1650 SUPER 4GB",
+        "AMD Radeon RX 5500 XT 4GB"
+      ],
+      "source_url": "https://store.steampowered.com/app/594650/",
+      "reviewed_at": "2026-11-12T12:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto pede a RX 5500 XT com no mínimo 4GB de VRAM. Como é um piso, vale a versão de 4GB (classe 100); a de 8GB (150) só entraria como alternativa mais forte. A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
+    },
+    {
+      "id": "1145350",
+      "platform": "Windows",
+      "level": "minimum",
+      "component_type": "CPU",
+      "expected_query": "Dual Core 2.4 GHz",
+      "reference_models": [
+        "Intel Core 2 Duo E6600"
+      ],
+      "source_url": "https://store.steampowered.com/app/1145350/",
+      "reviewed_at": "2026-11-12T18:00:00+00:00",
+      "notes": "Referência aproximada definida pelo GameCompass para TCC1. O texto fixa só clock e número de núcleos (dual-core de 2,4 GHz). Usei o dual-core de geração mais antiga já classificado (classe 5), mesmo critério do Coffee Talk (2.4 GHz or faster processor). A descrição original é preservada. Não é um SKU mínimo certificado pelo desenvolvedor nem garantia de FPS."
     }
   ]
 }
