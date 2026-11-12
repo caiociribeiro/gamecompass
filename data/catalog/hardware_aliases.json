@@ -7203,5 +7203,65 @@
     "component_type": "GPU",
     "alias": "AMD RX 5500XT 4GB",
     "canonical_name": "AMD Radeon RX 5500 XT 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "NVIDIA® GeForce® GTX 660 2GB",
+    "canonical_name": "NVIDIA GeForce GTX 660"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "DX11 Compatible GeForce GTX 460 1GB",
+    "canonical_name": "NVIDIA GeForce GTX 460"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD HD 6850 1GB",
+    "canonical_name": "AMD Radeon HD 6850"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD® HD 5850 (1GB)",
+    "canonical_name": "AMD Radeon HD 5850"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD Radeon R9 270",
+    "canonical_name": "AMD Radeon R9 270 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "ATI Radeon™ RX 470",
+    "canonical_name": "AMD Radeon RX 470 4GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "AMD R9 270X",
+    "canonical_name": "AMD Radeon R9 270X 2GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "RX 6600 XT",
+    "canonical_name": "AMD Radeon RX 6600 XT 8GB"
+  },
+  {
+    "component_type": "GPU",
+    "alias": "GTX1060 (VRAM 6GB)",
+    "canonical_name": "NVIDIA GeForce GTX 1060 6GB"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD Ryzen R5 1600 processor",
+    "canonical_name": "AMD Ryzen 5 1600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "AMD Ryzen 5 2600 Six-Core",
+    "canonical_name": "AMD Ryzen 5 2600"
+  },
+  {
+    "component_type": "CPU",
+    "alias": "Intel i3 4170 @ 3.7 GHz",
+    "canonical_name": "Intel Core i3-4170"
   }
 ]

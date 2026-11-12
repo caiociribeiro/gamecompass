@@ -2,7 +2,7 @@
 
 ## O que é versionado
 
-`games.json` contém a seleção de 120 AppIDs, o vocabulário de temáticas e
+`games.json` contém a seleção de 120 AppIDs (troca por relevância em 10/11/2026, ver abaixo), o vocabulário de temáticas e
 uma justificativa editorial por jogo. Nomes, gêneros gerais, requisitos,
 preços e capas vêm da coleta real de `appdetails`, em português e região BR.
 `editorial_genres` complementa os gêneros com Plataforma, Roguelike, Tiro
@@ -71,6 +71,24 @@ docker compose run --rm data python scripts/update_catalog.py --snapshot-dir dat
 ```
 
 Os snapshots não vão para o git. Preços e requisitos coletados em dias diferentes podem divergir entre máquinas; para resultados idênticos, copie a mesma pasta de snapshots.
+
+## Troca por relevância de mercado (10/11/2026)
+
+A seleção continua com 120 jogos, mas 28 títulos de nicho foram trocados por 28 de grande peso de mercado. Os critérios vieram só de dados públicos da Steam: quantidade de avaliações (`recommendations.total` do `appdetails`), nota do Metacritic e jogadores simultâneos (`ISteamChartsService/GetMostPlayedGames`, que complementa as avaliações em jogos gratuitos). A lista de saída e a de entrada estão no histórico do git (`data/catalog/games.json`).
+
+- Saíram: Q.U.B.E., The Golden Idol, Coffee Talk, Rayman Legends, Psychonauts, The Talos Principle 2, The Room (1, 2 e 3), Shovel Knight, TUNIC, The Witness, Into the Breach, A Short Hike, Spelunky 2, Amnesia: The Dark Descent, Baba Is You, Sonic Mania, Two Point Hospital, Dorfromantik, Superliminal, Anno 1800, Super Meat Boy, Unpacking, DiRT Rally 2.0, LIMBO, A Hat in Time e Spiritfarer.
+- Entraram: PUBG, Apex Legends, Call of Duty, Battlefield 6, Hunt: Showdown 1896, Dead by Daylight, Destiny 2, Marvel Rivals, Street Fighter 6, Rust, Palworld, Phasmophobia, R.E.P.O., PEAK, DayZ, ARC Raiders, 7 Days to Die, Sea of Thieves, Black Myth: Wukong, Monster Hunter Wilds, Elden Ring Nightreign, Hearts of Iron IV, Mount & Blade II: Bannerlord, Phantom Blade Zero, Path of Exile 2, BeamNG.drive, Starfield e Garry's Mod.
+- Ficaram de fora por falta de dado publicado: Lethal Company (sem RAM), Team Fortress 2 (sem GPU) e Warframe (sem RAM e GPU).
+- Os 28 novos snapshots foram coletados em BR/português (`data/raw/steam_games_candidatos_20261110`) e reunidos aos 92 mantidos no lote `steam_games_lote120_20261110` com `reuse_snapshots.py`. Para repetir em outra máquina, copie essa pasta de lote.
+- Tiro (classificação editorial) foi aplicado a PUBG, Apex, Call of Duty, Battlefield 6, Hunt, Destiny 2, Marvel Rivals e ARC Raiders. Relaxante (5) e Puzzle (7) ficaram com poucos jogos, e o gênero "Acesso Antecipado" passou a existir porque a Steam o atribui a alguns dos novos (Phasmophobia, R.E.P.O., Path of Exile 2 e BeamNG.drive entre os novos; Project Zomboid já estava).
+- Requisitos: os jogos novos publicam CPUs e GPUs que o índice não tem (i5-4430, i5-4590, i5-6600K, i7-6800K, GTX 1070 Ti, HD 7790, R9 390 e outras) ou citam só "GTX 1060"/"RX 480" sem a memória, ou ainda dão textos genéricos ("2 GHz Processor"). Nada disso foi preenchido sem fonte: os jogos ficam pendentes nos mínimos até haver classe documentada. Foram aplicados só aliases para modelos únicos do catálogo e uma regra para o i3-12100 (referência: i3-12100F, mesmo conjunto de núcleos e frequências). A contagem atualizada de pendências está no relatório de revisão.
+
+Os nós de jogos removidos continuam no Neo4j, porque a carga não apaga jogos omitidos. Para limpar sem perder reações de usuários, rode no Neo4j Browser ou no `cypher-shell`, trocando a lista pelos AppIDs atuais de `games.json`:
+
+```cypher
+MATCH (g:Game) WHERE NOT g.id IN $appids AND NOT EXISTS { (:User)-[:INTERACTED]->(g) }
+DETACH DELETE g
+```
 
 ## Contrato do grafo
 
