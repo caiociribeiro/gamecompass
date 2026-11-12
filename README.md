@@ -608,7 +608,7 @@ As informações vêm da Steam; as tags seguem a curadoria do projeto.
 Detalhes dos scripts, esquema e limites: [GAMES.md](data/catalog/GAMES.md).
 
 Na raiz do projeto, valide e atualize primeiro o hardware. A revisão
-atual tem 145 CPUs e 167 GPUs (312 peças), todas com classificação manual aproximada
+atual tem 145 CPUs e 168 GPUs (313 peças), todas com classificação manual aproximada
 para o TCC1. O lote mais recente adiciona modelos citados pelos requisitos.
 As justificativas estão em
 [REQUIREMENTS_REVIEW_2026_10.md](data/catalog/REQUIREMENTS_REVIEW_2026_10.md),
@@ -629,7 +629,7 @@ docker compose up -d --build --wait api
 
 A seleção ampliada reforça Puzzle e Plataforma: Portal, The Witness, The Talos Principle 2, Ori, LIMBO, INSIDE, Shovel Knight e outros. `--reuse-snapshot-dir` copia os snapshots selecionados do lote anterior depois de verificar identidade, região, idioma e hashes. Preserva os bytes e a data de coleta, registra a origem no manifesto novo e baixa somente os AppIDs que faltam. As pastas devem ser separadas; o comando não altera as respostas anteriores. Se seu lote de 50 tiver outro nome, ajuste somente esse argumento.
 
-A ampliação para 120 jogos (40 novos, escolhidos para cobrir corridas, esporte, casual, competitivo, relaxante, terror, estratégia e simulação) usa o mesmo fluxo, reaproveitando o lote de 80 e baixando só os jogos que faltam. O comando e os números verificados estão em [GAMES.md](data/catalog/GAMES.md).
+Em 10/11/2026, 28 dos 120 jogos foram trocados por títulos de maior relevância de mercado (veja [GAMES.md](data/catalog/GAMES.md)); os jogos citados nesta seção (Unpacking, A Hat in Time, Baba Is You, Spelunky 2, Psychonauts) saíram do catálogo e o texto é registro histórico. A ampliação para 120 jogos (40 novos, escolhidos para cobrir corridas, esporte, casual, competitivo, relaxante, terror, estratégia e simulação) usa o mesmo fluxo, reaproveitando o lote de 80 e baixando só os jogos que faltam. O comando e os números verificados estão em [GAMES.md](data/catalog/GAMES.md).
 
 Fichas antigas que publicam mínimos e recomendados juntos passam a ser separadas pelos títulos explícitos. RAM/GPU ausentes continuam pendentes: Unpacking não publica RAM nessa coleta e A Hat in Time não publica GPU. DirectX ou espaço em disco não preenchem esses campos. A cobertura dos 80 deve ser conferida após a coleta local; os testes offline não equivalem a uma coleta completa da Steam.
 
