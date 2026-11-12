@@ -31,8 +31,8 @@ export function About() {
         </p>
         <h2>Conta e perfil</h2>
         <p>
-          A conta de teste, o perfil e a configuração do computador continuam salvos neste navegador. A
-          autenticação de produção será integrada posteriormente.
+          A conta, o perfil e a configuração do computador ficam salvos no servidor e acompanham você em
+          qualquer navegador. Esta é uma interface de teste do TCC, sem recuperação de senha por e-mail.
         </p>
       </div>
     </div>

@@ -9,6 +9,9 @@ export const GENRES = [
   "Roguelike",
   "Tiro",
   "Puzzle",
+  "Casual",
+  "Corridas",
+  "Desporto",
 ] as const
 
 export const THEMES = [

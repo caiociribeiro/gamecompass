@@ -78,7 +78,7 @@ export function Landing() {
 
       <footer className="site-footer">
         <Logo />
-        <p>Interface de teste do TCC. Conta e perfil salvos neste navegador; catálogo consultado pela API.</p>
+        <p>Interface de teste do TCC. Conta e perfil salvos no servidor; catálogo consultado pela API.</p>
       </footer>
     </div>
   )
