@@ -31,6 +31,11 @@ class PasswordChangeInput(BaseModel):
     next: NewPassword
 
 
+# Personagens em pixel art que a pessoa pode escolher como avatar (o desenho fica no frontend).
+AVATARS = ('robo', 'gato', 'fantasma', 'cavaleiro', 'mago', 'alien', 'slime', 'caveira')
+Avatar = Literal['robo', 'gato', 'fantasma', 'cavaleiro', 'mago', 'alien', 'slime', 'caveira']
+
+
 class ProfilePatch(BaseModel):
     """Atualização parcial: só os campos enviados mudam; hardware=null limpa o computador."""
     model_config = ConfigDict(extra='forbid')
@@ -39,6 +44,7 @@ class ProfilePatch(BaseModel):
     themes: list[Preference] = Field(default_factory=list, max_length=20)
     anchorIds: list[SteamID] = Field(default_factory=list, max_length=3)
     hardware: HardwareInput | None = None
+    avatar: Avatar | None = None  # null volta ao avatar padrão
 
     @field_validator('name', mode='before')
     @classmethod

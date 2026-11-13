@@ -62,7 +62,7 @@ export function Recommendations() {
   const location = useLocation()
   const [params, setParams] = useSearchParams()
   const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues, recommendations,
-    reactions, reactionsStale, reactToGame } = useCatalog()
+    reactions, reactionsStale, reactToGame, leaving } = useCatalog()
   const [reactionError, setReactionError] = useState<string | null>(null)
   const reactionOf = (match: GameMatch) => reactions[match.game.id] !== undefined ? reactions[match.game.id] : match.reaction
   const card = (match: GameMatch) => (
@@ -74,6 +74,7 @@ export function Recommendations() {
       note={compatibilityLabel(match)}
       badge={match.meets === "recommended" ? { label: "RECOMENDADO", tone: "ok" } : match.meets === "minimum" ? { label: "MÍNIMO", tone: "min" } : { label: "PENDENTE", tone: "pending" }}
       reason={match.reasons.find((reason) => reason.startsWith("Em comum com "))}
+      leaving={leaving.has(match.game.id)}
       chips={explanationChips(match)}
       actions={
         <ReactionButtons compact reaction={reactionOf(match)} onReact={(next: Reaction | null) => {

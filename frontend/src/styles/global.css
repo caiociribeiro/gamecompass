@@ -330,3 +330,16 @@ details ul { list-style: none; }
 }
 .game-card-body .note.ok { color: var(--green); }
 .game-card-body .note.min { color: var(--yellow); }
+/* Personagem escolhido: o desenho substitui o rosto padrão. */
+.avatar.character { background: var(--panel2); display: grid; place-items: center; }
+.avatar.character::before, .avatar.character::after { content: none; }
+.avatar.character svg { width: 80%; height: 80%; }
+/* Card não curtido: treme e cai antes de sair da lista (CatalogContext espera a animação). */
+.game-card-shell.gone { animation: gone 0.7s steps(7) forwards; pointer-events: none; z-index: 2; }
+@keyframes gone {
+  0% { transform: none; opacity: 1; }
+  20% { transform: translateX(-5px) rotate(-2deg); }
+  35% { transform: translateX(5px) rotate(2deg); }
+  50% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(120px) rotate(8deg); opacity: 0; }
+}

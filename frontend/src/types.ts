@@ -70,6 +70,7 @@ export type HardwareProfile = {
   os: OperatingSystem
   windowsVersion?: WindowsVersion
 }
+export type AvatarId = "robo" | "gato" | "fantasma" | "cavaleiro" | "mago" | "alien" | "slime" | "caveira"
 export type UserProfile = {
   id: string
   name: string
@@ -77,6 +78,8 @@ export type UserProfile = {
   themes: string[]
   anchorIds: string[]
   hardware: HardwareProfile | null
+  /** Personagem escolhido na Conta; null ou ausente usa o avatar padrão. */
+  avatar?: AvatarId | null
   /** Só existe em perfis antigos do navegador; a API não usa este campo. */
   catalogVersion?: "steam-v1" | "steam-v2"
 }

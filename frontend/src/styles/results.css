@@ -183,3 +183,12 @@ details.excluded li span { color: var(--muted); }
 .pc-saved.error { color: var(--red); animation: none; }
 .history-sub { margin: 14px 0 6px; color: var(--muted); }
 .history-eye { display: inline-block; width: 22px; text-align: center; color: var(--cyan); flex: none; }
+
+/* escolha do personagem na Conta */
+.avatar-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; }
+.avatar-choice { display: grid; justify-items: center; gap: 8px; padding: 10px 6px; font: 8px/1.4 var(--px); color: #fff;
+  background: var(--panel2); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); cursor: pointer; }
+.avatar-choice .avatar { width: 44px; height: 44px; animation: none; }
+.avatar-choice:hover { background: var(--panel3); }
+.avatar-choice.on { background: var(--yellow); color: var(--ink); box-shadow: 1px 1px 0 var(--ink); transform: translate(2px, 2px); }
+.avatar-choice.on .avatar { animation: idle 1.2s steps(2) infinite; }

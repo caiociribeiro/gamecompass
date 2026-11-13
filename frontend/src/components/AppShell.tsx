@@ -82,7 +82,7 @@ export function AppShell() {
         </button>
         <Link className="top-btn ghost" to="/app/sobre">SOBRE</Link>
         <Link className="me" to="/app/conta" aria-label="Sua conta">
-          <Avatar name={user?.name} />
+          <Avatar name={user?.name} avatar={user?.avatar} />
           <span className="lbl">{user?.name}</span>
         </Link>
         </div>

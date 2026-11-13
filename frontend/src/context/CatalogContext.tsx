@@ -17,11 +17,17 @@ type CatalogValue = {
   discoverGames: () => Promise<void>
   /** Reações já enviadas nesta sessão; valem mais que o que veio na última resposta da API. */
   reactions: Record<string, Reaction | null>
+  /** Jogos não curtidos que estão caindo da lista (animação) antes de sair de vez. */
+  leaving: ReadonlySet<string>
   /** Verdadeiro quando uma curtida foi salva depois do último cálculo: a afinidade ainda não a considera. */
   reactionsStale: boolean
   reactToGame: (appid: string, reaction: Reaction | null) => Promise<void>
   recordView: (appid: string) => void
   clearHistory: () => Promise<number>
+}
+/** Duração da queda do card não curtido; sem animação para quem pede movimento reduzido. */
+function fallMs() {
+  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? 0 : 700
 }
 const EMPTY: HardwareCatalog = { CPU: [], GPU: [], score_version: "manual_v1", source: "neo4j" }
 const CatalogContext = createContext<CatalogValue | null>(null)
@@ -44,6 +50,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [revision, setRevision] = useState(0)
   const [reactions, setReactions] = useState<Record<string, Reaction | null>>({})
   const [reactionsStale, setReactionsStale] = useState(false)
+  const [leaving, setLeaving] = useState<ReadonlySet<string>>(new Set())
   const generation = useRef(0)
   const discovery = useRef(new RequestScope())
   const requestedContent = useRef<string | null>(null)
@@ -98,11 +105,21 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const reactToGame = useCallback(async (appid: string, reaction: Reaction | null) => {
     await apiPut<Interaction>(`/me/games/${encodeURIComponent(appid)}/reaction`, { reaction })
     setReactions((current) => ({ ...current, [appid]: reaction }))
-    // Não curtir tira o jogo da lista na hora; a curtida só entra na afinidade no próximo cálculo.
+    // Não curtir tira o jogo da lista (depois da queda do card); a curtida só entra na afinidade no próximo cálculo.
     if (reaction === "disliked") {
       const without = (matches: GameMatch[]) => matches.filter((match) => match.game.id !== appid)
-      setCache((current) => current && { ...current, data: {
-        ...current.data, items: without(current.data.items), pending: without(current.data.pending), excluded: without(current.data.excluded) } })
+      const remove = () => {
+        setCache((current) => current && { ...current, data: {
+          ...current.data, items: without(current.data.items), pending: without(current.data.pending), excluded: without(current.data.excluded) } })
+        setLeaving((current) => { const next = new Set(current); next.delete(appid); return next })
+      }
+      const delay = fallMs()
+      if (delay) {
+        setLeaving((current) => new Set(current).add(appid))
+        setTimeout(remove, delay)
+      } else {
+        remove()
+      }
     }
     setReactionsStale(true)
   }, [])
@@ -174,11 +191,11 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, [revision, anchorIds, userId])
 
   const value = useMemo(() => ({ games, hardware, gamesLoading: anchorLoading || discoveryLoading,
-    hardwareLoading, gamesError, hardwareError, gameIssues, discovered: Boolean(recommendations),
+    hardwareLoading, gamesError, hardwareError, gameIssues, discovered: Boolean(recommendations), leaving,
     candidateSource: recommendations?.source ?? null, recommendations, calculationKey,
     refresh, loadGame, compareGame, discoverGames, reactions, reactionsStale, reactToGame, recordView, clearHistory }), [games, hardware, anchorLoading, discoveryLoading,
     hardwareLoading, gamesError, hardwareError, gameIssues, recommendations, calculationKey, refresh, loadGame, compareGame, discoverGames,
-    reactions, reactionsStale, reactToGame, recordView, clearHistory])
+    reactions, reactionsStale, reactToGame, recordView, clearHistory, leaving])
   return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>
 }
 export function useCatalog() {

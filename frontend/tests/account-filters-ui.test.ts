@@ -145,3 +145,32 @@ test("RF24: filtros por nome e por situação dos requisitos nas Sugestões", { 
   assert.equal(count(), "Exibindo 5 de 5 resultados.")
   assert.equal(ui.m.probe.location.search, "")
 })
+
+test("não curtir salva na hora, o card cai e só depois sai da lista", { timeout: 20000 }, async (t) => {
+  const anchors = user.anchorIds.map((id) => game(id, `Âncora ${id}`))
+  const result = {
+    items: [match("301", "Primeiro Jogo", "recommended"), match("302", "Segundo Jogo", "minimum")], pending: [], excluded: [],
+    anchors, issues: [], source: "neo4j",
+    calculation: { engine_version: "rules_v1", minimum_affinity: 28, score_version: "manual_v1", hardware_sha256: "f", curation_sha256: "f" },
+  }
+  const reactions: any[] = []
+  const ui = await mount(t, "/app/recomendacoes", "Recommendations", (path, options) => {
+    if (path === "/api/auth/me") return Response.json(user)
+    if (path === "/api/hardware") return Response.json(hardware)
+    if (path === "/api/games") return Response.json({ items: anchors, issues: [], source: "neo4j" })
+    if (path === "/api/recommendations") return Response.json(result)
+    if (path === "/api/me/games/301/reaction") { reactions.push(JSON.parse(options.body)); return Response.json({ gameId: "301", reaction: "disliked", views: 0 }) }
+    throw new Error("Requisição inesperada: " + path)
+  })
+  await ui.click("Buscar sugestões")
+  const card = () => [...document.querySelectorAll(".game-card-shell")].find((item) => item.querySelector("h3")?.textContent === "Primeiro Jogo")
+  const dislike = card()!.querySelector('button[aria-label="Não curtir este jogo"]')!
+  await ui.m.React.act(async () => { dislike.dispatchEvent(new ui.dom.window.MouseEvent("click", { bubbles: true, cancelable: true, button: 0 })) })
+  await ui.settle(50)
+  assert.deepEqual(reactions, [{ reaction: "disliked" }])  // salvo na hora, sem esperar a animação
+  assert(card()?.classList.contains("gone"), "o card não curtido deve estar caindo")
+  assert.equal(document.querySelector(".count")!.textContent, "Exibindo 2 de 2 resultados.")
+  await ui.settle(800)
+  assert.equal(card(), undefined)
+  assert.equal(document.querySelector(".count")!.textContent, "Exibindo 1 de 1 resultados.")
+})
