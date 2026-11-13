@@ -32,6 +32,20 @@ class UserStoreNeo4jTests(unittest.TestCase):
                         " DETACH DELETE s, u", suffix=f'-{cls.tag}@example.invalid').consume()
         cls.driver.close()
 
+    def test_login_failures_are_counted_once_for_all_processes(self):
+        key = f'teste-limitador-{self.tag}'
+        try:
+            self.assertEqual(self.store.recent_failures(key=key, since=0), 0)
+            self.assertEqual(self.store.add_failure(key=key, now=100.0, since=0), 1)
+            self.assertEqual(self.store.add_failure(key=key, now=200.0, since=0), 2)
+            # Falhas antes de `since` saem da lista na próxima falha e não contam.
+            self.assertEqual(self.store.recent_failures(key=key, since=150.0), 1)
+            self.assertEqual(self.store.add_failure(key=key, now=300.0, since=150.0), 2)
+            self.store.clear_failures(key=key)
+            self.assertEqual(self.store.recent_failures(key=key, since=0), 0)
+        finally:
+            self.store.clear_failures(key=key)
+
     def email(self, name):
         return f'{name}-{self.tag}@example.invalid'
 

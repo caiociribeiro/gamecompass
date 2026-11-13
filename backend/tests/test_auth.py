@@ -4,6 +4,7 @@ Estes testes verificam a lógica HTTP (hash, cookie, sessão, isolamento). A par
 Cypher é verificada em test_users_neo4j.py, que exige um Neo4j real.
 """
 
+import json
 import time
 import unittest
 from unittest.mock import patch
@@ -13,6 +14,7 @@ from neo4j.exceptions import ServiceUnavailable
 
 from app import auth_routes
 from app.main import app
+from app.services.auth import AttemptLimiter
 from app.services.users import EmailTaken, account_from, profile_properties
 from test_catalog import FakeDriver
 from test_recommendations import FakeSteam
@@ -23,6 +25,7 @@ class MemoryStore:
 
     def __init__(self):
         self.users, self.sessions, self.error = {}, {}, None
+        self.failures: dict[str, list[float]] = {}
 
     def _check(self):
         if self.error:
@@ -60,6 +63,19 @@ class MemoryStore:
         self.sessions = {key: value for key, value in self.sessions.items()
                          if value[0] != user_id or key == keep_token_hash}
 
+    def recent_failures(self, *, key, since):
+        self._check()
+        return len([moment for moment in self.failures.get(key, []) if moment > since])
+
+    def add_failure(self, *, key, now, since):
+        self._check()
+        self.failures[key] = [moment for moment in self.failures.get(key, []) if moment > since] + [now]
+        return len(self.failures[key])
+
+    def clear_failures(self, *, key):
+        self._check()
+        self.failures.pop(key, None)
+
     def update_profile(self, *, user_id, changes, now):
         self._check()
         user = self.users[user_id]
@@ -78,7 +94,6 @@ CREDENTIALS = {'name': 'Ana', 'email': 'ana@example.invalid', 'password': 'senha
 
 class AuthApiTests(unittest.TestCase):
     def setUp(self):
-        auth_routes.limiter._failures.clear()
         self.store = MemoryStore()
         patches = [patch('app.main.GraphDatabase.driver', return_value=FakeDriver()),
                    patch('app.main.SteamClient', return_value=FakeSteam())]
@@ -167,6 +182,30 @@ class AuthApiTests(unittest.TestCase):
         self.assertEqual(codes, [401] * 5 + [429] * 2)
         right = fresh.post('/api/auth/login', json={**payload, 'password': CREDENTIALS['password']})
         self.assertEqual(right.status_code, 429)
+        # A contagem fica no repositório de contas, só com o hash da chave (sem e-mail nem IP).
+        self.assertEqual(len(self.store.failures), 1)
+        self.assertNotIn(CREDENTIALS['email'], json.dumps(self.store.failures))
+
+    def test_login_limit_is_shared_by_every_api_process(self):
+        # Cada processo da API tem seu próprio AttemptLimiter; todos usam o mesmo repositório.
+        processes = [AttemptLimiter(), AttemptLimiter(), AttemptLimiter(), AttemptLimiter()]
+        key = 'login:203.0.113.7:ana@example.invalid'
+        for attempt in range(5):
+            self.assertFalse(processes[attempt % 4].blocked(self.store, key))
+            processes[attempt % 4].fail(self.store, key)
+        self.assertTrue(all(process.blocked(self.store, key) for process in processes))
+        processes[2].reset(self.store, key)
+        self.assertFalse(any(process.blocked(self.store, key) for process in processes))
+
+    def test_login_limit_forgets_failures_outside_the_window(self):
+        limiter = AttemptLimiter(limit=2, window_seconds=60)
+        key = 'login:203.0.113.8:bia@example.invalid'
+        with patch('app.services.auth.time.time', return_value=1_000.0):
+            limiter.fail(self.store, key)
+            limiter.fail(self.store, key)
+            self.assertTrue(limiter.blocked(self.store, key))
+        with patch('app.services.auth.time.time', return_value=1_061.0):
+            self.assertFalse(limiter.blocked(self.store, key))
 
     def test_profile_requires_session_and_persists_partial_updates(self):
         self.assertEqual(self.new_client().patch('/api/me/profile', json={'genres': ['RPG']}).status_code, 401)

@@ -104,7 +104,7 @@ O tempo de cada rota sem carga não muda. Com 20 clientes, a espera mediana cai 
 
 O teste de regressão de 13/11 com os 4 processos mostrou:
 - **Sessão:** um login vale em todos os processos (40 de 40 chamadas em conexões novas), o perfil gravado é lido igual e o logout revoga a sessão em todos.
-- **Limitador de login:** cada processo conta as falhas sozinho. Com 4 processos, o bloqueio veio depois de 12 tentativas erradas, e não 5. Um limitador compartilhado (no Neo4j) devolveria o limite exato.
+- **Limitador de login:** no teste, cada processo contava as falhas sozinho, e o bloqueio veio depois de 12 tentativas erradas, não 5. Por isso o limitador passou a guardar as falhas no Neo4j, compartilhadas por todos os processos. Na verificação seguinte, o bloqueio voltou a vir na 6ª tentativa.
 - **Cache da Steam:** cada processo tem o seu, então a primeira busca de um termo pode ir à Steam até 4 vezes.
 
 ## Como repetir

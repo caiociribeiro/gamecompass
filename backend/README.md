@@ -71,7 +71,7 @@ As contas ficam no Neo4j como `(:User)-[:HAS_SESSION]->(:Session)`. O perfil fic
 - **E-mail:** as respostas de conta não trazem o e-mail.
 - **Usuário:** vem sempre da sessão. Campos extras são rejeitados.
 - **Origem:** rotas que alteram dados recusam `Origin` fora de `ALLOWED_ORIGINS`.
-- **Limitador de login:** cinco falhas em cinco minutos bloqueiam aquele IP e e-mail. O contador fica na memória de cada processo: com `API_WORKERS=4`, o bloqueio pode levar até 4 vezes mais tentativas.
+- **Limitador de login:** cinco falhas em cinco minutos bloqueiam aquele IP e e-mail (e a troca de senha, por conta). As falhas ficam no Neo4j, em nós `:LoginAttempt`, com a chave em SHA-256 e sem e-mail nem IP em texto. Todos os processos da API usam a mesma contagem.
 - **Conta de demonstração (opcional):** defina `DEMO_EMAIL` e `DEMO_PASSWORD` no `.env` e rode `docker compose run --rm --no-deps api python -m app.seed_demo`.
 - **Limitação:** não há recuperação de senha por e-mail nem verificação de e-mail.
 
