@@ -1,11 +1,34 @@
 import { useCallback, useEffect, useState } from "react"
 
 const GAP = 16
+const MIN_CARD = 320
 
-/** Escolhe quantas colunas cabem (cartões de 240 a 360px), preferindo completar a última linha. */
+/** Quantos cartões cabem lado a lado numa largura. */
+export function cardsPerRow(width: number) {
+  return Math.max(1, Math.floor((width + GAP) / (MIN_CARD + GAP)))
+}
+
+/** Mede a largura de um elemento e devolve quantos cartões cabem por linha (0 antes de medir). */
+export function usePerRow() {
+  const [node, setNode] = useState<HTMLElement | null>(null)
+  const [perRow, setPerRow] = useState(0)
+  const ref = useCallback((element: HTMLElement | null) => setNode(element), [])
+  useEffect(() => {
+    if (!node) return
+    const apply = () => setPerRow(cardsPerRow(node.clientWidth))
+    apply()
+    if (typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(apply)
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [node])
+  return { ref, perRow }
+}
+
+/** Escolhe quantas colunas cabem (cartões de 320 a 440px), preferindo completar a última linha. */
 export function fitColumns(width: number, count: number, fill = false) {
-  const maxC = Math.max(2, Math.floor((width + GAP) / (240 + GAP)))
-  const minC = Math.max(2, Math.min(maxC, Math.ceil((width + GAP) / (360 + GAP))))
+  const maxC = cardsPerRow(width)
+  const minC = Math.max(1, Math.min(maxC, Math.ceil((width + GAP) / (440 + GAP))))
   let best = maxC
   let bestScore = -1
   for (let c = maxC; c >= minC; c -= 1) {

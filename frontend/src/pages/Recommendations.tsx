@@ -12,7 +12,7 @@ import { fold } from "../lib/text"
 import { useState } from "react"
 import { Pager, usePage } from "../components/Pager"
 import { HeartIcon } from "../components/PixelIcons"
-import { useGridCols } from "../lib/useGridCols"
+import { useGridCols, usePerRow } from "../lib/useGridCols"
 import { LoadingBar } from "../components/PhaseOverlay"
 import { StepNav } from "../components/StepNav"
 import "../styles/results.css"
@@ -27,7 +27,8 @@ const STATUS_FILTERS: [string, string][] = [
   ["incompatible", "Com restrições"],
 ]
 
-const PAGE_SIZE = 12
+/** Três linhas completas por página (5 por linha = 15 jogos; 4 = 12; ...), no mínimo 6. Antes de medir, 12. */
+const pageSize = (perRow: number) => (perRow ? Math.max(6, perRow * 3) : 12)
 const EMPTY_RESULT = { items: [] as GameMatch[], pending: [] as GameMatch[], excluded: [] as GameMatch[] }
 const HELP_KEY = "gc_help_reactions"
 
@@ -100,8 +101,10 @@ export function Recommendations() {
   const pending = filter === "all" || filter === "pending" ? result.pending.filter((match) => matches(match.game.title)) : []
   const excluded = filter === "all" || filter === "incompatible" ? result.excluded.filter((match) => matches(match.game.title)) : []
   const resetKey = `${query}|${filter}|${result.items.length}|${result.pending.length}`
-  const itemPage = usePage(items, PAGE_SIZE, resetKey)
-  const pendingPage = usePage(pending, PAGE_SIZE, resetKey)
+  const width = usePerRow()
+  const size = pageSize(width.perRow)
+  const itemPage = usePage(items, size, `${resetKey}|${size}`)
+  const pendingPage = usePage(pending, size, `${resetKey}|${size}`)
   const itemGrid = useGridCols(itemPage.items.length)
   const pendingGrid = useGridCols(pendingPage.items.length)
   if (!user) return null
@@ -193,7 +196,7 @@ export function Recommendations() {
             </div>
           </div>
           <ReactionHelp />
-          <p className="count" role="status">Exibindo {visible} de {total} resultados.</p>
+          <p className="count" role="status" ref={width.ref}>Exibindo {visible} de {total} resultados.</p>
           {reactionError && <p className="hint" role="alert">{reactionError}</p>}
           {reactionsStale && (
             <p className="banner reactions-banner" role="status">
