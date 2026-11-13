@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { PageHeader } from "../components/PageHeader"
 import { SearchSelect } from "../components/SearchSelect"
@@ -9,6 +9,8 @@ import { useSession } from "../context/SessionContext"
 import { useSound } from "../context/SoundContext"
 import { OPERATING_SYSTEMS, RAM_OPTIONS, WINDOWS_VERSIONS } from "../data/hardware"
 import { hardwareSummary } from "../lib/hardware"
+import { rankParts, surveyLabel } from "../lib/hardwareRank"
+import gpuSurvey from "../data/steamGpuSurvey.json"
 import type { OperatingSystem, WindowsVersion } from "../types"
 import "../styles/results.css"
 
@@ -31,9 +33,11 @@ const SLOT_ICONS = [
 const SLOT_LABELS = ["CPU", "GPU", "RAM", "SISTEMA"]
 
 export function Hardware() {
-  const { user, updateUser } = useSession()
+  const { user, updateUser, saving } = useSession()
   const { play } = useSound()
   const { hardware, hardwareLoading, hardwareError, refresh } = useCatalog()
+  const cpuOptions = useMemo(() => rankParts(hardware.CPU), [hardware.CPU])
+  const gpuOptions = useMemo(() => rankParts(hardware.GPU, gpuSurvey), [hardware.GPU])
   const [cpuId, setCpuId] = useState(user?.hardware?.cpuId ?? "")
   const [gpuId, setGpuId] = useState(user?.hardware?.gpuId ?? "")
   const [ramGb, setRamGb] = useState(String(user?.hardware?.ramGb ?? ""))
@@ -136,7 +140,8 @@ export function Hardware() {
           <SearchSelect
             label="Processador"
             disabled={cpuUnavailable}
-            options={hardware.CPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
+            options={cpuOptions}
+            topLabel="Mais potentes do catálogo"
             value={cpuId}
             onChange={(id) => { setCpuId(id); changed(0) }}
             placeholder={
@@ -151,7 +156,8 @@ export function Hardware() {
           <SearchSelect
             label="Placa de vídeo"
             disabled={gpuUnavailable}
-            options={hardware.GPU.map((part) => ({ id: part.id, label: part.name, hint: part.vendor }))}
+            options={gpuOptions}
+            topLabel={`Mais usadas na Steam (${surveyLabel(gpuSurvey.survey_month)})`}
             value={gpuId}
             onChange={(id) => { setGpuId(id); changed(1) }}
             placeholder={
@@ -222,7 +228,7 @@ export function Hardware() {
               {error}
             </p>
           )}
-          <p className="pc-saved" role="status">{saved ? "▮ SALVO NA CONTA" : ""}</p>
+          <p className="pc-saved" role="status">{saved ? (saving ? "▮ SALVANDO…" : "▮ SALVO NA CONTA") : ""}</p>
         </form>
       </div>
       {summary && (

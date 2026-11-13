@@ -86,13 +86,13 @@ export function Landing() {
         <nav>
           <a href="#como">Como funciona</a>
           {user ? (
-            <Link className="btn small" to="/app">
+            <Link className="btn" to="/app">
               Abrir o painel
             </Link>
           ) : (
             <>
-              <Link to="/entrar">Entrar</Link>
-              <Link className="btn small" to="/cadastro">
+              <Link className="btn ghost" to="/entrar">Entrar</Link>
+              <Link className="btn" to="/cadastro">
                 Criar conta
               </Link>
             </>

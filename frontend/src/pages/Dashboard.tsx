@@ -45,7 +45,7 @@ export function Dashboard() {
   })()
   const anchorGames = user ? catalog.games.filter((game) => user.anchorIds.includes(game.id)) : []
   const affinityRef = useGridCols(affinityItems.length)
-  const anchorRef = useGridCols(anchorGames.length)
+  const anchorRef = useGridCols(anchorGames.length, true)
   if (!user) return null
   const { games, hardware } = catalog
   const steps = profileSteps(user, games, hardware)
@@ -72,7 +72,7 @@ export function Dashboard() {
 
       <nav className={fresh ? "trail intro" : "trail"} style={{ ["--step" as string]: nextIndex }} aria-label="Fases do seu perfil">
         <div className="trail-road" aria-hidden="true" />
-        <span className="trail-walker" aria-hidden="true" />
+        <span className="trail-track" aria-hidden="true"><span className="trail-walker" /></span>
         {PHASES.map((phase, index) => {
           const done = index < 3 && steps[index].done
           const cls = index === nextIndex ? "trail-node cur" : done ? "trail-node done" : "trail-node"

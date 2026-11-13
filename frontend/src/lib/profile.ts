@@ -87,6 +87,6 @@ export function stepGuide(
   return {
     ...base,
     status: "Computador salvo.",
-    missing: "Preencha os campos e clique em Salvar computador para continuar.",
+    missing: "Escolha CPU, GPU, memória e sistema. O computador é salvo sozinho quando tudo estiver preenchido.",
   }
 }

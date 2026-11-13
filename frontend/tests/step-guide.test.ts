@@ -8,7 +8,7 @@ const hardware: HardwareCatalog = { CPU: [part("cpu")], GPU: [part("gpu")], scor
 const game = (id: string) => ({ id, title: `Jogo ${id}` }) as unknown as Game
 const games = ["1", "2", "3", "4"].map(game)
 const user = (patch: Partial<UserProfile> = {}): UserProfile =>
-  ({ id: "u", name: "Teste", email: "t@t.test", genres: [], themes: [], anchorIds: [], hardware: null, ...patch })
+  ({ id: "u", name: "Teste", genres: [], themes: [], anchorIds: [], hardware: null, ...patch })
 
 test("preferências: sem nada escolhido, diz exatamente o que falta e não libera a próxima etapa", () => {
   const guide = stepGuide(user(), games, hardware, "prefs")

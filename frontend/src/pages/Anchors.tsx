@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type DragEvent } from "react"
 import { Cover } from "../components/GameCard"
 import { CatalogStatus } from "../components/CatalogStatus"
 import { PageHeader } from "../components/PageHeader"
@@ -11,6 +11,9 @@ import { useGridCols } from "../lib/useGridCols"
 import "../styles/start.css"
 import { apiError, apiGet } from "../lib/api"
 import type { GameSearchResult } from "../types"
+
+const GAME_TYPE = "application/x-gamecompass-game"
+const SLOT_TYPE = "application/x-gamecompass-slot"
 
 type Suggestions = {
   items: GameSearchResult[]
@@ -37,6 +40,8 @@ export function Anchors() {
   const full = anchorIds.length >= 3
   const term = query.trim()
   const gridRef = useGridCols(suggestions.length)
+  const [over, setOver] = useState<number | null>(null)
+  const [dragging, setDragging] = useState(false)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -86,14 +91,19 @@ export function Anchors() {
   if (!user) return null
   const selected = anchorIds.map((id) => games.find((game) => game.id === id))
 
-  async function add(result: GameSearchResult) {
-    if (full || adding || anchorIds.includes(result.id)) return
+  /** Põe o jogo no espaço `slot` (substitui quem estiver lá) ou no primeiro espaço livre. */
+  async function add(result: GameSearchResult, slot?: number) {
+    const replacing = slot !== undefined && slot < anchorIds.length
+    if ((full && !replacing) || adding || anchorIds.includes(result.id)) return
     setAdding(result.id)
     setAddError(null)
     try {
       await loadGame(result.id)
       play("select")
-      updateUser({ anchorIds: [...anchorIds, result.id] })
+      const next = [...anchorIds]
+      if (replacing) next[slot] = result.id
+      else next.push(result.id)
+      updateUser({ anchorIds: next.slice(0, 3) })
       setQuery("")
       setResults([])
     } catch (error) {
@@ -103,16 +113,59 @@ export function Anchors() {
     }
   }
 
+  const startDrag = (event: DragEvent, game: GameSearchResult) => {
+    event.dataTransfer.setData(GAME_TYPE, JSON.stringify({ id: game.id, title: game.title, image_url: game.image_url ?? null }))
+    event.dataTransfer.effectAllowed = "copy"
+    setDragging(true)
+  }
+  const endDrag = () => { setDragging(false); setOver(null) }
+  const dropOn = (event: DragEvent, index: number) => {
+    event.preventDefault()
+    setOver(null)
+    setDragging(false)
+    const fromSlot = event.dataTransfer.getData(SLOT_TYPE)
+    if (fromSlot !== "") {
+      // Troca de posição entre âncoras já escolhidas.
+      const from = Number(fromSlot)
+      if (from === index || from >= anchorIds.length) return
+      const next = [...anchorIds]
+      const target = Math.min(index, next.length - 1)
+      ;[next[from], next[target]] = [next[target], next[from]]
+      play("select")
+      updateUser({ anchorIds: next })
+      return
+    }
+    const raw = event.dataTransfer.getData(GAME_TYPE)
+    if (!raw) return
+    try {
+      const game = JSON.parse(raw) as GameSearchResult
+      if (typeof game.id === "string" && typeof game.title === "string") void add(game, index)
+    } catch {
+      // Arrasto de outra origem: ignora.
+    }
+  }
+  const dragTarget = (index: number) => ({
+    onDragOver: (event: DragEvent) => {
+      const types = event.dataTransfer.types
+      if (!types.includes(GAME_TYPE) && !types.includes(SLOT_TYPE)) return
+      event.preventDefault()
+      event.dataTransfer.dropEffect = types.includes(SLOT_TYPE) ? "move" : "copy"
+      if (over !== index) setOver(index)
+    },
+    onDragLeave: () => setOver((current) => (current === index ? null : current)),
+    onDrop: (event: DragEvent) => dropOn(event, index),
+  })
+
   return (
     <div className="page narrow">
       <StepNav current="anchors" />
       <PageHeader
         eyebrow="FASE 2 · ÂNCORAS"
         title="Três jogos que representam você"
-        lede="Pesquise pelo nome ou escolha entre as sugestões abaixo. Selecione três jogos que você gosta para encontrar títulos parecidos. Cada escolha é salva na sua conta na hora."
+        lede="Pesquise pelo nome ou escolha entre as sugestões abaixo. Arraste a capa até um espaço (ou clique em Usar) para escolher três jogos que você gosta. Arrastar sobre um espaço ocupado troca o jogo."
       />
       <CatalogStatus />
-      <ol className="anchor-slots" aria-label="Seus três jogos âncora">
+      <ol className={dragging ? "anchor-slots dragging" : "anchor-slots"} aria-label="Seus três jogos âncora">
         {[0, 1, 2].map((index) => {
           const game = selected[index]
           const id = anchorIds[index]
@@ -121,7 +174,11 @@ export function Anchors() {
             updateUser({ anchorIds: anchorIds.filter((item) => item !== target) })
           }
           return (
-            <li key={game?.id ?? id ?? `vazio-${index}`} className={game ? "anchor-slot full" : "anchor-slot"}>
+            <li key={game?.id ?? id ?? `vazio-${index}`} className={`anchor-slot${game ? " full" : ""}${over === index ? " over" : ""}`}
+              {...dragTarget(index)}
+              draggable={Boolean(game)}
+              onDragStart={game ? (event) => { event.dataTransfer.setData(SLOT_TYPE, String(index)); event.dataTransfer.effectAllowed = "move"; setDragging(true) } : undefined}
+              onDragEnd={endDrag}>
               <span className="lab">ÂNCORA {index + 1}</span>
               {game ? (
                 <>
@@ -197,7 +254,7 @@ export function Anchors() {
           {results
             .filter((game) => !anchorIds.includes(game.id))
             .map((game) => (
-              <li key={game.id}>
+              <li key={game.id} draggable={!adding} onDragStart={(event) => startDrag(event, game)} onDragEnd={endDrag}>
                 <div>
                   <strong>{game.title}</strong>
                 </div>
@@ -251,7 +308,8 @@ export function Anchors() {
             {suggestions.map((game) => {
               const chosen = anchorIds.includes(game.id)
               return (
-                <li className={`anchor-suggestion${chosen ? " chosen" : full ? " locked" : ""}`} key={game.id}>
+                <li className={`anchor-suggestion${chosen ? " chosen" : full ? " locked" : ""}`} key={game.id}
+                  draggable={!chosen && !adding} onDragStart={(event) => startDrag(event, game)} onDragEnd={endDrag}>
                   <Cover game={{ ...game, image_url: game.image_url ?? null }} />
                   <div className="anchor-suggestion-body">
                     <h3>{game.title}</h3>

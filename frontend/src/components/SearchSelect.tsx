@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react"
-import { fold } from "../lib/text"
+import { searchRanked } from "../lib/hardwareRank"
 import "../styles/results.css"
 
 type Option = {
@@ -16,6 +16,7 @@ export function SearchSelect({
   placeholder,
   empty,
   disabled = false,
+  topLabel,
 }: {
   label: string
   options: Option[]
@@ -24,6 +25,8 @@ export function SearchSelect({
   placeholder: string
   empty: string
   disabled?: boolean
+  /** Título da lista quando nada foi digitado (ex.: "Mais usadas na Steam"). */
+  topLabel?: string
 }) {
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
@@ -31,7 +34,7 @@ export function SearchSelect({
   const listId = useId()
   const inputId = useId()
   const selected = options.find((option) => option.id === value) ?? null
-  const filtered = options.filter((option) => fold(option.label).includes(fold(query))).slice(0, 8)
+  const filtered = searchRanked(options, query)
 
   useEffect(() => {
     function onDoc(event: MouseEvent) {
@@ -84,6 +87,7 @@ export function SearchSelect({
           />
           {open && !disabled && (
             <ul id={listId} role="listbox">
+              {!query.trim() && topLabel && filtered.length > 0 && <li className="list-head" role="presentation">{topLabel}</li>}
               {filtered.length === 0 && <li className="muted">{empty}</li>}
               {filtered.map((option) => (
                 <li key={option.id}>

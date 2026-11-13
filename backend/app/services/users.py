@@ -25,13 +25,13 @@ class EmailTaken(Exception):
 
 
 def account_from(row: dict) -> dict:
-    """Formato público da conta; nunca inclui o hash da senha."""
+    """Formato da conta enviado ao navegador: sem hash da senha e sem e-mail (veja /me/account)."""
     hardware = None
     if row.get("hw_cpu") and row.get("hw_gpu") and row.get("hw_ram_gb") and row.get("hw_os"):
         hardware = {"cpuId": row["hw_cpu"], "gpuId": row["hw_gpu"], "ramGb": int(row["hw_ram_gb"]), "os": row["hw_os"]}
         if row.get("hw_windows_version"):
             hardware["windowsVersion"] = row["hw_windows_version"]
-    return {"id": row["id"], "name": row["name"], "email": row["email"],
+    return {"id": row["id"], "name": row["name"],
             "genres": list(row.get("genres") or []), "themes": list(row.get("themes") or []),
             "anchorIds": list(row.get("anchor_ids") or []), "hardware": hardware}
 

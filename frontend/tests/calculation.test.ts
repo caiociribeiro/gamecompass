@@ -5,7 +5,7 @@ import { apiPost } from "../src/lib/api.ts"
 import { compatibilityLabel } from "../src/lib/recommend.ts"
 import type { UserProfile } from "../src/types.ts"
 
-const user: UserProfile = { id: "fixture", name: "Fixture", email: "fixture@example.invalid",
+const user: UserProfile = { id: "fixture", name: "Fixture",
   genres: ["RPG", "Puzzle"], themes: ["Fantasia"], anchorIds: ["3", "1", "2"],
   hardware: { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" } }
 
