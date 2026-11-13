@@ -41,11 +41,14 @@ def main(argv=None):
     parser.add_argument("--catalog", type=Path, default=ROOT / "data/catalog/hardware_manual_v1.csv")
     parser.add_argument("--aliases", type=Path, default=ROOT / "data/catalog/hardware_aliases.json")
     parser.add_argument("--curation", type=Path, default=ROOT / "data/catalog/requirements_curation.json")
-    parser.add_argument("--processed-dir", type=Path, default=ROOT / "data/processed")
+    parser.add_argument("--processed-dir", type=Path, default=None,
+        help="Pasta das saídas. Sem ela, o hardware vai para data/processed e os jogos para "
+             "data/catalog/games_manual_v1.json, o arquivo versionado que o serviço catalog carrega.")
     args = parser.parse_args(argv)
     try:
-        hardware_output = args.processed_dir / "hardware_manual_v1.csv"
-        games_output = args.processed_dir / "games_manual_v1.json"
+        hardware_output = (args.processed_dir or ROOT / "data/processed") / "hardware_manual_v1.csv"
+        games_output = (args.processed_dir / "games_manual_v1.json" if args.processed_dir
+                        else ROOT / "data/catalog/games_manual_v1.json")
         inputs = {p.resolve() for p in (args.selection, args.catalog, args.aliases, args.curation)}
         snapshot = args.snapshot_dir.resolve()
         protected_snapshots = [snapshot]

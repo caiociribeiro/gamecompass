@@ -13,6 +13,36 @@ As tags representam a curadoria do GameCompass; não são apresentadas como
 tags da comunidade Steam. Os recursos de `categories` não substituem
 as preferências originais da interface.
 
+`games_manual_v1.json` é o catálogo já processado: os 120 jogos com requisitos interpretados, peças
+identificadas, gêneros, tags e os hashes do CSV, dos aliases, da curadoria e da seleção usados. É ele
+que o serviço `catalog` do Compose carrega no Neo4j a cada `up`; por isso quem clona o repositório
+recebe o catálogo pronto, sem coletar nada. As coletas brutas da Steam (`data/raw/`) continuam fora do
+Git. Um teste (`scripts/test_seed_catalog.py`) falha no CI se o CSV, os aliases ou a curadoria mudarem
+sem o JSON ser reprocessado.
+
+## Atualizar o catálogo
+
+Para trocar jogos, revisar requisitos ou mudar peças e aliases:
+
+1. Edite `games.json`, `hardware_manual_v1.csv`, `hardware_aliases.json` ou `requirements_curation.json`.
+2. Gere o catálogo novo. Com uma coleta nova da Steam (pasta nova):
+
+   ```bash
+   docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_<data> --fetch
+   ```
+
+   Ou reaproveitando uma coleta que você já tem (só reprocessa):
+
+   ```bash
+   docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote120_20261112
+   ```
+
+   Sem `--processed-dir`, o comando grava o resultado em `data/catalog/games_manual_v1.json`.
+3. Rode `docker compose up -d`: o serviço `catalog` carrega a versão nova no seu Neo4j.
+4. Versione `data/catalog/games_manual_v1.json` junto com os arquivos editados. No próximo `up`, as
+   outras máquinas recebem a mesma versão; jogos que saíram da seleção são removidos do grafo, exceto
+   os que têm interação de alguma conta.
+
 Seleção inicial, preservada nas ampliações para 50, 80 e 120 jogos:
 
 | AppID | Jogo da seleção inicial |
