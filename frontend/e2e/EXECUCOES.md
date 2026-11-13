@@ -30,5 +30,6 @@ cd frontend && npx playwright test --reporter=list
 | Data (UTC) | Código | Resultado | Duração | Ambiente |
 |---|---|---|---|---|
 | 2026-11-13 04:10:58 a 04:11:11 | `803a895` (master após o PR #21), frontend do contêiner `gamecompass-frontend` reconstruído desse código | 1 de 1 passou | 10,7 s | Playwright 1.65.0, Chromium 158.0.8127.18, Node v26.13.0, Linux 7.0.0-42 |
+| 2026-11-13 ~04:43 | Branch `chore/organizacao` antes do commit (base `6860b71`), API com 4 processos (`WEB_CONCURRENCY=4`) | 1 de 1 passou | 10,0 s | Mesmo ambiente |
 
 Execuções anteriores no mesmo dia (04:02 UTC, código do PR #21 antes do merge) também passaram, mas não foram registradas aqui com o commit exato.

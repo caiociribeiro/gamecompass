@@ -1,49 +1,9 @@
 // Integração React com HTTP fictício; nenhum banco ou Steam é acessado.
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { mkdtemp, rm } from "node:fs/promises"
-import { join } from "node:path"
-import { fileURLToPath, pathToFileURL } from "node:url"
-import * as esbuild from "esbuild"
-import { JSDOM } from "jsdom"
+import { mountReact, src } from "./helpers/react-harness.ts"
 
 test("React usa a API e descarta respostas de outro perfil, hardware ou conta", { timeout: 15000 }, async (t) => {
-  const base = fileURLToPath(new URL("../", import.meta.url))
-  const directory = await mkdtemp(join(base, "node_modules", ".gamecompass-ui-"))
-  const outfile = join(directory, "app.mjs")
-  await esbuild.build({ stdin: { contents: `
-    import React, {useEffect} from 'react';import {createRoot} from 'react-dom/client';
-    import {MemoryRouter,Routes,Route,useLocation,useNavigate} from 'react-router-dom';
-    import {SessionProvider,useSession} from ${JSON.stringify(join(base, "src/context/SessionContext.tsx"))};
-    import {CatalogProvider,useCatalog} from ${JSON.stringify(join(base, "src/context/CatalogContext.tsx"))};
-    import {Recommendations} from ${JSON.stringify(join(base, "src/pages/Recommendations.tsx"))};
-    import {GameDetail} from ${JSON.stringify(join(base, "src/pages/GameDetail.tsx"))};
-    export {React,createRoot};export const probe={};
-    function Probe(){const session=useSession(),catalog=useCatalog(),location=useLocation(),navigate=useNavigate();
-      useEffect(()=>{Object.assign(probe,{session,catalog,location,navigate})});return null;}
-    export function Harness(){return <SessionProvider><CatalogProvider><MemoryRouter initialEntries={['/app/recomendacoes?q=Resultado']}>
-      <Probe/><Routes><Route path='/app/recomendacoes' element={<Recommendations/>}/>
-      <Route path='/app/jogos/:id' element={<GameDetail/>}/></Routes>
-      </MemoryRouter></CatalogProvider></SessionProvider>}
-  `, resolveDir: base, loader: "tsx" }, bundle: true, format: "esm", platform: "browser", outfile, external: ["react", "react-dom", "react-dom/client"],
-    define: { "process.env.NODE_ENV": '"development"' }, logLevel: "silent" })
-  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: "http://localhost/", pretendToBeVisual: true })
-  const saved = new Map<string, PropertyDescriptor | undefined>()
-  for (const name of ["window", "document", "navigator", "localStorage", "HTMLElement", "Event", "MouseEvent", "IS_REACT_ACT_ENVIRONMENT"]) {
-    saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name))
-    Object.defineProperty(globalThis, name, { value: name === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[name], configurable: true, writable: true })
-  }
-  let unmount = async () => {}
-  t.after(async () => {
-    await unmount()
-    dom.window.close()
-    for (const [name, descriptor] of saved) {
-      if (descriptor) Object.defineProperty(globalThis, name, descriptor)
-      else Reflect.deleteProperty(globalThis, name)
-    }
-    esbuild.stop()
-    await rm(directory, { recursive: true, force: true })
-  })
   const user = { id: "qa", name: "Fixture", genres: ["RPG"], themes: ["Fantasia"],
     anchorIds: ["101", "102", "103"], hardware: { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" }, catalogVersion: "steam-v2" }
   const hardware = { CPU: [{ id: "CPU fixture", name: "CPU fixture", vendor: "Fixture", performance_score: 10, score_version: "manual_v1" }],
@@ -69,26 +29,38 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
     calculation: { engine_version: "rules_v1", minimum_affinity: 28, score_version: "manual_v1", hardware_sha256: "fixture", curation_sha256: "fixture" } })
   const requests: any[] = [], comparisons: any[] = [], patches: any[] = []
   let signedIn = true
-  t.mock.method(globalThis, "fetch", async (url, options = {}) => {
-    const path = new URL(String(url), "http://localhost").pathname
-    if (path === "/api/auth/me") return signedIn ? Response.json(user) : Response.json({ detail: "Entre." }, { status: 401 })
-    if (path === "/api/auth/login") { signedIn = true; return Response.json(user) }
-    if (path === "/api/auth/logout") { signedIn = false; return Response.json({ status: "ok" }) }
-    if (path === "/api/me/profile") { assert.equal(options.method, "PATCH"); patches.push(JSON.parse(options.body)); return Response.json(user) }
-    if (path === "/api/hardware") return Response.json(hardware)
-    if (path === "/api/games") return Response.json({ items: anchors, issues: [], source: "neo4j" })
-    if (path === "/api/recommendations" || path.endsWith("/comparison")) {
-      assert.equal(options.method, "POST")
-      const collection = path.endsWith("/comparison") ? comparisons : requests
-      return await new Promise((resolve) => collection.push({ resolve, signal: options.signal, body: JSON.parse(options.body), path }))
-    }
-    throw new Error("Requisição inesperada: " + path)
+  const ui = await mountReact(t, {
+    source: `
+      import React, {useEffect} from 'react';import {createRoot} from 'react-dom/client';
+      import {MemoryRouter,Routes,Route,useLocation,useNavigate} from 'react-router-dom';
+      import {SessionProvider,useSession} from ${src("context/SessionContext.tsx")};
+      import {CatalogProvider,useCatalog} from ${src("context/CatalogContext.tsx")};
+      import {Recommendations} from ${src("pages/Recommendations.tsx")};
+      import {GameDetail} from ${src("pages/GameDetail.tsx")};
+      export {React,createRoot};export const probe={};
+      function Probe(){const session=useSession(),catalog=useCatalog(),location=useLocation(),navigate=useNavigate();
+        useEffect(()=>{Object.assign(probe,{session,catalog,location,navigate})});return null;}
+      export function Harness(){return <SessionProvider><CatalogProvider><MemoryRouter initialEntries={['/app/recomendacoes?q=Resultado']}>
+        <Probe/><Routes><Route path='/app/recomendacoes' element={<Recommendations/>}/>
+        <Route path='/app/jogos/:id' element={<GameDetail/>}/></Routes>
+        </MemoryRouter></CatalogProvider></SessionProvider>}
+    `,
+    fetch: async (path, options) => {
+      if (path === "/api/auth/me") return signedIn ? Response.json(user) : Response.json({ detail: "Entre." }, { status: 401 })
+      if (path === "/api/auth/login") { signedIn = true; return Response.json(user) }
+      if (path === "/api/auth/logout") { signedIn = false; return Response.json({ status: "ok" }) }
+      if (path === "/api/me/profile") { assert.equal(options.method, "PATCH"); patches.push(JSON.parse(options.body)); return Response.json(user) }
+      if (path === "/api/hardware") return Response.json(hardware)
+      if (path === "/api/games") return Response.json({ items: anchors, issues: [], source: "neo4j" })
+      if (path === "/api/recommendations" || path.endsWith("/comparison")) {
+        assert.equal(options.method, "POST")
+        const collection = path.endsWith("/comparison") ? comparisons : requests
+        return await new Promise((resolve) => collection.push({ resolve, signal: options.signal, body: JSON.parse(options.body), path }))
+      }
+      throw new Error("Requisição inesperada: " + path)
+    },
   })
-  const m = await import(pathToFileURL(outfile).href)
-  const { act } = m.React
-  const root = m.createRoot(document.getElementById("root"))
-  unmount = async () => { await act(async () => root.unmount()) }
-  await act(async () => root.render(m.React.createElement(m.Harness)))
+  const { m, act, dom } = ui
   for (let attempt = 0; attempt < 20 && m.probe.session.status !== "ready"; attempt++) await act(async () => { await new Promise((r) => setTimeout(r, 5)) })
   assert.equal(m.probe.session.user?.id, "qa")
   assert.equal(requests.length, 0)

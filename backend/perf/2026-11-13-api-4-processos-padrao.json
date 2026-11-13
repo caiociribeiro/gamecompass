@@ -1,0 +1,313 @@
+{
+  "measured_at": "2026-11-13T04:41:46+00:00",
+  "base": "http://127.0.0.1:8000",
+  "environment": {
+    "client": "Python 3.14.6",
+    "os": "Linux 7.0.0-42-generic",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "cores": 12,
+    "api_server": "uvicorn, 4 processos (WEB_CONCURRENCY=4, padrão a partir de chore/organizacao)",
+    "container": {
+      "image": "gamecompass-api",
+      "cpu_limit": "sem limite",
+      "memory_limit": "sem limite"
+    },
+    "note": "cliente, API e Neo4j na mesma máquina"
+  },
+  "latency": [
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "GET",
+      "path": "/health/neo4j",
+      "first_call_ms": 4.3,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 3.4,
+      "p50_ms": 4.9,
+      "p95_ms": 5.9,
+      "p99_ms": 6.0,
+      "max_ms": 6.0,
+      "mean_ms": 4.9,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/auth/me",
+      "first_call_ms": 6.7,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 1.4,
+      "p50_ms": 6.1,
+      "p95_ms": 7.1,
+      "p99_ms": 7.7,
+      "max_ms": 7.7,
+      "mean_ms": 5.6,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/hardware",
+      "first_call_ms": 22.4,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 12.0,
+      "p50_ms": 15.7,
+      "p95_ms": 38.7,
+      "p99_ms": 53.5,
+      "max_ms": 53.5,
+      "mean_ms": 19.3,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/games?appids=1091500,292030,1245620",
+      "first_call_ms": 28.2,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 24.0,
+      "p50_ms": 29.0,
+      "p95_ms": 49.6,
+      "p99_ms": 60.6,
+      "max_ms": 60.6,
+      "mean_ms": 33.4,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/games/1245620",
+      "first_call_ms": 43.1,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 22.8,
+      "p50_ms": 28.5,
+      "p95_ms": 51.2,
+      "p99_ms": 65.1,
+      "max_ms": 65.1,
+      "mean_ms": 32.8,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/me/interactions",
+      "first_call_ms": 4.0,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 1.8,
+      "p50_ms": 9.4,
+      "p95_ms": 12.3,
+      "p99_ms": 12.7,
+      "max_ms": 12.7,
+      "mean_ms": 8.8,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "PATCH",
+      "path": "/api/me/profile",
+      "first_call_ms": 15.5,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 2.5,
+      "p50_ms": 3.7,
+      "p95_ms": 14.3,
+      "p99_ms": 16.3,
+      "max_ms": 16.3,
+      "mean_ms": 6.7,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "POST",
+      "path": "/api/recommendations",
+      "first_call_ms": 181.4,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 158.3,
+      "p50_ms": 183.1,
+      "p95_ms": 234.2,
+      "p99_ms": 266.6,
+      "max_ms": 266.6,
+      "mean_ms": 186.7,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "anônima",
+      "method": "POST",
+      "path": "/api/recommendations",
+      "first_call_ms": 162.2,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 149.1,
+      "p50_ms": 177.1,
+      "p95_ms": 235.5,
+      "p99_ms": 288.1,
+      "max_ms": 288.1,
+      "mean_ms": 184.0,
+      "errors": 0
+    },
+    {
+      "source": "Neo4j",
+      "session": "logada",
+      "method": "POST",
+      "path": "/api/games/1245620/comparison",
+      "first_call_ms": 62.9,
+      "first_call_status": 200,
+      "n": 50,
+      "min_ms": 26.9,
+      "p50_ms": 29.0,
+      "p95_ms": 31.4,
+      "p99_ms": 37.4,
+      "max_ms": 37.4,
+      "mean_ms": 29.2,
+      "errors": 0
+    },
+    {
+      "source": "Steam",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/games/search?q=elden",
+      "first_call_ms": 1253.2,
+      "first_call_status": 200,
+      "n": 5,
+      "min_ms": 2.8,
+      "p50_ms": 3.1,
+      "p95_ms": 3.8,
+      "p99_ms": 3.8,
+      "max_ms": 3.8,
+      "mean_ms": 3.2,
+      "errors": 0
+    },
+    {
+      "source": "Steam",
+      "session": "logada",
+      "method": "GET",
+      "path": "/api/games/anchors",
+      "first_call_ms": 2736.0,
+      "first_call_status": 200,
+      "n": 5,
+      "min_ms": 4.0,
+      "p50_ms": 4.0,
+      "p95_ms": 4.9,
+      "p99_ms": 4.9,
+      "max_ms": 4.9,
+      "mean_ms": 4.3,
+      "errors": 0
+    }
+  ],
+  "load": {
+    "endpoint": "POST /api/recommendations (sessão logada, perfil completo)",
+    "seconds_per_level": 15,
+    "levels": [
+      {
+        "users": 1,
+        "seconds": 15.1,
+        "ok": 82,
+        "errors": 0,
+        "throughput_rps": 5.45,
+        "n": 82,
+        "min_ms": 147.9,
+        "p50_ms": 168.9,
+        "p95_ms": 276.1,
+        "p99_ms": 304.5,
+        "max_ms": 361.8,
+        "mean_ms": 181.4,
+        "docker_stats_mid": {
+          "gamecompass-api": {
+            "cpu": "88.56%",
+            "mem": "340.7MiB"
+          },
+          "gamecompass-neo4j": {
+            "cpu": "17.08%",
+            "mem": "958.9MiB"
+          }
+        }
+      },
+      {
+        "users": 5,
+        "seconds": 15.4,
+        "ok": 177,
+        "errors": 0,
+        "throughput_rps": 11.47,
+        "n": 177,
+        "min_ms": 252.1,
+        "p50_ms": 362.9,
+        "p95_ms": 670.3,
+        "p99_ms": 825.2,
+        "max_ms": 945.3,
+        "mean_ms": 419.6,
+        "docker_stats_mid": {
+          "gamecompass-api": {
+            "cpu": "374.66%",
+            "mem": "356.1MiB"
+          },
+          "gamecompass-neo4j": {
+            "cpu": "51.54%",
+            "mem": "959.9MiB"
+          }
+        }
+      },
+      {
+        "users": 10,
+        "seconds": 15.5,
+        "ok": 169,
+        "errors": 0,
+        "throughput_rps": 10.88,
+        "n": 169,
+        "min_ms": 333.2,
+        "p50_ms": 835.7,
+        "p95_ms": 1288.0,
+        "p99_ms": 1489.9,
+        "max_ms": 1745.1,
+        "mean_ms": 864.3,
+        "docker_stats_mid": {
+          "gamecompass-api": {
+            "cpu": "412.39%",
+            "mem": "378.6MiB"
+          },
+          "gamecompass-neo4j": {
+            "cpu": "207.51%",
+            "mem": "961.6MiB"
+          }
+        }
+      },
+      {
+        "users": 20,
+        "seconds": 16.8,
+        "ok": 157,
+        "errors": 0,
+        "throughput_rps": 9.32,
+        "n": 157,
+        "min_ms": 469.4,
+        "p50_ms": 1733.9,
+        "p95_ms": 2978.6,
+        "p99_ms": 3351.3,
+        "max_ms": 3450.4,
+        "mean_ms": 1826.8,
+        "docker_stats_mid": {
+          "gamecompass-api": {
+            "cpu": "423.19%",
+            "mem": "426.9MiB"
+          },
+          "gamecompass-neo4j": {
+            "cpu": "76.61%",
+            "mem": "1.316GiB"
+          }
+        }
+      }
+    ]
+  }
+}

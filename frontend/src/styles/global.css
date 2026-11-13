@@ -56,7 +56,6 @@ ul, ol { margin: 0; padding: 0; }
 }
 .px { font-family: var(--px); }
 .muted { color: var(--muted); }
-.tiny { font-size: 18px; }
 .hint { font-size: 20px; color: var(--muted); }
 .eyebrow { font: 10px/1.8 var(--px); color: var(--muted); margin: 0 0 10px; }
 .lede { font-size: 23px; color: var(--text); margin: 0 0 14px; }
@@ -244,8 +243,6 @@ details ul { list-style: none; }
 .game-card-body .note { font: 9px/1.7 var(--px); color: var(--muted); margin: 0 0 6px; }
 .why-chips { list-style: none; display: grid; gap: 2px; font-size: 18px; color: var(--muted); }
 .game-card-actions { display: flex; justify-content: flex-end; gap: 6px; padding: 0 8px 8px; }
-.game-card-shell.gone { animation: gone 0.7s steps(7) forwards; pointer-events: none; }
-@keyframes gone { 0% { transform: none; opacity: 1; } 30% { transform: translateX(-4px) rotate(-2deg); } 50% { transform: translateX(4px) rotate(2deg); } 100% { transform: translateY(80px) rotate(6deg); opacity: 0; } }
 
 /* reações (corações pixel) */
 .reactions { display: flex; gap: 8px; align-items: center; }
@@ -288,7 +285,6 @@ details ul { list-style: none; }
 .topbar nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .logo { display: inline-flex; align-items: center; gap: 8px; font: 11px var(--px); color: var(--yellow); text-shadow: 2px 2px 0 var(--ink); }
 .logo svg { width: 22px; height: 22px; }
-.quiet-link { text-decoration: none; }
 .auth { display: grid; place-items: start center; padding: 24px 16px 40px; position: relative; z-index: 1; }
 .auth-panel { width: 100%; max-width: 440px; border: 3px solid var(--ink); background: var(--panel); box-shadow: 4px 4px 0 var(--ink); padding: 18px; }
 .auth-panel h1 { margin: 14px 0 10px; }

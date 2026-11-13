@@ -34,7 +34,11 @@ def token_digest(token: str) -> str:
 
 
 class AttemptLimiter:
-    """Limite simples por processo. Reinicia com a API; suficiente para o protótipo."""
+    """Limite simples por processo. Reinicia com a API; suficiente para o protótipo.
+
+    Com N processos (API_WORKERS), cada um conta as falhas sozinho: o bloqueio pode demorar
+    até N vezes mais tentativas para valer em todos.
+    """
 
     def __init__(self, limit: int = 5, window_seconds: int = 300):
         self.limit, self.window = limit, window_seconds

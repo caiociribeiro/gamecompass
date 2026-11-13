@@ -1,14 +1,7 @@
 // RF28 (e-mail sob demanda na Conta) e RF24 (filtros das Sugestões), com React em jsdom e HTTP fictício.
 import assert from "node:assert/strict"
 import { test, type TestContext } from "node:test"
-import { mkdtemp, rm } from "node:fs/promises"
-import { join } from "node:path"
-import { fileURLToPath, pathToFileURL } from "node:url"
-import * as esbuild from "esbuild"
-import { JSDOM } from "jsdom"
-
-const base = fileURLToPath(new URL("../", import.meta.url))
-const src = (path: string) => JSON.stringify(join(base, "src", path))
+import { mountReact, src } from "./helpers/react-harness.ts"
 
 const user = { id: "qa", name: "Fixture", genres: ["RPG"], themes: ["Fantasia"], anchorIds: ["101", "102", "103"],
   hardware: { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" }, catalogVersion: "steam-v2" }
@@ -32,62 +25,30 @@ function match(id: string, title: string, meets: "recommended" | "minimum" | nul
 }
 
 async function mount(t: TestContext, route: string, element: string, handler: (path: string, options: any) => Response | Promise<Response>) {
-  const directory = await mkdtemp(join(base, "node_modules", ".gamecompass-rf-"))
-  const outfile = join(directory, "app.mjs")
-  await esbuild.build({ stdin: { contents: `
-    import React from 'react';import {createRoot} from 'react-dom/client';
-    import {MemoryRouter,Routes,Route,useLocation} from 'react-router-dom';
-    import {SessionProvider} from ${src("context/SessionContext.tsx")};
-    import {CatalogProvider} from ${src("context/CatalogContext.tsx")};
-    import {Account} from ${src("pages/Account.tsx")};
-    import {Recommendations} from ${src("pages/Recommendations.tsx")};
-    export {React,createRoot};export const probe={};
-    function Probe(){probe.location=useLocation();return null}
-    export function Harness(){return <SessionProvider><CatalogProvider><MemoryRouter initialEntries={[${JSON.stringify(route)}]}>
-      <Probe/><Routes><Route path=${JSON.stringify(route)} element={<${element}/>}/></Routes></MemoryRouter></CatalogProvider></SessionProvider>}
-  `, resolveDir: base, loader: "tsx" }, bundle: true, format: "esm", platform: "browser", outfile, external: ["react", "react-dom", "react-dom/client"],
-    define: { "process.env.NODE_ENV": '"development"' }, loader: { ".css": "empty", ".json": "json" }, logLevel: "silent" })
-  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: "http://localhost/", pretendToBeVisual: true })
-  const saved = new Map<string, PropertyDescriptor | undefined>()
-  for (const name of ["window", "document", "navigator", "localStorage", "HTMLElement", "Event", "MouseEvent", "IS_REACT_ACT_ENVIRONMENT"]) {
-    saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name))
-    Object.defineProperty(globalThis, name, { value: name === "IS_REACT_ACT_ENVIRONMENT" ? true : dom.window[name], configurable: true, writable: true })
-  }
-  const requests: string[] = []
-  t.mock.method(globalThis, "fetch", async (url: string, options: any = {}) => {
-    const path = new URL(String(url), "http://localhost").pathname
-    requests.push(`${options.method ?? "GET"} ${path}`)
-    return handler(path, options)
+  const ui = await mountReact(t, {
+    source: `
+      import React from 'react';import {createRoot} from 'react-dom/client';
+      import {MemoryRouter,Routes,Route,useLocation} from 'react-router-dom';
+      import {SessionProvider} from ${src("context/SessionContext.tsx")};
+      import {CatalogProvider} from ${src("context/CatalogContext.tsx")};
+      import {Account} from ${src("pages/Account.tsx")};
+      import {Recommendations} from ${src("pages/Recommendations.tsx")};
+      export {React,createRoot};export const probe={};
+      function Probe(){probe.location=useLocation();return null}
+      export function Harness(){return <SessionProvider><CatalogProvider><MemoryRouter initialEntries={[${JSON.stringify(route)}]}>
+        <Probe/><Routes><Route path=${JSON.stringify(route)} element={<${element}/>}/></Routes></MemoryRouter></CatalogProvider></SessionProvider>}
+    `,
+    fetch: handler,
   })
-  const m = await import(pathToFileURL(outfile).href)
-  const { act } = m.React
-  const root = m.createRoot(document.getElementById("root"))
-  t.after(async () => {
-    await act(async () => root.unmount())
-    dom.window.close()
-    for (const [name, descriptor] of saved) {
-      if (descriptor) Object.defineProperty(globalThis, name, descriptor)
-      else Reflect.deleteProperty(globalThis, name)
-    }
-    esbuild.stop()
-    await rm(directory, { recursive: true, force: true })
-  })
-  await act(async () => root.render(m.React.createElement(m.Harness)))
-  const settle = async (ms = 30) => act(async () => { await new Promise((r) => setTimeout(r, ms)) })
-  await settle()
-  const button = (label: string) => [...document.querySelectorAll("button")].find((item) => item.textContent?.trim() === label)
+  await ui.settle()
   const click = async (label: string) => {
-    const target = button(label)
+    const target = ui.button(label)
     assert(target, `botão "${label}" não encontrado`)
-    await act(async () => { target.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true, cancelable: true, button: 0 })) })
-    await settle()
+    await ui.click(target)
+    await ui.settle()
   }
-  const type = async (input: HTMLInputElement, value: string) => {
-    const setter = Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, "value")!.set!
-    await act(async () => { setter.call(input, value); input.dispatchEvent(new dom.window.Event("input", { bubbles: true })) })
-    await settle()
-  }
-  return { m, dom, requests, button, click, type, settle }
+  const type = async (input: HTMLInputElement, value: string) => { await ui.type(input, value); await ui.settle() }
+  return { m: ui.m, dom: ui.dom, requests: ui.log, button: ui.button, click, type, settle: ui.settle }
 }
 
 test("RF28: a Conta só busca o e-mail quando a pessoa clica em Mostrar, e Ocultar esconde de novo", { timeout: 20000 }, async (t) => {
