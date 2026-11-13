@@ -150,9 +150,6 @@ export function Landing() {
         </ol>
       </section>
 
-      <footer className="site-footer">
-        <Logo />
-      </footer>
     </div>
   )
 }
