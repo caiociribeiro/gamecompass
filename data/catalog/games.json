@@ -1078,14 +1078,6 @@
       "curation_notes": "Terror cooperativo online para até seis jogadores, com objetos regidos por física."
     },
     {
-      "id": "3527290",
-      "tags": [
-        "Cooperativo",
-        "Exploração"
-      ],
-      "curation_notes": "Escalada cooperativa em uma ilha misteriosa, em que pequenos erros têm grandes consequências."
-    },
-    {
       "id": "221100",
       "tags": [
         "Mundo aberto",
@@ -1106,15 +1098,6 @@
         "Tiro"
       ],
       "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Armas de fogo ou combate de tiro fazem parte central da jogabilidade."
-    },
-    {
-      "id": "251570",
-      "tags": [
-        "Mundo aberto",
-        "Terror",
-        "Cooperativo"
-      ],
-      "curation_notes": "Sobrevivência com zumbis e defesa de base em mundo aberto, combinando tiro, construção e RPG."
     },
     {
       "id": "1172620",
@@ -1184,14 +1167,6 @@
       "curation_notes": "RPG de ação em Wraeclast, com progressão de personagem e jogo cooperativo."
     },
     {
-      "id": "284160",
-      "tags": [
-        "Mundo aberto",
-        "Exploração"
-      ],
-      "curation_notes": "Simulador de veículos de física de corpo macio, com mapas abertos e liberdade de experimentação."
-    },
-    {
       "id": "1716740",
       "tags": [
         "Ficção científica",
@@ -1202,12 +1177,42 @@
       "curation_notes": "RPG espacial da Bethesda, com exploração de sistemas estelares e missões narrativas."
     },
     {
-      "id": "4000",
+      "id": "3405690",
       "tags": [
-        "Cooperativo",
-        "Exploração"
+        "Competitivo",
+        "Cooperativo"
       ],
-      "curation_notes": "Sandbox de física sem objetivos fixos, com ferramentas para criar e jogar com outras pessoas."
+      "curation_notes": "Simulador de futebol com partidas contra outros jogadores e modos cooperativos."
+    },
+    {
+      "id": "1304930",
+      "tags": [
+        "Terror",
+        "Cooperativo"
+      ],
+      "curation_notes": "Terror de sobrevivência para jogar sozinho ou em equipe, com provas e fugas."
+    },
+    {
+      "id": "1145350",
+      "tags": [
+        "Fantasia",
+        "Narrativa"
+      ],
+      "curation_notes": "Mitologia grega e narrativa que avança entre tentativas, continuação do Hades.",
+      "editorial_genres": [
+        "Roguelike"
+      ],
+      "genre_curation_notes": "Classificação de jogabilidade do GameCompass. Categoria editorial ampla para a família roguelike/roguelite, com tentativas e combinações de habilidades ou cartas."
+    },
+    {
+      "id": "1203620",
+      "tags": [
+        "Fantasia",
+        "Mundo aberto",
+        "Exploração",
+        "Cooperativo"
+      ],
+      "curation_notes": "RPG de ação e sobrevivência em mundo aberto de fantasia, para jogar sozinho ou em cooperação."
     }
   ]
 }

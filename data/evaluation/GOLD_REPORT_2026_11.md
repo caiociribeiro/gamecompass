@@ -1,6 +1,6 @@
 # Relatório dos casos de ouro, 10/11/2026
 
-Motor `rules_v1`, índice `manual_v1`, catálogo de hardware com 313 peças e 188 regras de curadoria (o catálogo passou a ter 189 depois da troca de jogos de 10/11/2026). Unpacking e A Hat in Time saíram do catálogo nessa troca; os casos continuam válidos como teste do motor, porque embutem os requisitos reais da Steam. Reproduzir: `docker compose run --rm -v "$PWD:/workspace" -e GAMECOMPASS_ROOT=/workspace -w /workspace/backend api python -m app.evaluate_gold`. Os casos e os motivos estão em `gold_cases.json`; o teste automático é `backend/tests/test_gold_cases.py`.
+Motor `rules_v1`, índice `manual_v1`, catálogo de hardware com 327 peças e 196 regras de curadoria (eram 313 e 188 quando os casos foram gerados; as peças e regras novas não alteram nenhum resultado dos 22 casos). Unpacking e A Hat in Time saíram do catálogo nessa troca; os casos continuam válidos como teste do motor, porque embutem os requisitos reais da Steam. Reproduzir: `docker compose run --rm -v "$PWD:/workspace" -e GAMECOMPASS_ROOT=/workspace -w /workspace/backend api python -m app.evaluate_gold`. Os casos e os motivos estão em `gold_cases.json`; o teste automático é `backend/tests/test_gold_cases.py`.
 
 ## Como ler
 

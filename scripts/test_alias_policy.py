@@ -114,6 +114,33 @@ class AliasPolicyTests(unittest.TestCase):
                 self.assertEqual((alternative["status"], alternative["name"]), ("matched", canonical))
                 self.assertEqual(alternative["score_status"], "classified")
 
+    def test_names_from_the_catalog_relevance_swap_resolve_to_the_single_catalog_model(self):
+        expected = {
+            ("Intel CPU 7th Gen 7700", "CPU"): "Intel Core i7-7700",
+            ("Intel Pentium G4560 3.5 GHz", "CPU"): "Intel Pentium G4560",
+            ("Intel® Core™ i3 3250 3.5 GHz", "CPU"): "Intel Core i3-3250",
+            ("AMD Radeon™ HD 7790 (2 GB)", "GPU"): "AMD Radeon HD 7790 2GB",
+            ("AMD Radeon R9 390", "GPU"): "AMD Radeon R9 390 8GB",
+            ("NVIDIA GTX 1650 Super", "GPU"): "NVIDIA GeForce GTX 1650 SUPER 4GB",
+            ("NVIDIA GeForce 1070 Ti", "GPU"): "NVIDIA GeForce GTX 1070 Ti 8GB",
+            ("Nvidia® GeForce™ GTX 470 (1.28GB)", "GPU"): "NVIDIA GeForce GTX 470 1GB",
+            ("Intel Core i5 6600k", "CPU"): "Intel Core i5-6600K",
+            ("Nvidia GTX 1050 Ti", "GPU"): "NVIDIA GeForce GTX 1050 Ti 4GB",
+            ("Radeon R7 360, 2 GB", "GPU"): "AMD Radeon R7 360 2GB",
+            ("Intel Arc A310, 4GB", "GPU"): "Intel Arc A310 4GB",
+            ("Intel Core i5-6400 (2.7 GHz 4 Core)", "CPU"): "Intel Core i5-6400",
+            ("AMD Ryzen 5 1500X (3.5 GHz 4 Core)", "CPU"): "AMD Ryzen 5 1500X",
+            ("NVIDIA GeForce GTX 1060 (req. 6GB VRAM)", "GPU"): "NVIDIA GeForce GTX 1060 6GB",
+            ("AMD Radeon RX 580 (req. 6GB VRAM)", "GPU"): "AMD Radeon RX 580 8GB",
+            ("Intel Core i5-4430", "CPU"): "Intel Core i5-4430",
+            ("Intel Core i5-9400F", "CPU"): "Intel Core i5-9400F",
+        }
+        for (steam_name, kind), canonical in expected.items():
+            with self.subTest(steam_name):
+                alternative = self.resolve(steam_name, kind)["alternatives"][0]
+                self.assertEqual((alternative["status"], alternative["name"]), ("matched", canonical))
+                self.assertEqual(alternative["score_status"], "classified")
+
     def test_ambiguous_generic_and_misspelled_names_stay_pending(self):
         for steam_name, kind in [
             ("Arc A770", "GPU"),            # 8GB ou 16GB: o alias adivinharia a variante
