@@ -1,0 +1,80 @@
+{
+  "measured_at": "2026-11-13T04:25:27+00:00",
+  "base": "http://127.0.0.1:8000",
+  "environment": {
+    "client": "Python 3.12.16",
+    "os": "Linux 7.0.0-42-generic",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "cores": 12,
+    "api_server": "uvicorn, 1 processo (padrão), cliente dentro do contêiner",
+    "container": {},
+    "note": "cliente, API e Neo4j na mesma máquina"
+  },
+  "latency": [],
+  "load": {
+    "endpoint": "POST /api/recommendations (sessão logada, perfil completo)",
+    "seconds_per_level": 15,
+    "levels": [
+      {
+        "users": 1,
+        "seconds": 15.1,
+        "ok": 82,
+        "errors": 0,
+        "throughput_rps": 5.42,
+        "n": 82,
+        "min_ms": 151.9,
+        "p50_ms": 176.5,
+        "p95_ms": 244.1,
+        "p99_ms": 276.6,
+        "max_ms": 277.0,
+        "mean_ms": 182.1,
+        "docker_stats_mid": {}
+      },
+      {
+        "users": 5,
+        "seconds": 15.5,
+        "ok": 71,
+        "errors": 0,
+        "throughput_rps": 4.58,
+        "n": 71,
+        "min_ms": 482.7,
+        "p50_ms": 1010.1,
+        "p95_ms": 1367.6,
+        "p99_ms": 1481.6,
+        "max_ms": 1763.0,
+        "mean_ms": 1022.4,
+        "docker_stats_mid": {}
+      },
+      {
+        "users": 10,
+        "seconds": 16.8,
+        "ok": 50,
+        "errors": 0,
+        "throughput_rps": 2.97,
+        "n": 50,
+        "min_ms": 1582.5,
+        "p50_ms": 2792.8,
+        "p95_ms": 3811.8,
+        "p99_ms": 4331.8,
+        "max_ms": 4331.8,
+        "mean_ms": 2760.6,
+        "docker_stats_mid": {}
+      },
+      {
+        "users": 20,
+        "seconds": 19.9,
+        "ok": 41,
+        "errors": 0,
+        "throughput_rps": 2.06,
+        "n": 41,
+        "min_ms": 2146.7,
+        "p50_ms": 6688.5,
+        "p95_ms": 8051.5,
+        "p99_ms": 8797.8,
+        "max_ms": 8797.8,
+        "mean_ms": 6503.2,
+        "docker_stats_mid": {}
+      }
+    ]
+  }
+}
