@@ -1,0 +1,101 @@
+{
+  "measured_at": "2026-11-13T04:01:02.376Z",
+  "url": "http://127.0.0.1:5173",
+  "runs": 3,
+  "idle_ms": 3000,
+  "environment": {
+    "chromium": "158.0.8127.18",
+    "playwright": "1.65.0",
+    "node": "v26.13.0",
+    "os": "Linux 7.0.0-42-generic",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "cores": 12,
+    "memory_gb": 15
+  },
+  "median": {
+    "landing": {
+      "recalc_style": 30,
+      "layout": 0,
+      "task_ms": 68,
+      "script_ms": 2
+    },
+    "inicio_conta_nova": {
+      "recalc_style": 34,
+      "layout": 0,
+      "task_ms": 69,
+      "script_ms": 1
+    },
+    "sugestoes": {
+      "recalc_style": 15,
+      "layout": 0,
+      "task_ms": 12,
+      "script_ms": 0,
+      "elementos": 1398
+    }
+  },
+  "samples": [
+    {
+      "landing": {
+        "recalc_style": 29,
+        "layout": 0,
+        "task_ms": 71,
+        "script_ms": 2
+      },
+      "inicio_conta_nova": {
+        "recalc_style": 43,
+        "layout": 0,
+        "task_ms": 92,
+        "script_ms": 1
+      },
+      "sugestoes": {
+        "recalc_style": 15,
+        "layout": 0,
+        "task_ms": 12,
+        "script_ms": 0,
+        "elementos": 1398
+      }
+    },
+    {
+      "landing": {
+        "recalc_style": 31,
+        "layout": 0,
+        "task_ms": 68,
+        "script_ms": 2
+      },
+      "inicio_conta_nova": {
+        "recalc_style": 34,
+        "layout": 0,
+        "task_ms": 67,
+        "script_ms": 1
+      },
+      "sugestoes": {
+        "recalc_style": 21,
+        "layout": 0,
+        "task_ms": 17,
+        "script_ms": 0,
+        "elementos": 1398
+      }
+    },
+    {
+      "landing": {
+        "recalc_style": 30,
+        "layout": 0,
+        "task_ms": 68,
+        "script_ms": 2
+      },
+      "inicio_conta_nova": {
+        "recalc_style": 33,
+        "layout": 0,
+        "task_ms": 69,
+        "script_ms": 1
+      },
+      "sugestoes": {
+        "recalc_style": 15,
+        "layout": 0,
+        "task_ms": 12,
+        "script_ms": 0,
+        "elementos": 1398
+      }
+    }
+  ]
+}

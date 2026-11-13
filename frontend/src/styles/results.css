@@ -180,3 +180,6 @@ details.excluded li span { color: var(--muted); }
 .pager .chip:disabled { opacity: 0.4; cursor: not-allowed; }
 .search-select .list-head { font: 8px/1.6 var(--px); color: var(--yellow); padding: 8px 10px 4px; }
 .pager .chip.on::before { content: none; }
+.pc-saved.error { color: var(--red); animation: none; }
+.history-sub { margin: 14px 0 6px; color: var(--muted); }
+.history-eye { display: inline-block; width: 22px; text-align: center; color: var(--cyan); flex: none; }

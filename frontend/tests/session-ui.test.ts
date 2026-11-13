@@ -156,3 +156,20 @@ test("cliques seguidos viram um único PATCH; sair envia o que faltava antes de 
   assert.deepEqual(patches.at(-1), { anchorIds: ["1"] })
   assert(log.lastIndexOf("/api/me/profile") < log.lastIndexOf("/api/auth/logout"))
 })
+
+test("esconder a aba envia na hora, com keepalive, o que ainda esperava a pausa", async (t) => {
+  const sent: any[] = []
+  const { m, act, dom } = await boot(t, (path, options) => {
+    if (path === "/api/auth/me") return Response.json(account("a"))
+    if (path === "/api/me/profile") { sent.push({ body: JSON.parse(options.body), keepalive: options.keepalive === true }); return Response.json(account("a")) }
+    throw new Error("Requisição inesperada: " + path)
+  })
+  await act(async () => {
+    m.probe.session.updateUser({ genres: ["RPG"] })
+    Object.defineProperty(dom.window.document, "visibilityState", { value: "hidden", configurable: true })
+    dom.window.document.dispatchEvent(new dom.window.Event("visibilitychange"))
+    await new Promise((r) => setTimeout(r, 20))  // bem antes da pausa de 600 ms
+  })
+  assert.deepEqual(sent, [{ body: { genres: ["RPG"] }, keepalive: true }])
+  assert.equal(m.probe.session.saving, false)
+})

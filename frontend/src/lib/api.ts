@@ -12,9 +12,11 @@ export class ApiError extends Error {
 
 type Method = "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
 
-async function apiRequest<T>(path: string, signal?: AbortSignal, payload?: unknown, method?: Method): Promise<T> {
+async function apiRequest<T>(path: string, signal?: AbortSignal, payload?: unknown, method?: Method, keepalive = false): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     signal,
+    // keepalive deixa o navegador terminar o envio mesmo depois que a aba fecha.
+    ...(keepalive ? { keepalive: true } : {}),
     method: method ?? (payload === undefined ? "GET" : "POST"),
     // A sessão vai no cookie HttpOnly definido pela API; o JavaScript nunca lê o token.
     credentials: "same-origin",
@@ -48,8 +50,8 @@ export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
 export function apiPost<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   return apiRequest<T>(path, signal, body)
 }
-export function apiPatch<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
-  return apiRequest<T>(path, signal, body, "PATCH")
+export function apiPatch<T>(path: string, body: unknown, signal?: AbortSignal, options: { keepalive?: boolean } = {}): Promise<T> {
+  return apiRequest<T>(path, signal, body, "PATCH", options.keepalive)
 }
 export function apiPut<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   return apiRequest<T>(path, signal, body, "PUT")

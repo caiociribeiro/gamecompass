@@ -1,0 +1,101 @@
+{
+  "measured_at": "2026-11-13T03:59:38.036Z",
+  "url": "http://127.0.0.1:5173",
+  "runs": 3,
+  "idle_ms": 3000,
+  "environment": {
+    "chromium": "158.0.8127.18",
+    "playwright": "1.65.0",
+    "node": "v26.13.0",
+    "os": "Linux 7.0.0-42-generic",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-1334U",
+    "cores": 12,
+    "memory_gb": 15
+  },
+  "median": {
+    "landing": {
+      "recalc_style": 57,
+      "layout": 57,
+      "task_ms": 280,
+      "script_ms": 2
+    },
+    "inicio_conta_nova": {
+      "recalc_style": 179,
+      "layout": 35,
+      "task_ms": 264,
+      "script_ms": 1
+    },
+    "sugestoes": {
+      "recalc_style": 18,
+      "layout": 0,
+      "task_ms": 17,
+      "script_ms": 0,
+      "elementos": 3379
+    }
+  },
+  "samples": [
+    {
+      "landing": {
+        "recalc_style": 53,
+        "layout": 53,
+        "task_ms": 280,
+        "script_ms": 2
+      },
+      "inicio_conta_nova": {
+        "recalc_style": 182,
+        "layout": 35,
+        "task_ms": 253,
+        "script_ms": 1
+      },
+      "sugestoes": {
+        "recalc_style": 20,
+        "layout": 0,
+        "task_ms": 17,
+        "script_ms": 0,
+        "elementos": 3379
+      }
+    },
+    {
+      "landing": {
+        "recalc_style": 57,
+        "layout": 57,
+        "task_ms": 270,
+        "script_ms": 2
+      },
+      "inicio_conta_nova": {
+        "recalc_style": 179,
+        "layout": 35,
+        "task_ms": 286,
+        "script_ms": 2
+      },
+      "sugestoes": {
+        "recalc_style": 18,
+        "layout": 0,
+        "task_ms": 18,
+        "script_ms": 0,
+        "elementos": 3379
+      }
+    },
+    {
+      "landing": {
+        "recalc_style": 63,
+        "layout": 63,
+        "task_ms": 288,
+        "script_ms": 2
+      },
+      "inicio_conta_nova": {
+        "recalc_style": 176,
+        "layout": 35,
+        "task_ms": 264,
+        "script_ms": 1
+      },
+      "sugestoes": {
+        "recalc_style": 15,
+        "layout": 0,
+        "task_ms": 14,
+        "script_ms": 0,
+        "elementos": 3379
+      }
+    }
+  ]
+}
