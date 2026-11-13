@@ -207,6 +207,16 @@ class AuthApiTests(unittest.TestCase):
         with patch('app.services.auth.time.time', return_value=1_061.0):
             self.assertFalse(limiter.blocked(self.store, key))
 
+    def test_avatar_is_one_of_the_characters_and_null_goes_back_to_default(self):
+        self.register()
+        self.assertIsNone(self.client.get('/api/auth/me').json()['avatar'])
+        chosen = self.client.patch('/api/me/profile', json={'avatar': 'mago'})
+        self.assertEqual(chosen.json()['avatar'], 'mago')
+        self.assertEqual(self.client.get('/api/auth/me').json()['avatar'], 'mago')
+        self.assertEqual(self.client.patch('/api/me/profile', json={'avatar': 'dragao'}).status_code, 422)
+        self.assertEqual(self.client.patch('/api/me/profile', json={'genres': ['RPG']}).json()['avatar'], 'mago')
+        self.assertIsNone(self.client.patch('/api/me/profile', json={'avatar': None}).json()['avatar'])
+
     def test_profile_requires_session_and_persists_partial_updates(self):
         self.assertEqual(self.new_client().patch('/api/me/profile', json={'genres': ['RPG']}).status_code, 401)
         self.register()
@@ -299,7 +309,7 @@ class AuthApiTests(unittest.TestCase):
     def test_account_shape_never_exposes_hash_or_internal_properties(self):
         shape = account_from({'id': 'u1', 'name': 'A', 'email': 'a@example.invalid', 'password_hash': 'segredo',
                               'hw_cpu': 'C', 'hw_gpu': 'G', 'hw_ram_gb': 8, 'hw_os': 'Linux', 'created_at': 1})
-        self.assertEqual(set(shape), {'id', 'name', 'genres', 'themes', 'anchorIds', 'hardware'})
+        self.assertEqual(set(shape), {'id', 'name', 'genres', 'themes', 'anchorIds', 'hardware', 'avatar'})
         self.assertEqual(shape['hardware'], {'cpuId': 'C', 'gpuId': 'G', 'ramGb': 8, 'os': 'Linux'})
 
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import type { AvatarId } from "../types"
 
 type Bitmap = { rows: string[]; palette: Record<string, string> }
 
@@ -81,8 +82,44 @@ export function HeartIcon({ broken = false, filled: solid = false, animate = fal
 
 const AVATAR_COLORS = ["#6be1ff", "#5cff9d", "#ffd86b", "#ff9bb5", "#cbbcff", "#ff7a59"]
 
-/** Personagem pixel padrão; a cor sai do nome, então é estável sem precisar guardar nada. */
-export function Avatar({ name }: { name?: string }) {
+/** Personagens que a pessoa pode escolher na Conta (12×12 pixels; K é o contorno). */
+export const CHARACTERS: Record<AvatarId, { name: string; rows: string[]; palette: Record<string, string> }> = {
+  robo: { name: "Robô", palette: { K: "#000", G: "#9aa7c7", C: "#6be1ff", R: "#ff5c6c" }, rows: [
+    ".....RR.....", ".....KK.....", "..KKKKKKKK..", "..KGGGGGGK..", "..KGCCGCCK..", "..KGCCGCCK..",
+    "..KGGGGGGK..", "..KGKKKKGK..", "..KGGGGGGK..", "..KKKKKKKK..", "...KGK.KGK..", "...KKK.KKK.."] },
+  gato: { name: "Gato", palette: { K: "#000", O: "#ff9f43", P: "#ff9bb5", W: "#fff3b0" }, rows: [
+    "..K......K..", ".KOK....KOK.", ".KOOKKKKOOK.", ".KOOOOOOOOK.", "KOOKOOOOKOOK", "KOOKOOOOKOOK",
+    "KOOOOPPOOOOK", "KWOOKOOKOOWK", ".KOOOKKOOOK.", "..KKOOOOKK..", "....KKKK....", "............"] },
+  fantasma: { name: "Fantasma", palette: { K: "#000", W: "#f2f2ff", B: "#6b5cff" }, rows: [
+    "....KKKK....", "..KKWWWWKK..", ".KWWWWWWWWK.", ".KWWBWWBWWK.", "KWWWBWWBWWWK", "KWWWWWWWWWWK",
+    "KWWWWKKWWWWK", "KWWWWWWWWWWK", "KWWWWWWWWWWK", "KWWKWWWKWWWK", "KWK.KWK.KWK.", ".K...K...K.."] },
+  cavaleiro: { name: "Cavaleiro", palette: { K: "#000", S: "#c0c6d8", D: "#4a5068", Y: "#ff5c6c" }, rows: [
+    ".....YY.....", "....YYYY....", "...KKKKKK...", "..KSSSSSSK..", ".KSSSSSSSSK.", ".KSDDDDDDSK.",
+    ".KSSSSSSSSK.", ".KSSSSSSSSK.", ".KSDSDSDSSK.", "..KSSSSSSK..", "...KKKKKK...", "............"] },
+  mago: { name: "Mago", palette: { K: "#000", P: "#7b4dff", Y: "#ffd86b", F: "#ffcf9f", W: "#f2f2ff" }, rows: [
+    ".....KK.....", "....KPPK....", "...KPPYPK...", "..KPPPPPPK..", ".KKKKKKKKKK.", "..KFFFFFFK..",
+    "..KFKFFKFK..", "..KWWWWWWK..", "..KWWWWWWK..", "...KWWWWK...", "....KWWK....", ".....KK....."] },
+  alien: { name: "Alien", palette: { K: "#000", G: "#5cff9d" }, rows: [
+    "............", "..KKKKKKKK..", ".KGGGGGGGGK.", "KGGGGGGGGGGK", "KGKKKGGKKKGK", "KGKKKGGKKKGK",
+    "KGGKGGGGKGGK", "KGGGGGGGGGGK", ".KGGGKKGGGK.", "..KGGGGGGK..", "...KKKKKK...", "............"] },
+  slime: { name: "Slime", palette: { K: "#000", B: "#6be1ff", L: "#d8f8ff" }, rows: [
+    "............", "............", ".....KK.....", "....KBBK....", "...KBLBBK...", "..KBLBBBBK..",
+    ".KBBBBBBBBK.", ".KBKBBBBKBK.", "KBBKBBBBKBBK", "KBBBBKKBBBBK", "KBBBBBBBBBBK", ".KKKKKKKKKK."] },
+  caveira: { name: "Caveira", palette: { K: "#000", W: "#f2f2ff" }, rows: [
+    "...KKKKKK...", "..KWWWWWWK..", ".KWWWWWWWWK.", ".KWWWWWWWWK.", ".KWKKWWKKWK.", ".KWKKWWKKWK.",
+    ".KWWWWKWWWK.", "..KWWWWWWK..", "...KWKWKWK..", "...KWKWKWK..", "....KKKKK...", "............"] },
+}
+
+/** Avatar da conta: o personagem escolhido, ou o rosto padrão com a cor tirada do nome. */
+export function Avatar({ name, avatar }: { name?: string; avatar?: AvatarId | null }) {
+  const character = avatar ? CHARACTERS[avatar] : undefined
+  if (character) {
+    return (
+      <span className="avatar character" aria-hidden="true">
+        <PixelBitmap rows={character.rows} palette={character.palette} size={22} />
+      </span>
+    )
+  }
   let hash = 0
   for (const char of name ?? "") hash = (hash * 31 + char.charCodeAt(0)) % 997
   return <span className="avatar" style={{ background: AVATAR_COLORS[hash % AVATAR_COLORS.length] }} aria-hidden="true" />

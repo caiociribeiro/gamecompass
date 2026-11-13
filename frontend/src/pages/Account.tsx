@@ -4,7 +4,8 @@ import { PageHeader } from "../components/PageHeader"
 import { useCatalog } from "../context/CatalogContext"
 import { useSession } from "../context/SessionContext"
 import { apiError, apiGet } from "../lib/api"
-import { Avatar, HeartIcon } from "../components/PixelIcons"
+import { Avatar, CHARACTERS, HeartIcon } from "../components/PixelIcons"
+import type { AvatarId } from "../types"
 import "../styles/results.css"
 import type { Interaction } from "../types"
 
@@ -42,9 +43,26 @@ export function Account() {
         lede="Nome, senha e perfil de jogo ficam na sua conta e acompanham você em qualquer navegador."
       />
       <div className="account-me">
-        <Avatar name={user.name} />
+        <Avatar name={user.name} avatar={user.avatar} />
         <strong>{user.name}</strong>
       </div>
+
+      <section className="panel account-panel">
+        <h2>Personagem</h2>
+        <p className="hint">Aparece no cabeçalho e fica salvo na sua conta.</p>
+        <div className="avatar-picker" role="group" aria-label="Escolha o seu personagem">
+          {([null, ...Object.keys(CHARACTERS)] as (AvatarId | null)[]).map((id) => {
+            const chosen = (user.avatar ?? null) === id
+            return (
+              <button key={id ?? "padrao"} type="button" className={chosen ? "avatar-choice on" : "avatar-choice"} aria-pressed={chosen}
+                onClick={() => updateUser({ avatar: id })}>
+                <Avatar name={user.name} avatar={id} />
+                <span>{id ? CHARACTERS[id].name : "Padrão"}</span>
+              </button>
+            )
+          })}
+        </div>
+      </section>
 
       <form
         className="panel account-panel"

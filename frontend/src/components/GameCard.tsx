@@ -47,6 +47,7 @@ export function GameCard({
   chips,
   actions,
   badge,
+  leaving = false,
 }: {
   game: Game
   affinity?: number
@@ -56,6 +57,8 @@ export function GameCard({
   chips?: string[]
   actions?: ReactNode
   badge?: { label: string; tone?: "ok" | "min" | "pending" }
+  /** O jogo foi marcado como não curtido e está caindo da lista. */
+  leaving?: boolean
 }) {
   const location = useLocation()
   const card = (
@@ -82,5 +85,6 @@ export function GameCard({
     </Link>
   )
   // Os botões ficam fora do link: botão dentro de link não é HTML válido nem acessível.
-  return actions ? <div className="game-card-shell">{card}<div className="game-card-actions">{actions}</div></div> : <div className="game-card-shell">{card}</div>
+  const shell = leaving ? "game-card-shell gone" : "game-card-shell"
+  return actions ? <div className={shell}>{card}<div className="game-card-actions">{actions}</div></div> : <div className={shell}>{card}</div>
 }

@@ -34,7 +34,7 @@ def account_from(row: dict) -> dict:
             hardware["windowsVersion"] = row["hw_windows_version"]
     return {"id": row["id"], "name": row["name"],
             "genres": list(row.get("genres") or []), "themes": list(row.get("themes") or []),
-            "anchorIds": list(row.get("anchor_ids") or []), "hardware": hardware}
+            "anchorIds": list(row.get("anchor_ids") or []), "hardware": hardware, "avatar": row.get("avatar")}
 
 
 def interaction_from(row: dict) -> dict:
@@ -53,6 +53,8 @@ def profile_properties(changes: dict) -> dict:
     for field, prop in (("genres", "genres"), ("themes", "themes"), ("anchorIds", "anchor_ids")):
         if field in changes:
             props[prop] = list(changes[field])
+    if "avatar" in changes:
+        props["avatar"] = changes["avatar"]
     if "hardware" in changes:
         hardware = changes["hardware"] or {}
         props.update(hw_cpu=hardware.get("cpuId"), hw_gpu=hardware.get("gpuId"), hw_ram_gb=hardware.get("ramGb"),
