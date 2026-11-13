@@ -83,6 +83,14 @@ class SeedCatalogTests(unittest.TestCase):
         with patch("builtins.print"):
             self.assertEqual(load_games.main(["--dry-run"]), 0)
 
+    @unittest.skipUnless((seed_catalog.ROOT / "docker-compose.yml").exists(),
+                         "Só num checkout completo (no contêiner data só scripts/ e data/ são montados).")
+    def test_git_keeps_catalog_bytes_on_every_system(self):
+        # O Windows com core.autocrlf troca LF por CRLF no checkout e muda o SHA-256 dos arquivos.
+        rules = (seed_catalog.ROOT / ".gitattributes").read_text(encoding="utf-8").splitlines()
+        self.assertIn("data/catalog/** -text", rules)
+        self.assertIn("data/evaluation/** -text", rules)
+
     def test_up_to_date_database_is_left_alone(self):
         database = FakeDatabase([{"id": game_id, "hashes": HASHES} for game_id in IDS], complete_parts())
         code, report, hardware, games = run(database)

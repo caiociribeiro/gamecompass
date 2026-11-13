@@ -1,0 +1,8 @@
+# Quebras de linha sempre LF, em qualquer sistema (inclusive Windows com core.autocrlf).
+* text=auto eol=lf
+
+# O catálogo guarda o SHA-256 exato do CSV de hardware, dos aliases, da curadoria e da seleção.
+# Qualquer conversão de bytes no checkout faria a carga automática (serviço catalog) recusar o
+# catálogo com "Catálogo ou aliases mudaram". Estes arquivos ficam byte a byte como no repositório.
+data/catalog/** -text
+data/evaluation/** -text

@@ -92,9 +92,12 @@ def main(argv=None):
         data = json.loads(args.input.read_text(encoding="utf-8-sig"))
         rows = prepare_payload(data)
         if data["catalog_sha256"] != sha256(args.catalog) or data["aliases_sha256"] != sha256(args.aliases):
-            raise ValueError("Catálogo ou aliases mudaram. Reprocesse os jogos antes da carga.")
+            raise ValueError("Catálogo ou aliases mudaram. Reprocesse os jogos antes da carga. Se você não editou "
+                             "esses arquivos, o Git pode ter trocado as quebras de linha no checkout (comum no "
+                             "Windows): atualize o repositório (.gitattributes) e baixe data/catalog de novo.")
         if data.get("curation_sha256") is not None and data["curation_sha256"] != sha256(args.curation):
-            raise ValueError("A curadoria mudou. Reprocesse os jogos antes da carga.")
+            raise ValueError("A curadoria mudou. Reprocesse os jogos antes da carga (ou, sem edição, confira as "
+                             "quebras de linha do checkout).")
         if data["hardware"] != hardware_rows(args.catalog):
             raise ValueError("Referência de hardware divergente do CSV.")
         report = {"status": "ok", "dry_run": args.dry_run, "games": len(rows),
