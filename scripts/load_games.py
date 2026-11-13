@@ -82,7 +82,7 @@ def write_games(tx, data: dict, rows: list[dict]) -> dict:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=ROOT / "data/processed/games_manual_v1.json")
+    parser.add_argument("--input", type=Path, default=ROOT / "data/catalog/games_manual_v1.json")
     parser.add_argument("--catalog", type=Path, default=ROOT / "data/catalog/hardware_manual_v1.csv")
     parser.add_argument("--aliases", type=Path, default=ROOT / "data/catalog/hardware_aliases.json")
     parser.add_argument("--curation", type=Path, default=ROOT / "data/catalog/requirements_curation.json")

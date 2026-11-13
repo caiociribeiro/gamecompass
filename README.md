@@ -39,7 +39,7 @@ No PowerShell: `if (-not (Test-Path .env)) { Copy-Item .env.example .env }`.
 docker compose up --build -d
 ```
 
-Isso sobe o Neo4j, a API e o site, nessa ordem. O site só inicia quando a API passa no healthcheck.
+Isso sobe o Neo4j, carrega o catálogo, sobe a API e o site, nessa ordem. O site só inicia quando a API passa no healthcheck.
 
 | Serviço | Endereço |
 |---|---|
@@ -52,27 +52,9 @@ As portas ficam presas ao `127.0.0.1` e podem ser trocadas no `.env`. Ao publica
 
 O `.env` define a senha local do Neo4j (`compass_secret`) e é ignorado pelo Git. `NEO4J_AUTH` só vale na criação do volume: mudar a senha depois não altera um banco que já existe. O Neo4j está fixo na 5.23.0; não reaproveite um volume criado por uma versão mais nova.
 
-### Primeira carga do catálogo
+O catálogo já vem pronto. A cada `up`, o serviço `catalog` confere o Neo4j e, se o banco estiver vazio ou desatualizado, carrega as 327 peças e os 120 jogos versionados em `data/catalog/`. Num banco novo isso leva menos de um minuto, e nos `up` seguintes só confere. A API só sobe depois disso. Não é preciso coletar nada da Steam nem rodar scripts.
 
-Um volume novo do Neo4j começa vazio. O serviço `data` roda os scripts sob demanda. Carregue o hardware:
-
-```bash
-docker compose run --rm --no-deps data python scripts/hardware_catalog.py --format manual --input data/catalog/hardware_manual_v1.csv --output data/processed/hardware_manual_v1.csv
-```
-
-```bash
-docker compose run --rm data python scripts/load_hardware.py --format manual --input data/processed/hardware_manual_v1.csv
-```
-
-Depois carregue os jogos com `scripts/update_catalog.py`. As coletas da Steam não vão para o Git:
-- **Com o lote do time:** copie a pasta de snapshots que ele usa (hoje `data/raw/steam_games_lote120_20261112`) para ter os mesmos dados.
-- **Coleta nova:** use `--fetch` para coletar de novo.
-
-O comando completo e as opções estão em [data/catalog/GAMES.md](data/catalog/GAMES.md#fluxo-de-execução).
-
-```bash
-docker compose run --rm data python scripts/update_catalog.py --snapshot-dir data/raw/steam_games_lote120_20261112 --load
-```
+Para **atualizar** o catálogo (trocar jogos, revisar requisitos ou peças), quem mantém o projeto roda o `scripts/update_catalog.py` e versiona o `data/catalog/games_manual_v1.json` que ele gera. No próximo `up`, todas as máquinas recebem a versão nova, e os jogos que saíram da seleção são removidos (exceto os que têm reação de alguma conta). O passo a passo está em [data/catalog/GAMES.md](data/catalog/GAMES.md#atualizar-o-catálogo).
 
 ## Testes
 
@@ -93,10 +75,10 @@ O CI (`.github/workflows/ci.yml`) roda em todo pull request e em todo push para 
 | `frontend/` | Site React, testes, roteiro Playwright e medições das telas |
 | `backend/` | API, motor `rules_v1`, testes e medições de carga |
 | `scripts/` | Coleta, processamento e carga do catálogo, com os testes de cada etapa |
-| `data/catalog/` | Seleção de jogos, índice de hardware, aliases, curadoria de requisitos e revisões |
+| `data/catalog/` | Seleção de jogos, jogos processados (`games_manual_v1.json`), índice de hardware, aliases, curadoria e revisões |
 | `data/evaluation/` | Casos de ouro do motor e o relatório |
 | `tests/e2e/` | Teste de ponta a ponta pela API |
-| `data/raw/`, `data/processed/` | Coletas e arquivos gerados; locais, fora do Git |
+| `data/raw/`, `data/processed/` | Coletas da Steam e arquivos intermediários; locais, fora do Git |
 
 ## Dia a dia
 

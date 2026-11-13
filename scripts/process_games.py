@@ -17,7 +17,7 @@ def main(argv=None):
     parser.add_argument("--catalog", type=Path, default=ROOT / "data/catalog/hardware_manual_v1.csv")
     parser.add_argument("--aliases", type=Path, default=ROOT / "data/catalog/hardware_aliases.json")
     parser.add_argument("--curation", type=Path, default=ROOT / "data/catalog/requirements_curation.json")
-    parser.add_argument("--output", type=Path, default=ROOT / "data/processed/games_manual_v1.json")
+    parser.add_argument("--output", type=Path, default=ROOT / "data/catalog/games_manual_v1.json")
     args = parser.parse_args(argv)
     try:
         output = args.output.resolve()
