@@ -33,7 +33,7 @@ const SLOT_ICONS = [
 const SLOT_LABELS = ["CPU", "GPU", "RAM", "SISTEMA"]
 
 export function Hardware() {
-  const { user, updateUser, saving } = useSession()
+  const { user, updateUser, saving, saveError } = useSession()
   const { play } = useSound()
   const { hardware, hardwareLoading, hardwareError, refresh } = useCatalog()
   const cpuOptions = useMemo(() => rankParts(hardware.CPU), [hardware.CPU])
@@ -228,7 +228,7 @@ export function Hardware() {
               {error}
             </p>
           )}
-          <p className="pc-saved" role="status">{saved ? (saving ? "▮ SALVANDO…" : "▮ SALVO NA CONTA") : ""}</p>
+          <p className={saved && !saving && saveError ? "pc-saved error" : "pc-saved"} role="status">{saved ? (saving ? "▮ SALVANDO…" : saveError ? "▮ NÃO FOI SALVO" : "▮ SALVO NA CONTA") : ""}</p>
         </form>
       </div>
       {summary && (

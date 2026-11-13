@@ -52,7 +52,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   // Edições do perfil feitas em sequência (vários cliques) viajam juntas em um único PATCH.
   const draft = useRef<ProfilePatch | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const flushRef = useRef<() => void>(() => undefined)
+  const flushRef = useRef<(leaving?: boolean) => void>(() => undefined)
 
   const enqueue = useCallback(<T,>(task: () => Promise<T>): Promise<T> => {
     const result = chain.current.then(task)
@@ -96,16 +96,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       })
     }
 
-    function flush() {
+    /** Envia as edições acumuladas. `leaving`: a aba está sendo escondida ou fechada. */
+    function flush(leaving = false) {
       if (timer.current) clearTimeout(timer.current)
       timer.current = null
       const patch = draft.current
       draft.current = null
       if (!patch) return
       pendingSaves.current += 1
-      void enqueue(async () => {
+      const send = async () => {
         try {
-          await apiPatch("/me/profile", patch)
+          await apiPatch("/me/profile", patch, undefined, { keepalive: leaving })
           setSaveError(null)
         } catch (failure) {
           if (failure instanceof ApiError && failure.status === 401) {
@@ -126,7 +127,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           pendingSaves.current -= 1
           if (pendingSaves.current === 0 && !draft.current) setSaving(false)
         }
-      })
+      }
+      // Ao esconder ou fechar a aba, o envio sai na hora e com keepalive: a fila pode estar ocupada
+      // e a página não espera por ela. Se a pessoa só trocou de aba, o resultado aparece ao voltar.
+      if (leaving) void send()
+      else void enqueue(send)
     }
     flushRef.current = flush
 
@@ -185,8 +190,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   // Fechar ou esconder a aba envia o que ainda estiver esperando.
   useEffect(() => {
-    const send = () => { if (document.visibilityState === "hidden") flushRef.current() }
-    const leave = () => flushRef.current()
+    const send = () => { if (document.visibilityState === "hidden") flushRef.current(true) }
+    const leave = () => flushRef.current(true)
     document.addEventListener("visibilitychange", send)
     window.addEventListener("pagehide", leave)
     return () => {

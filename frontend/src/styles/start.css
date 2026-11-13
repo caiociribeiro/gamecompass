@@ -115,3 +115,4 @@
 .anchor-slots.dragging .anchor-slot { border-color: var(--yellow); }
 .anchor-slots.dragging .anchor-slot:not(.full) { animation: st-blink 0.8s steps(2) infinite; }
 .anchor-slot.over { outline: 4px solid var(--green); outline-offset: 3px; transform: translateY(-3px); }
+.save-flash.error { color: var(--red); animation: none; }

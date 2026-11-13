@@ -32,6 +32,7 @@ export function Account() {
   }, [userId])
   if (!user) return null
   const reacted = (history ?? []).filter((item) => item.reaction)
+  const viewedOnly = (history ?? []).filter((item) => !item.reaction && item.views > 0)
 
   return (
     <div className="page narrow">
@@ -171,6 +172,22 @@ export function Account() {
               </li>
             ))}
           </ul>
+        )}
+        {viewedOnly.length > 0 && (
+          <>
+            <h3 className="history-sub">Só visualizados</h3>
+            <ul className="plain-list history-list">
+              {viewedOnly.map((item) => (
+                <li key={item.gameId}>
+                  <span className="history-game">
+                    <span className="history-eye" aria-hidden="true">◉</span>
+                    {item.title ?? `Jogo ${item.gameId}`}
+                  </span>
+                  <span className="hint">{item.views === 1 ? "aberto 1 vez" : `aberto ${item.views} vezes`}</span>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
         {historyNote && <p className="hint" role="status">{historyNote}</p>}
         {confirmHistory ? (

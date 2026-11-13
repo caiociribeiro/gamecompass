@@ -144,11 +144,23 @@ test("do cadastro às recomendações, só pelos botões da tela", async ({ page
     await expect(cardOf(liked).getByRole("button", { name: "Curtir este jogo", exact: true })).toHaveAttribute("aria-pressed", "true")
   })
 
+  let viewed = ""
+  await test.step("abrir a ficha de um jogo registra a visualização", async () => {
+    const other = shells.filter({ hasNot: page.locator("h3", { hasText: liked }) }).first()
+    viewed = (await other.locator("h3").innerText()).trim()
+    await other.locator("a.game-card").click()
+    await expect(page).toHaveURL(/\/app\/jogos\//)
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(viewed)
+  })
+
   await test.step("a conta lista as reações e permite limpar o histórico", async () => {
     await page.goto("/app/conta")
     const history = page.locator("section", { has: page.getByRole("heading", { name: "Histórico de jogos" }) })
     await expect(history).toContainText(liked)
     await expect(history).toContainText(disliked)
+    const onlyViewed = history.locator("ul", { has: page.locator(".history-eye") })
+    await expect(onlyViewed).toContainText(viewed)
+    await expect(onlyViewed).toContainText("aberto 1 vez")
     await history.getByRole("button", { name: "Limpar histórico de jogos" }).click()
     await history.getByRole("button", { name: "Confirmar limpeza do histórico" }).click()
     await expect(history).toContainText("Histórico removido")
