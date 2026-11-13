@@ -69,11 +69,14 @@ export function AppShell() {
     <div className="shell">
       <i className="stars" aria-hidden="true" />
       <header className="app-top">
+        <div className="top-side">
         <button ref={toggleRef} type="button" className="top-btn menu-btn" aria-expanded={open} aria-controls="menu-lateral" aria-label="Abrir menu das fases" onClick={() => setOpen((value) => !value)}>
           ☰
         </button>
         {atHome ? <span className="top-btn ghost" aria-hidden="true">GAMECOMPASS</span> : <Link className="top-btn" to="/app" aria-label="Voltar ao início">◀<span className="lbl"> INÍCIO</span></Link>}
+        </div>
         <span className="grow" aria-live="polite">{label}</span>
+        <div className="top-side end">
         <button type="button" className="top-btn ghost" aria-pressed={enabled} aria-label={`Som: ${enabled ? "ligado" : "desligado"}`} onClick={toggle}>
           ♪<span className="lbl"> SOM: {enabled ? "LIGADO" : "DESLIGADO"}</span>
         </button>
@@ -82,6 +85,7 @@ export function AppShell() {
           <Avatar name={user?.name} />
           <span className="lbl">{user?.name}</span>
         </Link>
+        </div>
       </header>
       {open && <SideMenu pathname={pathname} onClose={close} />}
       <main className="workspace-main">

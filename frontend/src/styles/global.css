@@ -153,11 +153,18 @@ details ul { list-style: none; }
 }
 
 /* cabeçalho do app */
+/* Três colunas: as laterais têm a mesma largura, então o nome da fase fica no meio da tela. */
 .app-top {
-  position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 30; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
   padding: 10px 16px; background: rgba(18, 10, 38, 0.96); border-bottom: 4px solid var(--ink);
 }
-.app-top .grow { flex: 1; text-align: center; font: 10px var(--px); color: var(--yellow); }
+.app-top .top-side { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.app-top .top-side.end { justify-content: flex-end; }
+.app-top .grow { text-align: center; font: 10px var(--px); color: var(--yellow); white-space: nowrap; }
+.app-top .top-btn, .app-top .me { white-space: nowrap; }
+/* Telas médias: o nome ao lado do avatar sai primeiro; depois os textos dos botões (o ícone e o aria-label ficam). */
+@media (max-width: 1180px) { .app-top .me .lbl { display: none; } }
+@media (max-width: 900px) { .app-top .lbl { display: none; } }
 .top-btn {
   font: 10px/1.4 var(--px); color: var(--ink); background: var(--yellow); border: 3px solid var(--ink);
   box-shadow: 3px 3px 0 var(--ink); padding: 8px 10px; text-decoration: none; cursor: pointer;
@@ -313,7 +320,10 @@ details ul { list-style: none; }
 @keyframes drawer-fade { from { opacity: 0; } }
 
 @media (max-width: 640px) {
-  .app-top { flex-wrap: nowrap; gap: 8px; padding: 8px 10px; }
+  /* No celular não sobra largura para colunas iguais: volta a dividir o espaço pelo conteúdo. */
+  .app-top { display: flex; gap: 8px; padding: 8px 10px; }
+  .app-top .top-side { gap: 8px; flex: none; }
+  .app-top .grow { flex: 1; }
   .app-top .lbl { display: none; }
   .app-top .grow { font-size: 9px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .app-top .top-btn { padding: 8px 10px; }
