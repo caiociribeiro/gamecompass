@@ -297,7 +297,6 @@ details ul { list-style: none; }
 .auth-panel h1 { margin: 14px 0 10px; }
 .form-links { display: flex; justify-content: space-between; margin: 14px 0 0; font: 9px var(--px); }
 .missing { text-align: center; padding: 60px 20px; position: relative; z-index: 1; }
-.site-footer { margin-top: 26px; border-top: 4px solid var(--ink); padding: 14px 22px; font: 9px/1.9 var(--px); color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
