@@ -72,7 +72,7 @@ export function Dashboard() {
 
       <nav className={fresh ? "trail intro" : "trail"} style={{ ["--step" as string]: nextIndex }} aria-label="Fases do seu perfil">
         <div className="trail-road" aria-hidden="true" />
-        <span className="trail-track" aria-hidden="true"><span className="trail-walker" /></span>
+        <span className="trail-lane" aria-hidden="true"><span className="trail-track"><span className="trail-walker" /></span></span>
         {PHASES.map((phase, index) => {
           const done = index < 3 && steps[index].done
           const cls = index === nextIndex ? "trail-node cur" : done ? "trail-node done" : "trail-node"
