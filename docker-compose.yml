@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     environment:
       APP_NAME: "GameCompass API"
+      WEB_CONCURRENCY: "${API_WORKERS:-4}"
       NEO4J_URI: "bolt://neo4j:7687"
       NEO4J_USER: "${NEO4J_USER:-neo4j}"
       NEO4J_PASSWORD: "${NEO4J_PASSWORD:?Defina NEO4J_PASSWORD no arquivo .env}"

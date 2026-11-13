@@ -10,7 +10,6 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 from neo4j.exceptions import ServiceUnavailable
 
-from app import auth_routes
 from app.main import app
 from app.services.hardware import matching_context, read_hardware
 from app.services.steam import Snapshot, normalize_game
@@ -68,7 +67,6 @@ class InteractionStore(MemoryStore):
 
 class InteractionApiTests(unittest.TestCase):
     def setUp(self):
-        auth_routes.limiter._failures.clear()
         self.driver = RecommendationDriver()
         self.steam = FakeSteam()
         context = matching_context(read_hardware(self.driver, 'neo4j'))

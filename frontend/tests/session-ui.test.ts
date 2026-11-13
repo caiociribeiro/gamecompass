@@ -1,57 +1,29 @@
 // Sessão no React com HTTP fictício: nenhuma API, banco ou navegador real é acessado.
 import assert from "node:assert/strict"
 import { test, type TestContext } from "node:test"
-import { mkdtemp, rm } from "node:fs/promises"
-import { join } from "node:path"
-import { fileURLToPath, pathToFileURL } from "node:url"
-import * as esbuild from "esbuild"
-import { JSDOM } from "jsdom"
+import { mountReact, src } from "./helpers/react-harness.ts"
 
 const HARDWARE = { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" }
 const account = (id: string, extra: object = {}) => ({ id, name: `Conta ${id}`, genres: [], themes: [], anchorIds: [], hardware: null, ...extra })
 
 async function boot(t: TestContext, handler: (path: string, options: any, log: string[]) => Response | Promise<Response>, legacy?: unknown) {
-  const base = fileURLToPath(new URL("../", import.meta.url))
-  const directory = await mkdtemp(join(base, "node_modules", ".gamecompass-session-"))
-  const outfile = join(directory, "app.mjs")
-  await esbuild.build({ stdin: { contents: `
-    import React, {useEffect} from 'react';import {createRoot} from 'react-dom/client';
-    import {SessionProvider,useSession} from ${JSON.stringify(join(base, "src/context/SessionContext.tsx"))};
-    export {React,createRoot};export const probe={};
-    function Probe(){const session=useSession();useEffect(()=>{Object.assign(probe,{session})});return null;}
-    export function Harness(){return <SessionProvider><Probe/></SessionProvider>}
-  `, resolveDir: base, loader: "tsx" }, bundle: true, format: "esm", platform: "browser", outfile, external: ["react", "react-dom", "react-dom/client"],
-    define: { "process.env.NODE_ENV": '"development"' }, logLevel: "silent" })
-  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: "http://localhost/", pretendToBeVisual: true })
-  const saved = new Map<string, PropertyDescriptor | undefined>()
-  for (const name of ["window", "document", "navigator", "localStorage", "HTMLElement", "Event", "MouseEvent", "IS_REACT_ACT_ENVIRONMENT"]) {
-    saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name))
-    Object.defineProperty(globalThis, name, { value: name === "IS_REACT_ACT_ENVIRONMENT" ? true : (dom.window as any)[name], configurable: true, writable: true })
-  }
-  if (legacy !== undefined) localStorage.setItem("gamecompass.users.v1", JSON.stringify(legacy))
-  localStorage.setItem("gamecompass.session.v1", "sessao-antiga")
-  const log: string[] = []
-  t.mock.method(globalThis, "fetch", async (url: any, options: any = {}) => {
-    const path = new URL(String(url), "http://localhost").pathname
-    log.push(`${options.method ?? "GET"} ${path}`)
-    return handler(path, options, log)
+  const ui = await mountReact(t, {
+    source: `
+      import React, {useEffect} from 'react';import {createRoot} from 'react-dom/client';
+      import {SessionProvider,useSession} from ${src("context/SessionContext.tsx")};
+      export {React,createRoot};export const probe={};
+      function Probe(){const session=useSession();useEffect(()=>{Object.assign(probe,{session})});return null;}
+      export function Harness(){return <SessionProvider><Probe/></SessionProvider>}
+    `,
+    fetch: handler,
+    beforeImport: () => {
+      if (legacy !== undefined) localStorage.setItem("gamecompass.users.v1", JSON.stringify(legacy))
+      localStorage.setItem("gamecompass.session.v1", "sessao-antiga")
+    },
   })
-  const m = await import(pathToFileURL(outfile).href)
-  const { act } = m.React
-  const root = m.createRoot(document.getElementById("root"))
-  t.after(async () => {
-    await act(async () => root.unmount())
-    dom.window.close()
-    for (const [name, descriptor] of saved) {
-      if (descriptor) Object.defineProperty(globalThis, name, descriptor)
-      else Reflect.deleteProperty(globalThis, name)
-    }
-    esbuild.stop()
-    await rm(directory, { recursive: true, force: true })
-  })
-  await act(async () => root.render(m.React.createElement(m.Harness)))
+  const { m, act } = ui
   for (let attempt = 0; attempt < 30 && m.probe.session.status !== "ready"; attempt++) await act(async () => { await new Promise((r) => setTimeout(r, 5)) })
-  return { m, act, log, dom }
+  return { m, act, log: ui.log, dom: ui.dom }
 }
 
 test("sem sessão válida a tela fica deslogada e a falha da API é informada, não escondida", async (t) => {

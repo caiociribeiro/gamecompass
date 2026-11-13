@@ -92,15 +92,16 @@ def register(payload: RegisterInput, request: Request, response: Response):
 
 @router.post('/auth/login')
 def login(payload: LoginInput, request: Request, response: Response):
+    store = store_of(request)
     key = f'{client_key(request, "login")}:{payload.email}'
-    if limiter.blocked(key):
+    if database(lambda: limiter.blocked(store, key)):
         raise HTTPException(429, 'Muitas tentativas de entrada. Aguarde alguns minutos.')
-    user = database(lambda: store_of(request).find_by_email(payload.email))
+    user = database(lambda: store.find_by_email(payload.email))
     valid = verify_password(user['password_hash'] if user else None, payload.password)
     if not user or not valid:
-        limiter.fail(key)
+        database(lambda: limiter.fail(store, key))
         raise HTTPException(401, 'E-mail ou senha não conferem.')
-    limiter.reset(key)
+    database(lambda: limiter.reset(store, key))
     start_session(request, response, user)
     return account_from(user)
 
@@ -130,13 +131,14 @@ def account_details(request: Request):
 @router.post('/auth/password')
 def change_password(payload: PasswordChangeInput, request: Request):
     user, digest = authenticated(request)
+    store = store_of(request)
     key = client_key(request, f'password:{user["id"]}')
-    if limiter.blocked(key):
+    if database(lambda: limiter.blocked(store, key)):
         raise HTTPException(429, 'Muitas tentativas. Aguarde alguns minutos.')
     if not verify_password(user['password_hash'], payload.current):
-        limiter.fail(key)
+        database(lambda: limiter.fail(store, key))
         raise HTTPException(400, 'A senha atual não confere.')
-    limiter.reset(key)
+    database(lambda: limiter.reset(store, key))
     new_hash = hash_password(payload.next)
     database(lambda: store_of(request).set_password(
         user_id=user['id'], password_hash=new_hash, keep_token_hash=digest, now=int(time.time())))

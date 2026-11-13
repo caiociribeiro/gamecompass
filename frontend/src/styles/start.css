@@ -2,7 +2,6 @@
 
 /* ---- Início ---- */
 .start-hero { text-align: center; padding: 6px 0 0; }
-.start-compass { display: inline-block; margin-bottom: 10px; }
 .start-title { font: 22px/1.4 var(--px); letter-spacing: 2px; color: var(--yellow); text-shadow: 4px 4px 0 var(--ink); margin: 0; }
 .start-title span { display: inline-block; animation: st-bob 1.6s steps(2) infinite; }
 .start-title span:nth-child(2n) { animation-delay: 0.4s; }

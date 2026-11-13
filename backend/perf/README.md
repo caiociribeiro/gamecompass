@@ -20,7 +20,7 @@ Rotas que consultam a Steam ao vivo ficam fora da carga, para não sobrecarregar
 |---|---|
 | Data | 13/11/2026, das 04:24 às 04:29 (UTC) |
 | Código | `master` em `803a895` (o mesmo de `67ee46b`) |
-| Servidor da API | uvicorn, 1 processo (comando padrão do `backend/Dockerfile`), Python 3.12 |
+| Servidor da API | uvicorn, 1 processo (comando padrão do `backend/Dockerfile` até o PR #23), Python 3.12 |
 | Banco | Neo4j do `docker compose`, 120 jogos e 327 peças |
 | Máquina | Intel Core i5-1334U (12 threads), 15 GB, Linux 7.0.0-42; contêineres sem limite de CPU ou memória |
 | Cliente | Python 3.14 no host, na mesma máquina da API e do Neo4j |
@@ -89,9 +89,23 @@ Para entender o limite, a mesma carga rodou com um servidor temporário `uvicorn
   - **Abrangência:** um único perfil e um único tipo de requisição na carga.
   - **Interpretação:** os números absolutos valem para esta máquina; a comparação entre configurações vale porque elas rodaram nas mesmas condições.
 
-## Possível melhoria (não aplicada)
+## Padrão adotado: 4 processos
 
-Rodar a API com mais de um processo, por exemplo `uvicorn ... --workers 4` no `backend/Dockerfile`. O teste acima mostra o ganho esperado. A mudança só envolve o servidor, porque a sessão já fica no Neo4j e não na memória do processo. Mesmo assim, ela precisa de um teste de regressão antes, por causa do cache da Steam e do limitador de tentativas de login, que hoje vivem na memória de cada processo.
+A partir da branch `chore/organizacao`, a API sobe com 4 processos. É a variável `WEB_CONCURRENCY` do uvicorn, definida no `backend/Dockerfile` e ajustável por `API_WORKERS` no `.env`. A medição com essa configuração, feita do host como a principal, está em `2026-11-13-api-4-processos-padrao.json`:
+
+| Clientes | Vazão (req/s) | p50 (ms) | p95 (ms) | CPU da API | Memória da API |
+|---|---|---|---|---|---|
+| 1 | 5,45 | 168,9 | 276,1 | 89% | 341 MB |
+| 5 | 11,47 | 362,9 | 670,3 | 375% | 356 MB |
+| 10 | 10,88 | 835,7 | 1.288,0 | 412% | 379 MB |
+| 20 | 9,32 | 1.733,9 | 2.978,6 | 423% | 427 MB |
+
+O tempo de cada rota sem carga não muda. Com 20 clientes, a espera mediana cai de 7,1 s para 1,7 s. Em troca, a API passa de ~80 MB para ~340 a 430 MB de memória.
+
+O teste de regressão de 13/11 com os 4 processos mostrou:
+- **Sessão:** um login vale em todos os processos (40 de 40 chamadas em conexões novas), o perfil gravado é lido igual e o logout revoga a sessão em todos.
+- **Limitador de login:** no teste, cada processo contava as falhas sozinho, e o bloqueio veio depois de 12 tentativas erradas, não 5. Por isso o limitador passou a guardar as falhas no Neo4j, compartilhadas por todos os processos. Na verificação seguinte, o bloqueio voltou a vir na 6ª tentativa.
+- **Cache da Steam:** cada processo tem o seu, então a primeira busca de um termo pode ir à Steam até 4 vezes.
 
 ## Como repetir
 

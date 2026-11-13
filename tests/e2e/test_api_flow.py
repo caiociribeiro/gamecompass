@@ -115,11 +115,14 @@ class ApiFlowTests(unittest.TestCase):
         status, account = self.call("POST", "/api/auth/register",
                                     {"name": "Teste E2E", "email": self.email, "password": self.password})
         self.assertEqual(status, 201)
-        self.assertEqual(account["email"], self.email)
+        self.assertNotIn("email", account)  # o e-mail não volta nas respostas de conta
         status, me = self.call("GET", "/api/auth/me")
         self.assertEqual(status, 200)
         self.assertEqual((me["genres"], me["themes"], me["anchorIds"], me["hardware"]), ([], [], [], None))
+        self.assertNotIn("email", me)
         self.assertNotIn("password", json.dumps(me).lower())
+        status, details = self.call("GET", "/api/me/account")
+        self.assertEqual((status, details), (200, {"email": self.email}))
 
     def test_03_mesmo_email_nao_cadastra_duas_vezes(self):
         status, body = self.call("POST", "/api/auth/register",

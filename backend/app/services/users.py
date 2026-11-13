@@ -17,6 +17,7 @@ SCHEMA = (
     "CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.id IS UNIQUE",
     "CREATE CONSTRAINT user_email IF NOT EXISTS FOR (u:User) REQUIRE u.email IS UNIQUE",
     "CREATE CONSTRAINT session_token IF NOT EXISTS FOR (s:Session) REQUIRE s.token_hash IS UNIQUE",
+    "CREATE CONSTRAINT login_attempt_key IF NOT EXISTS FOR (a:LoginAttempt) REQUIRE a.key IS UNIQUE",
 )
 
 
@@ -124,6 +125,26 @@ class UserStore:
         rows = self._run("MATCH (u:User {id: $uid}) SET u += $props, u.profile_updated_at = $now RETURN u {.*} AS user",
                          uid=user_id, props=profile_properties(changes), now=now)
         return rows[0]["user"] if rows else None
+
+    # Falhas de login (limitador compartilhado por todos os processos da API). `key` já vem em SHA-256.
+    def recent_failures(self, *, key: str, since: float) -> int:
+        rows = self._run("MATCH (a:LoginAttempt {key: $key}) RETURN size([t IN a.failures WHERE t > $since]) AS n",
+                         key=key, since=since)
+        return rows[0]["n"] if rows else 0
+
+    def add_failure(self, *, key: str, now: float, since: float) -> int:
+        self.ensure_schema()
+        # O primeiro SET trava o nó; só então a lista é lida e regravada, sem perder falhas de outro processo.
+        rows = self._run(
+            "MERGE (a:LoginAttempt {key: $key}) SET a.updated_at = $now"
+            " WITH a SET a.failures = [t IN coalesce(a.failures, []) WHERE t > $since] + [$now]"
+            " RETURN size(a.failures) AS n", key=key, now=now, since=since)
+        # Faxina: chaves sem falha recente não servem mais para nada.
+        self._run("MATCH (a:LoginAttempt) WHERE a.updated_at <= $since DELETE a", since=since)
+        return rows[0]["n"]
+
+    def clear_failures(self, *, key: str) -> None:
+        self._run("MATCH (a:LoginAttempt {key: $key}) DELETE a", key=key)
 
     # Interações com jogos. O jogo precisa existir no grafo; o catálogo não é alterado.
 

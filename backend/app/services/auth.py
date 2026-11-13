@@ -2,7 +2,6 @@
 
 import hashlib
 import secrets
-import threading
 import time
 
 from argon2 import PasswordHasher
@@ -34,31 +33,27 @@ def token_digest(token: str) -> str:
 
 
 class AttemptLimiter:
-    """Limite simples por processo. Reinicia com a API; suficiente para o protótipo."""
+    """Bloqueia uma chave (IP + e-mail, ou IP + conta) depois de `limit` falhas em `window_seconds`.
+
+    As falhas ficam no repositório de contas (o Neo4j, na API real), e não na memória do processo:
+    todos os processos da API (API_WORKERS) veem a mesma contagem e o bloqueio vale para todos.
+    A chave é guardada como SHA-256, sem o e-mail nem o IP em texto.
+    """
 
     def __init__(self, limit: int = 5, window_seconds: int = 300):
         self.limit, self.window = limit, window_seconds
-        self._failures: dict[str, list[float]] = {}
-        self._lock = threading.Lock()
 
-    def _recent(self, key: str, now: float) -> list[float]:
-        recent = [moment for moment in self._failures.get(key, []) if now - moment < self.window]
-        if recent:
-            self._failures[key] = recent
-        else:
-            self._failures.pop(key, None)
-        return recent
+    @staticmethod
+    def _digest(key: str) -> str:
+        return hashlib.sha256(key.encode("utf-8")).hexdigest()
 
-    def blocked(self, key: str) -> bool:
-        with self._lock:
-            return len(self._recent(key, time.monotonic())) >= self.limit
+    def blocked(self, store, key: str) -> bool:
+        now = time.time()
+        return store.recent_failures(key=self._digest(key), since=now - self.window) >= self.limit
 
-    def fail(self, key: str) -> None:
-        with self._lock:
-            now = time.monotonic()
-            self._recent(key, now)
-            self._failures.setdefault(key, []).append(now)
+    def fail(self, store, key: str) -> None:
+        now = time.time()
+        store.add_failure(key=self._digest(key), now=now, since=now - self.window)
 
-    def reset(self, key: str) -> None:
-        with self._lock:
-            self._failures.pop(key, None)
+    def reset(self, store, key: str) -> None:
+        store.clear_failures(key=self._digest(key))
