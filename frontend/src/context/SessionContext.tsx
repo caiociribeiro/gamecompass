@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { ApiError, apiError, apiGet, apiPatch, apiPost } from "../lib/api"
-import { scrubLegacyPasswords } from "../lib/legacyProfile"
+import { purgeLegacyStorage } from "../lib/legacyProfile"
 import type { UserProfile } from "../types"
 
 type RegisterInput = {
@@ -9,7 +9,7 @@ type RegisterInput = {
   password: string
 }
 
-type ProfilePatch = Partial<Omit<UserProfile, "id" | "email" | "catalogVersion">>
+type ProfilePatch = Partial<Omit<UserProfile, "id" | "catalogVersion">>
 
 type SessionContextValue = {
   user: UserProfile | null
@@ -31,6 +31,9 @@ type SessionContextValue = {
   changePassword: (current: string, next: string) => Promise<string | null>
 }
 
+/** Pausa nos cliques antes de enviar as edições do perfil. */
+export const SAVE_DELAY_MS = 600
+
 const SessionContext = createContext<SessionContextValue | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -46,6 +49,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const pendingSaves = useRef(0)
   // Muda a cada entrada ou saída; descarta a resposta atrasada da verificação inicial.
   const epoch = useRef(0)
+  // Edições do perfil feitas em sequência (vários cliques) viajam juntas em um único PATCH.
+  const draft = useRef<ProfilePatch | null>(null)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const flushRef = useRef<() => void>(() => undefined)
 
   const enqueue = useCallback(<T,>(task: () => Promise<T>): Promise<T> => {
     const result = chain.current.then(task)
@@ -54,7 +61,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    scrubLegacyPasswords()
+    purgeLegacyStorage()
     const controller = new AbortController()
     const started = epoch.current
     apiGet<UserProfile>("/auth/me", controller.signal)
@@ -73,6 +80,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<SessionContextValue>(() => {
     function enter(path: string, body: unknown) {
+      flushRef.current()
       return enqueue(async () => {
         try {
           const account = await apiPost<UserProfile>(path, body)
@@ -88,6 +96,40 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       })
     }
 
+    function flush() {
+      if (timer.current) clearTimeout(timer.current)
+      timer.current = null
+      const patch = draft.current
+      draft.current = null
+      if (!patch) return
+      pendingSaves.current += 1
+      void enqueue(async () => {
+        try {
+          await apiPatch("/me/profile", patch)
+          setSaveError(null)
+        } catch (failure) {
+          if (failure instanceof ApiError && failure.status === 401) {
+            epoch.current += 1
+            setUser(null)
+            return
+          }
+          setSaveError(`Não foi possível salvar no servidor. ${apiError(failure)}`)
+          // Sem outras edições pendentes, volta a mostrar o que o servidor realmente guardou.
+          if (pendingSaves.current === 1 && !draft.current) {
+            try {
+              setUser(await apiGet<UserProfile>("/auth/me"))
+            } catch {
+              // API fora do ar: a edição local continua visível, mas o aviso permanece.
+            }
+          }
+        } finally {
+          pendingSaves.current -= 1
+          if (pendingSaves.current === 0 && !draft.current) setSaving(false)
+        }
+      })
+    }
+    flushRef.current = flush
+
     return {
       user,
       status,
@@ -101,6 +143,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         enter("/auth/register", { name: input.name.trim(), email: input.email.trim().toLowerCase(), password: input.password }),
       logout() {
         // A interface sai na hora; o servidor encerra a sessão logo depois, na ordem da fila.
+        // Edições ainda não enviadas saem antes, com a sessão antiga.
+        flushRef.current()
         epoch.current += 1
         setUser(null)
         setSignedOut(true)
@@ -114,37 +158,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         })
       },
       updateUser(patch) {
-        // Atualização otimista; o servidor confirma em seguida.
+        // Atualização otimista; o envio espera uma pausa nos cliques e junta tudo em um PATCH.
         setUser((current) => (current ? { ...current, ...patch } : current))
-        pendingSaves.current += 1
+        draft.current = { ...draft.current, ...patch }
         setSaving(true)
-        void enqueue(async () => {
-          try {
-            await apiPatch("/me/profile", patch)
-            setSaveError(null)
-          } catch (failure) {
-            if (failure instanceof ApiError && failure.status === 401) {
-              epoch.current += 1
-              setUser(null)
-              return
-            }
-            setSaveError(`Não foi possível salvar no servidor. ${apiError(failure)}`)
-            // Sem outras edições pendentes, volta a mostrar o que o servidor realmente guardou.
-            if (pendingSaves.current === 1) {
-              try {
-                setUser(await apiGet<UserProfile>("/auth/me"))
-              } catch {
-                // API fora do ar: a edição local continua visível, mas o aviso permanece.
-              }
-            }
-          } finally {
-            pendingSaves.current -= 1
-            if (pendingSaves.current === 0) setSaving(false)
-          }
-        })
+        if (timer.current) clearTimeout(timer.current)
+        timer.current = setTimeout(flush, SAVE_DELAY_MS)
       },
-      changePassword: (current, next) =>
-        enqueue(async () => {
+      changePassword: (current, next) => {
+        flushRef.current()
+        return enqueue(async () => {
           try {
             await apiPost("/auth/password", { current, next })
             return null
@@ -155,9 +178,22 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             }
             return apiError(failure)
           }
-        }),
+        })
+      },
     }
-  }, [user, status, error, saveError, saving, enqueue])
+  }, [user, status, error, saveError, saving, signedOut, enqueue])
+
+  // Fechar ou esconder a aba envia o que ainda estiver esperando.
+  useEffect(() => {
+    const send = () => { if (document.visibilityState === "hidden") flushRef.current() }
+    const leave = () => flushRef.current()
+    document.addEventListener("visibilitychange", send)
+    window.addEventListener("pagehide", leave)
+    return () => {
+      document.removeEventListener("visibilitychange", send)
+      window.removeEventListener("pagehide", leave)
+    }
+  }, [])
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }

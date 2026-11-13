@@ -73,7 +73,6 @@ export type HardwareProfile = {
 export type UserProfile = {
   id: string
   name: string
-  email: string
   genres: string[]
   themes: string[]
   anchorIds: string[]

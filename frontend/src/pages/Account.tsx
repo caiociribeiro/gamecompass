@@ -19,6 +19,8 @@ export function Account() {
   const [history, setHistory] = useState<Interaction[] | null>(null)
   const [historyNote, setHistoryNote] = useState<string | null>(null)
   const [confirmHistory, setConfirmHistory] = useState(false)
+  const [email, setEmail] = useState<string | null>(null)
+  const [emailNote, setEmailNote] = useState<string | null>(null)
   const userId = user?.id
   useEffect(() => {
     if (!userId) return
@@ -61,7 +63,25 @@ export function Account() {
           Como quer ser chamado
           <input value={name} onChange={(event) => setName(event.target.value)} />
         </label>
-        <p className="hint">E-mail da conta: {user.email}</p>
+        <p className="hint account-email">
+          E-mail da conta:{" "}
+          {email ? (
+            <>
+              <span>{email}</span>{" "}
+              <button type="button" className="link-btn" onClick={() => setEmail(null)}>Ocultar</button>
+            </>
+          ) : (
+            <button type="button" className="link-btn" onClick={() => {
+              setEmailNote(null)
+              apiGet<{ email: string }>("/me/account")
+                .then((data) => setEmail(data.email))
+                .catch((error) => setEmailNote(apiError(error)))
+            }}>
+              Mostrar
+            </button>
+          )}
+        </p>
+        {emailNote && <p className="hint" role="alert">{emailNote}</p>}
         {nameNote && <p className="hint">{nameNote}</p>}
         <button className="btn" type="submit">
           Salvar nome

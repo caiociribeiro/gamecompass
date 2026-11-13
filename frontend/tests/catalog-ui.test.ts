@@ -44,7 +44,7 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
     esbuild.stop()
     await rm(directory, { recursive: true, force: true })
   })
-  const user = { id: "qa", name: "Fixture", email: "fixture@example.invalid", genres: ["RPG"], themes: ["Fantasia"],
+  const user = { id: "qa", name: "Fixture", genres: ["RPG"], themes: ["Fantasia"],
     anchorIds: ["101", "102", "103"], hardware: { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" }, catalogVersion: "steam-v2" }
   const hardware = { CPU: [{ id: "CPU fixture", name: "CPU fixture", vendor: "Fixture", performance_score: 10, score_version: "manual_v1" }],
     GPU: [{ id: "GPU fixture", name: "GPU fixture", vendor: "Fixture", performance_score: 20, score_version: "manual_v1" }], source: "neo4j", score_version: "manual_v1" }
@@ -95,7 +95,7 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
   let first, second
   await act(async () => { first = m.probe.catalog.discoverGames() })
   assert.doesNotMatch(JSON.stringify(requests[0].body), /email|password|performance_score/)
-  await act(async () => m.probe.session.updateUser({ genres: ["Puzzle", "Indie"] }))
+  await act(async () => { m.probe.session.updateUser({ genres: ["Puzzle", "Indie"] }); await new Promise((r) => setTimeout(r, 700)) })
   assert.equal(requests[0].signal.aborted, true)
   assert.deepEqual(patches.at(-1), { genres: ["Puzzle", "Indie"] })
   await act(async () => { second = m.probe.catalog.discoverGames() })
@@ -134,7 +134,7 @@ test("React usa a API e descarta respostas de outro perfil, hardware ou conta", 
   assert.equal(m.probe.catalog.games.length, 0)
   assert.equal(m.probe.catalog.recommendations, null)
   assert.equal(m.probe.session.user, null)
-  await act(async () => { await m.probe.session.login(user.email, "senha-de-teste-1"); m.probe.navigate("/app/recomendacoes") })
+  await act(async () => { await m.probe.session.login("fixture@example.invalid", "senha-de-teste-1"); m.probe.navigate("/app/recomendacoes") })
   assert.equal(m.probe.session.user?.id, "qa")
   let failed
   await act(async () => { failed = m.probe.catalog.discoverGames() })

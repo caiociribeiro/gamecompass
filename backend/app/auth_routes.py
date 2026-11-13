@@ -120,6 +120,13 @@ def me(request: Request):
     return account_from(user)
 
 
+@router.get('/me/account')
+def account_details(request: Request):
+    """Dados de contato da conta, pedidos só pela tela de Conta."""
+    user, _ = authenticated(request)
+    return {'email': user['email']}
+
+
 @router.post('/auth/password')
 def change_password(payload: PasswordChangeInput, request: Request):
     user, digest = authenticated(request)

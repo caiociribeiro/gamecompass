@@ -9,7 +9,10 @@ import { explanationChips } from "../lib/explain"
 import { nextPendingStep, profileSteps } from "../lib/profile"
 import { compatibilityLabel, profileReady } from "../lib/recommend"
 import { fold } from "../lib/text"
-import { useLayoutEffect, useRef, useState } from "react"
+import { useState } from "react"
+import { Pager, usePage } from "../components/Pager"
+import { HeartIcon } from "../components/PixelIcons"
+import { useGridCols } from "../lib/useGridCols"
 import { LoadingBar } from "../components/PhaseOverlay"
 import { StepNav } from "../components/StepNav"
 import "../styles/results.css"
@@ -24,26 +27,34 @@ const STATUS_FILTERS: [string, string][] = [
   ["incompatible", "Com restrições"],
 ]
 
-/** Escolhe quantas colunas cada grade usa: cartões entre 240 e 360px, preferindo completar a última linha. */
-function fitColumns(root: HTMLElement) {
-  const width = root.clientWidth
-  if (!width) return
-  const gap = 16
-  const maxC = Math.max(2, Math.floor((width + gap) / (240 + gap)))
-  const minC = Math.max(2, Math.min(maxC, Math.ceil((width + gap) / (360 + gap))))
-  root.querySelectorAll<HTMLElement>(".card-grid").forEach((grid) => {
-    const n = grid.children.length
-    let best = maxC
-    let bestScore = -1
-    for (let c = maxC; c >= minC; c -= 1) {
-      const rest = n % c
-      const fill = n <= c ? n / c : rest === 0 ? 1 : (rest / c) * 0.5 + 0.5
-      const score = fill * 1000 + c
-      if (score > bestScore) { bestScore = score; best = c }
-    }
-    if (n && n < minC) best = minC
-    grid.style.setProperty("--cols", String(best))
-  })
+const PAGE_SIZE = 12
+const EMPTY_RESULT = { items: [] as GameMatch[], pending: [] as GameMatch[], excluded: [] as GameMatch[] }
+const HELP_KEY = "gc_help_reactions"
+
+function readHelpHidden() {
+  try { return localStorage.getItem(HELP_KEY) === "off" } catch { return false }
+}
+
+/** Explica os dois corações antes de a pessoa reagir. */
+function ReactionHelp() {
+  const [hidden, setHidden] = useState(readHelpHidden)
+  if (hidden) return null
+  return (
+    <aside className="panel rx-help" aria-label="Como funcionam as reações">
+      <h2>Curtir ou não curtir?</h2>
+      <ul>
+        <li><span className="rx-help-icon" aria-hidden="true"><HeartIcon filled /></span>
+          <span><b>Curtir</b> diz que o jogo tem a sua cara. Ele reforça a afinidade das próximas sugestões quando você atualizar a lista.</span></li>
+        <li><span className="rx-help-icon" aria-hidden="true"><HeartIcon broken filled /></span>
+          <span><b>Não curtir</b> tira o jogo da lista na hora, e ele não volta a ser sugerido.</span></li>
+      </ul>
+      <p className="hint">Clicar de novo no mesmo coração desfaz a reação. Tudo fica no histórico da sua conta.</p>
+      <button type="button" className="btn small ghost" onClick={() => {
+        setHidden(true)
+        try { localStorage.setItem(HELP_KEY, "off") } catch { /* sem armazenamento: só esconde agora */ }
+      }}>Entendi</button>
+    </aside>
+  )
 }
 
 export function Recommendations() {
@@ -53,7 +64,6 @@ export function Recommendations() {
   const { games, hardware, discovered, discoverGames, gamesLoading, candidateSource, gameIssues, recommendations,
     reactions, reactionsStale, reactToGame } = useCatalog()
   const [reactionError, setReactionError] = useState<string | null>(null)
-  const pageRef = useRef<HTMLDivElement>(null)
   const reactionOf = (match: GameMatch) => reactions[match.game.id] !== undefined ? reactions[match.game.id] : match.reaction
   const card = (match: GameMatch) => (
     <GameCard
@@ -82,26 +92,23 @@ export function Recommendations() {
     else next.delete(key)
     setParams(next, { replace: true })
   }
-  useLayoutEffect(() => {
-    const root = pageRef.current
-    if (!root) return
-    fitColumns(root)
-    if (typeof ResizeObserver === "undefined") return
-    const observer = new ResizeObserver(() => fitColumns(root))
-    observer.observe(root)
-    return () => observer.disconnect()
-  })
-  if (!user) return null
-  const ready = profileReady(user, games, hardware)
-  const result = recommendations ?? { items: [], pending: [], excluded: [] }
-  const matches = (title: string) => fold(title).includes(fold(query.trim()))
+  const result = recommendations ?? EMPTY_RESULT
+  const needle = fold(query.trim())
+  const matches = (title: string) => fold(title).includes(needle)
   const items = result.items.filter((match) => matches(match.game.title) && (filter === "all" || match.meets === filter))
   const pending = filter === "all" || filter === "pending" ? result.pending.filter((match) => matches(match.game.title)) : []
   const excluded = filter === "all" || filter === "incompatible" ? result.excluded.filter((match) => matches(match.game.title)) : []
+  const resetKey = `${query}|${filter}|${result.items.length}|${result.pending.length}`
+  const itemPage = usePage(items, PAGE_SIZE, resetKey)
+  const pendingPage = usePage(pending, PAGE_SIZE, resetKey)
+  const itemGrid = useGridCols(itemPage.items.length)
+  const pendingGrid = useGridCols(pendingPage.items.length)
+  if (!user) return null
+  const ready = profileReady(user, games, hardware)
   const visible = items.length + pending.length + excluded.length
   const total = result.items.length + result.pending.length + result.excluded.length
   return (
-    <div className="page" ref={pageRef}>
+    <div className="page">
       {!(ready && discovered) && <StepNav current="recs" />}
       <PageHeader
         eyebrow="Recomendações"
@@ -184,6 +191,7 @@ export function Recommendations() {
               ))}
             </div>
           </div>
+          <ReactionHelp />
           <p className="count" role="status">Exibindo {visible} de {total} resultados.</p>
           {reactionError && <p className="hint" role="alert">{reactionError}</p>}
           {reactionsStale && (
@@ -199,23 +207,25 @@ export function Recommendations() {
             ? "Nenhum jogo encontrado com esses filtros."
             : "Nenhuma sugestão disponível para este conjunto de âncoras e preferências. Experimente outras escolhas."}</p>}
           {items.length > 0 && (
-            <section className="stack">
+            <section className="stack" id="pager-requisitos-atendidos">
               <h2>Requisitos atendidos</h2>
-              <div className="card-grid">
-                {items.map(card)}
+              <div className="card-grid" ref={itemGrid}>
+                {itemPage.items.map(card)}
               </div>
+              <Pager page={itemPage.page} pages={itemPage.pages} onChange={itemPage.setPage} label="requisitos-atendidos" />
             </section>
           )}
           {pending.length > 0 && (
-          <section className="stack">
+          <section className="stack" id="pager-aguardando-validacao">
             <h2>Com afinidade, aguardando validação</h2>
             <p className="hint">
               Esses jogos combinam com seu perfil. Consulte as pendências antes de concluir se atendem ao
               computador.
             </p>
-            <div className="card-grid">
-                {pending.map(card)}
+            <div className="card-grid" ref={pendingGrid}>
+              {pendingPage.items.map(card)}
             </div>
+            <Pager page={pendingPage.page} pages={pendingPage.pages} onChange={pendingPage.setPage} label="aguardando-validacao" />
           </section>
           )}
           {excluded.length > 0 && (

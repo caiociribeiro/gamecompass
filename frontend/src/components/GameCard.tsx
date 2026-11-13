@@ -71,7 +71,7 @@ export function GameCard({
             <span style={{ width: `${affinity}%` }} />
           </div>
         )}
-        {note && <p className="note">{note}</p>}
+        {note && <p className={badge?.tone ? `note ${badge.tone}` : "note"}>{note}</p>}
         {chips && chips.length > 0 && (
           <ul className="why-chips" aria-label="Por que combina com você">
             {chips.map((chip) => <li key={chip}>{chip}</li>)}

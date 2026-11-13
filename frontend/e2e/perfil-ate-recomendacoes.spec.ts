@@ -121,13 +121,15 @@ test("do cadastro às recomendações, só pelos botões da tela", async ({ page
   let liked = ""
 
   await test.step("não curtir tira o jogo da lista na hora", async () => {
-    const before = await shells.count()
-    expect(before).toBeGreaterThan(1)
+    const total = async () => Number((await page.getByText(/Exibindo \d+ de \d+ resultados\./).innerText()).match(/de (\d+)/)![1])
+    const before = await total()
+    expect(await shells.count()).toBeGreaterThan(1)
     disliked = (await shells.nth(0).locator("h3").innerText()).trim()
     liked = (await shells.nth(1).locator("h3").innerText()).trim()
     await shells.nth(0).getByRole("button", { name: "Não curtir este jogo" }).click()
     await expect(cardOf(disliked)).toHaveCount(0)
-    await expect(shells).toHaveCount(before - 1)
+    // Com paginação, o próximo jogo ocupa a vaga; o que cai é o total da lista.
+    await expect.poll(total).toBe(before - 1)
   })
 
   await test.step("curtir avisa que a afinidade muda no próximo cálculo e atualizar aplica", async () => {

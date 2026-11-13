@@ -3,7 +3,6 @@ import { test } from "node:test"
 import { buildRecommendations, compatibilityLabel, describeMatch, hardwareChecks, hardwareProfileReady, profileReady, replacementPart, windowsCheck } from "./reference/recommend.ts"
 import { hardwareSummary } from "../src/lib/hardware.ts"
 import type { Game, HardwareCatalog, HardwareProfile, UserProfile } from "../src/types.ts"
-import { migrateProfile } from "../src/lib/migrateProfile.ts"
 
 // Fixtures inventadas para verificar a lógica; não são medições de jogos reais.
 const hardware: HardwareCatalog = {
@@ -57,7 +56,6 @@ function fixture(id = "1"): Game {
 const user: UserProfile = {
   id: "fixture",
   name: "Fixture",
-  email: "fixture@example.org",
   genres: ["RPG"],
   themes: ["Fantasia"],
   anchorIds: ["1", "2", "3"],
@@ -166,45 +164,6 @@ test("temáticas sem classificação não são inventadas a partir de recursos",
   const match = describeMatch(user, game, [fixture("1"), fixture("2"), fixture("3")], hardware)
   assert.equal(match.affinity, 100)
   assert(!match.reasons.some((reason) => reason.startsWith("Temáticas do perfil:")))
-})
-
-test("migração preserva conta, hardware e âncoras já escolhidas", () => {
-  const previous = {
-    ...user,
-    password: "senha-antiga",
-    catalogVersion: "steam-v1",
-    themes: undefined,
-    features: ["Um jogador"],
-  } as unknown as UserProfile
-  const next = migrateProfile(previous, ["RPG"], ["Fantasia"])
-  assert.equal(next.id, user.id)
-  assert.equal(next.email, user.email)
-  assert.equal("password" in next, false)
-  assert.doesNotMatch(JSON.stringify(next), /senha-antiga/)
-  assert.deepEqual(next.hardware, pc)
-  assert.deepEqual(next.anchorIds, ["1", "2", "3"])
-  assert.deepEqual(next.genres, ["RPG"])
-  assert.deepEqual(next.themes, [])
-  assert.equal("features" in next, false)
-  assert.equal(next.catalogVersion, "steam-v2")
-})
-
-test("as temáticas anteriores válidas são preservadas", () => {
-  const next = migrateProfile(user, ["RPG"], ["Fantasia"])
-  assert.deepEqual(next.themes, ["Fantasia"])
-  assert.deepEqual(next.genres, ["RPG"])
-})
-
-test("IDs antigos do mock não se tornam âncoras Steam", () => {
-  const previous = {
-    ...user,
-    catalogVersion: undefined,
-    anchorIds: ["hades", "hollow-knight", "the-witcher-3"],
-  }
-  const next = migrateProfile(previous, ["RPG"], ["Fantasia"])
-  assert.deepEqual(next.anchorIds, [])
-  assert.equal(next.hardware, null)
-  assert.deepEqual(next.themes, ["Fantasia"])
 })
 
 test("Windows 10 atende Windows 10 e Windows 11 atende ao mínimo Windows 10", () => {

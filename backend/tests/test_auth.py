@@ -103,7 +103,8 @@ class AuthApiTests(unittest.TestCase):
         response = self.register()
         self.assertEqual(response.status_code, 201)
         body = response.json()
-        self.assertEqual(body['email'], 'ana@example.invalid')
+        self.assertNotIn('email', body)  # o e-mail só sai por /me/account
+        self.assertEqual(self.client.get('/api/me/account').json(), {'email': 'ana@example.invalid'})
         self.assertNotIn('password', response.text.lower().replace('"password"', ''))
         self.assertEqual(body['hardware'], None)
         stored = self.store.users[body['id']]['password_hash']
@@ -135,6 +136,7 @@ class AuthApiTests(unittest.TestCase):
         self.assertEqual((wrong.status_code, unknown.status_code), (401, 401))
         self.assertEqual(wrong.json(), unknown.json())
         self.assertEqual(fresh.get('/api/auth/me').status_code, 401)
+        self.assertEqual(fresh.get('/api/me/account').status_code, 401)
         ok = fresh.post('/api/auth/login', json={'email': 'ANA@example.invalid', 'password': CREDENTIALS['password']})
         self.assertEqual(ok.status_code, 200)
         self.assertEqual(fresh.get('/api/auth/me').status_code, 200)
@@ -258,7 +260,7 @@ class AuthApiTests(unittest.TestCase):
     def test_account_shape_never_exposes_hash_or_internal_properties(self):
         shape = account_from({'id': 'u1', 'name': 'A', 'email': 'a@example.invalid', 'password_hash': 'segredo',
                               'hw_cpu': 'C', 'hw_gpu': 'G', 'hw_ram_gb': 8, 'hw_os': 'Linux', 'created_at': 1})
-        self.assertEqual(set(shape), {'id', 'name', 'email', 'genres', 'themes', 'anchorIds', 'hardware'})
+        self.assertEqual(set(shape), {'id', 'name', 'genres', 'themes', 'anchorIds', 'hardware'})
         self.assertEqual(shape['hardware'], {'cpuId': 'C', 'gpuId': 'G', 'ramGb': 8, 'os': 'Linux'})
 
 

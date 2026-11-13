@@ -1,0 +1,451 @@
+{
+  "source": "Steam Hardware & Software Survey — ALL VIDEO CARDS",
+  "source_url": "https://store.steampowered.com/hwsurvey/videocard/",
+  "survey_month": "October 2026",
+  "collected_at": "2026-11-13T01:45:47+00:00",
+  "note": "Participação do último mês publicado. Modelos sem correspondência no catálogo manual ficam de fora.",
+  "items": [
+    {
+      "steam_name": "NVIDIA GeForce RTX 3060",
+      "share_pct": 3.78,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3060 12GB",
+        "NVIDIA GeForce RTX 3060 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 5070",
+      "share_pct": 3.78,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 5070 12GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4060",
+      "share_pct": 3.51,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4060 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3050",
+      "share_pct": 3.25,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3050 6GB",
+        "NVIDIA GeForce RTX 3050 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1650",
+      "share_pct": 2.44,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1650 4GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4060 Ti",
+      "share_pct": 2.3,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4060 Ti 16GB",
+        "NVIDIA GeForce RTX 4060 Ti 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3060 Ti",
+      "share_pct": 2.13,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3060 Ti 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3070",
+      "share_pct": 1.98,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3070 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 5070 Ti",
+      "share_pct": 1.91,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 5070 Ti 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 5080",
+      "share_pct": 1.78,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 5080 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4070",
+      "share_pct": 1.71,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4070 12GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 2060",
+      "share_pct": 1.61,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 2060 6GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 9070 XT",
+      "share_pct": 1.59,
+      "catalog_names": [
+        "AMD Radeon RX 9070 XT 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1060",
+      "share_pct": 1.45,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1060 3GB",
+        "NVIDIA GeForce GTX 1060 6GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4070 SUPER",
+      "share_pct": 1.43,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4070 SUPER 12GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1660 SUPER",
+      "share_pct": 1.39,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1660 SUPER 6GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3080",
+      "share_pct": 1.36,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3080 10GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1050 Ti",
+      "share_pct": 1.14,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1050 Ti 4GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3070 Ti",
+      "share_pct": 0.9,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3070 Ti 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4070 Ti",
+      "share_pct": 0.89,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4070 Ti 12GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1660 Ti",
+      "share_pct": 0.86,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1660 Ti 6GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6600",
+      "share_pct": 0.84,
+      "catalog_names": [
+        "AMD Radeon RX 6600 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 2060 SUPER",
+      "share_pct": 0.76,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 2060 SUPER"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "share_pct": 0.73,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4070 Ti SUPER 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4090",
+      "share_pct": 0.7,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4090 24GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4080",
+      "share_pct": 0.67,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4080 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 2070 SUPER",
+      "share_pct": 0.66,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 2070 SUPER 8GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 7800 XT",
+      "share_pct": 0.63,
+      "catalog_names": [
+        "AMD Radeon RX 7800 XT 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 4080 SUPER",
+      "share_pct": 0.62,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 4080 SUPER 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1070",
+      "share_pct": 0.61,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1070 8GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 580",
+      "share_pct": 0.57,
+      "catalog_names": [
+        "AMD Radeon RX 580 4GB",
+        "AMD Radeon RX 580 8GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 5700 XT",
+      "share_pct": 0.56,
+      "catalog_names": [
+        "AMD Radeon RX 5700 XT"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6700 XT",
+      "share_pct": 0.55,
+      "catalog_names": [
+        "AMD Radeon RX 6700 XT 12GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1050",
+      "share_pct": 0.54,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1050 2GB",
+        "NVIDIA GeForce GTX 1050 4GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3080 Ti",
+      "share_pct": 0.54,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3080 Ti 12GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 7600",
+      "share_pct": 0.53,
+      "catalog_names": [
+        "AMD Radeon RX 7600 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1660",
+      "share_pct": 0.46,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1660 6GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 2070",
+      "share_pct": 0.44,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 2070 8GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 5090",
+      "share_pct": 0.43,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 5090 32GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 7900 XTX",
+      "share_pct": 0.42,
+      "catalog_names": [
+        "AMD Radeon RX 7900 XTX 24GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 3090",
+      "share_pct": 0.36,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 3090 24GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 570",
+      "share_pct": 0.35,
+      "catalog_names": [
+        "AMD Radeon RX 570 4GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 7900 XT",
+      "share_pct": 0.33,
+      "catalog_names": [
+        "AMD Radeon RX 7900 XT 20GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1080 Ti",
+      "share_pct": 0.31,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1080 Ti"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6600 XT",
+      "share_pct": 0.27,
+      "catalog_names": [
+        "AMD Radeon RX 6600 XT 8GB"
+      ]
+    },
+    {
+      "steam_name": "Intel UHD Graphics 630",
+      "share_pct": 0.27,
+      "catalog_names": [
+        "Intel UHD Graphics 630"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1650 SUPER",
+      "share_pct": 0.27,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1650 SUPER 4GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6650 XT",
+      "share_pct": 0.25,
+      "catalog_names": [
+        "AMD Radeon RX 6650 XT 8GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6750 XT",
+      "share_pct": 0.25,
+      "catalog_names": [
+        "AMD Radeon RX 6750 XT 12GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 7700 XT",
+      "share_pct": 0.25,
+      "catalog_names": [
+        "AMD Radeon RX 7700 XT 12GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6800 XT",
+      "share_pct": 0.23,
+      "catalog_names": [
+        "AMD Radeon RX 6800 XT 16GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce RTX 2080",
+      "share_pct": 0.22,
+      "catalog_names": [
+        "NVIDIA GeForce RTX 2080 8GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 9070",
+      "share_pct": 0.21,
+      "catalog_names": [
+        "AMD Radeon RX 9070 16GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 550",
+      "share_pct": 0.21,
+      "catalog_names": [
+        "AMD Radeon RX 550 2GB",
+        "AMD Radeon RX 550 4GB"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6500 XT",
+      "share_pct": 0.19,
+      "catalog_names": [
+        "AMD Radeon RX 6500 XT 4GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 1070 Ti",
+      "share_pct": 0.19,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 1070 Ti 8GB"
+      ]
+    },
+    {
+      "steam_name": "Intel HD Graphics 520",
+      "share_pct": 0.19,
+      "catalog_names": [
+        "Intel HD Graphics 520"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 970",
+      "share_pct": 0.18,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 970"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 750 Ti",
+      "share_pct": 0.17,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 750 Ti 2GB"
+      ]
+    },
+    {
+      "steam_name": "NVIDIA GeForce GTX 960",
+      "share_pct": 0.16,
+      "catalog_names": [
+        "NVIDIA GeForce GTX 960 2GB",
+        "NVIDIA GeForce GTX 960 4GB"
+      ]
+    },
+    {
+      "steam_name": "Intel HD Graphics 4600",
+      "share_pct": 0.16,
+      "catalog_names": [
+        "Intel HD Graphics 4600"
+      ]
+    },
+    {
+      "steam_name": "AMD Radeon RX 6800",
+      "share_pct": 0.16,
+      "catalog_names": [
+        "AMD Radeon RX 6800 16GB"
+      ]
+    }
+  ]
+}

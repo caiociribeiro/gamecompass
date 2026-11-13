@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { useSession } from "../context/SessionContext"
 import { useSound } from "../context/SoundContext"
-import { LegacyImportNotice } from "./LegacyImportNotice"
 import { Avatar } from "./PixelIcons"
 
 const PHASE: [RegExp, string][] = [
@@ -94,7 +93,6 @@ export function AppShell() {
             </button>
           </p>
         )}
-        <LegacyImportNotice />
         <Outlet />
       </main>
     </div>

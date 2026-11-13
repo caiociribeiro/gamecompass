@@ -8,7 +8,7 @@ import * as esbuild from "esbuild"
 import { JSDOM } from "jsdom"
 
 const HARDWARE = { cpuId: "CPU fixture", gpuId: "GPU fixture", ramGb: 16, os: "Windows", windowsVersion: "11" }
-const account = (id: string, extra: object = {}) => ({ id, name: `Conta ${id}`, email: `${id}@example.invalid`, genres: [], themes: [], anchorIds: [], hardware: null, ...extra })
+const account = (id: string, extra: object = {}) => ({ id, name: `Conta ${id}`, genres: [], themes: [], anchorIds: [], hardware: null, ...extra })
 
 async function boot(t: TestContext, handler: (path: string, options: any, log: string[]) => Response | Promise<Response>, legacy?: unknown) {
   const base = fileURLToPath(new URL("../", import.meta.url))
@@ -17,10 +17,9 @@ async function boot(t: TestContext, handler: (path: string, options: any, log: s
   await esbuild.build({ stdin: { contents: `
     import React, {useEffect} from 'react';import {createRoot} from 'react-dom/client';
     import {SessionProvider,useSession} from ${JSON.stringify(join(base, "src/context/SessionContext.tsx"))};
-    import {LegacyImportNotice} from ${JSON.stringify(join(base, "src/components/LegacyImportNotice.tsx"))};
     export {React,createRoot};export const probe={};
     function Probe(){const session=useSession();useEffect(()=>{Object.assign(probe,{session})});return null;}
-    export function Harness(){return <SessionProvider><Probe/><LegacyImportNotice/></SessionProvider>}
+    export function Harness(){return <SessionProvider><Probe/></SessionProvider>}
   `, resolveDir: base, loader: "tsx" }, bundle: true, format: "esm", platform: "browser", outfile, external: ["react", "react-dom", "react-dom/client"],
     define: { "process.env.NODE_ENV": '"development"' }, logLevel: "silent" })
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: "http://localhost/", pretendToBeVisual: true })
@@ -108,7 +107,7 @@ test("falha ao salvar mostra o aviso e volta ao que o servidor guardou", async (
     if (path === "/api/me/profile") { patched = true; return Response.json({ detail: "Banco indisponível." }, { status: 503 }) }
     throw new Error("Requisição inesperada: " + path + options.method)
   })
-  await act(async () => { m.probe.session.updateUser({ genres: ["Puzzle"] }); await new Promise((r) => setTimeout(r, 20)) })
+  await act(async () => { m.probe.session.updateUser({ genres: ["Puzzle"] }); await new Promise((r) => setTimeout(r, 700)) })
   assert(patched)
   assert.match(m.probe.session.saveError, /Não foi possível salvar no servidor\. Banco indisponível\./)
   assert.deepEqual(m.probe.session.user.genres, ["RPG"])
@@ -118,39 +117,42 @@ test("sessão encerrada em outro lugar derruba a interface ao salvar", async (t)
   const { m, act } = await boot(t, (path) => path === "/api/auth/me"
     ? Response.json(account("a"))
     : Response.json({ detail: "Sessão expirada. Entre novamente." }, { status: 401 }))
-  await act(async () => { m.probe.session.updateUser({ genres: ["RPG"] }); await new Promise((r) => setTimeout(r, 20)) })
+  await act(async () => { m.probe.session.updateUser({ genres: ["RPG"] }); await new Promise((r) => setTimeout(r, 700)) })
   assert.equal(m.probe.session.user, null)
 })
 
-test("importação é explícita: remove senhas antigas, só oferece o mesmo e-mail e não envia a senha", async (t) => {
-  const legacy = [
-    { id: "x1", name: "Antigo", email: "a@example.invalid", password: "senha-em-texto-puro", genres: ["RPG", "Inventado"], themes: ["Fantasia"],
-      anchorIds: ["101", "hades", "102"], hardware: HARDWARE, catalogVersion: "steam-v2" },
-    { id: "x2", name: "Outro", email: "outra@example.invalid", password: "outra-senha", genres: ["Puzzle"], themes: [], anchorIds: [], hardware: null, catalogVersion: "steam-v2" },
-  ]
-  const patches: any[] = []
-  const { m, act, dom } = await boot(t, (path, options) => {
+test("dados da versão antiga (e-mails, senhas, preferências) são apagados do navegador ao iniciar", async (t) => {
+  const legacy = [{ id: "x1", name: "Antigo", email: "a@example.invalid", password: "senha-em-texto-puro", genres: ["RPG"], themes: [], anchorIds: [], hardware: null }]
+  const { m } = await boot(t, (path) => {
     if (path === "/api/auth/me") return Response.json(account("a"))
-    if (path === "/api/me/profile") { patches.push(JSON.parse(options.body)); return Response.json(account("a")) }
     throw new Error("Requisição inesperada: " + path)
   }, legacy)
-  const stored = localStorage.getItem("gamecompass.users.v1")!
-  assert.doesNotMatch(stored, /senha-em-texto-puro|outra-senha|"password"/)  // senhas apagadas ao iniciar
+  assert.equal(localStorage.getItem("gamecompass.users.v1"), null)
   assert.equal(localStorage.getItem("gamecompass.session.v1"), null)
-  assert(document.body.textContent!.includes("Importar escolhas deste navegador?"))
-  assert.equal(patches.length, 0)  // nada é enviado sem o clique
-  const button = [...document.querySelectorAll("button")].find((item) => item.textContent === "Importar escolhas")!
-  await act(async () => { button.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true, cancelable: true, button: 0 })); await new Promise((r) => setTimeout(r, 20)) })
-  assert.deepEqual(patches, [{ genres: ["RPG"], themes: ["Fantasia"], anchorIds: ["101", "102"], hardware: HARDWARE }])
-  assert.doesNotMatch(JSON.stringify(patches), /senha|password/)
-  const left = JSON.parse(localStorage.getItem("gamecompass.users.v1")!)
-  assert.deepEqual(left.map((entry: any) => entry.email), ["outra@example.invalid"])  // só o e-mail importado saiu
-  assert(!document.body.textContent!.includes("Importar escolhas deste navegador?"))
   assert.equal(m.probe.session.user.id, "a")
 })
 
-test("perfil do servidor já preenchido não recebe oferta de importação", async (t) => {
-  const legacy = [{ id: "x1", name: "Antigo", email: "a@example.invalid", password: "x", genres: ["RPG"], themes: [], anchorIds: [], hardware: null, catalogVersion: "steam-v2" }]
-  await boot(t, (path) => path === "/api/auth/me" ? Response.json(account("a", { genres: ["Puzzle"] })) : Response.json({}, { status: 500 }), legacy)
-  assert(!document.body.textContent!.includes("Importar escolhas"))
+test("cliques seguidos viram um único PATCH; sair envia o que faltava antes de encerrar", async (t) => {
+  const log: string[] = []
+  const patches: any[] = []
+  const { m, act } = await boot(t, (path, options) => {
+    log.push(path)
+    if (path === "/api/auth/me") return Response.json(account("a"))
+    if (path === "/api/me/profile") { patches.push(JSON.parse(options.body)); return Response.json(account("a")) }
+    if (path === "/api/auth/logout") return Response.json({ status: "ok" })
+    throw new Error("Requisição inesperada: " + path)
+  })
+  await act(async () => {
+    m.probe.session.updateUser({ genres: ["RPG"] })
+    m.probe.session.updateUser({ genres: ["RPG", "Puzzle"] })
+    m.probe.session.updateUser({ themes: ["Fantasia"] })
+    await new Promise((r) => setTimeout(r, 700))
+  })
+  assert.deepEqual(patches, [{ genres: ["RPG", "Puzzle"], themes: ["Fantasia"] }])
+  await act(async () => {
+    m.probe.session.updateUser({ anchorIds: ["1"] })
+    await m.probe.session.logout()
+  })
+  assert.deepEqual(patches.at(-1), { anchorIds: ["1"] })
+  assert(log.lastIndexOf("/api/me/profile") < log.lastIndexOf("/api/auth/logout"))
 })

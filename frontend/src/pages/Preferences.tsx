@@ -17,7 +17,7 @@ const SPARKS = [
 ]
 
 export function Preferences() {
-  const { user, updateUser } = useSession()
+  const { user, updateUser, saving } = useSession()
   const { play } = useSound()
   const [popped, setPopped] = useState<string | null>(null)
   const [flash, setFlash] = useState(0)
@@ -84,7 +84,7 @@ export function Preferences() {
         lede="Escolha pelo menos um gênero e uma temática. Cada clique é salvo na sua conta na hora, sem precisar de botão de salvar."
       />
       <div className="save-flash" key={flash} role="status" aria-live="polite">
-        {flash > 0 ? "SALVO NA CONTA" : ""}
+        {flash > 0 ? (saving ? "SALVANDO…" : "SALVO NA CONTA") : ""}
       </div>
       <section>
         {group("genres", "Gêneros", GENRES)}
